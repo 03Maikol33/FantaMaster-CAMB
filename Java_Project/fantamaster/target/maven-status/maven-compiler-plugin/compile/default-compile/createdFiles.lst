@@ -1,0 +1,11 @@
+it\camb\fantamaster\util\PasswordUtil.class
+it\camb\fantamaster\util\Session.class
+it\camb\fantamaster\dao\UserDAO.class
+it\camb\fantamaster\util\HibernateUtil.class
+it\camb\fantamaster\model\User.class
+it\camb\fantamaster\util\ConnectionFactory.class
+it\camb\fantamaster\util\SessionUtil.class
+it\camb\fantamaster\controller\LoginController.class
+it\camb\fantamaster\controller\SuccessfulRegisterController.class
+it\camb\fantamaster\Main.class
+it\camb\fantamaster\controller\RegisterController.class

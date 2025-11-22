@@ -1,0 +1,29 @@
+package it.camb.fantamaster.controller;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.StackPane;
+import javafx.scene.Parent;
+
+public class MainScreenController {
+    @FXML private StackPane contentArea;
+
+    @FXML
+    private void showLeghe() {
+        loadView("/fxml/leghe.fxml");
+    }
+
+    @FXML
+    private void showProfilo() {
+        loadView("/fxml/profilo.fxml");
+    }
+
+    private void loadView(String fxmlPath) {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
