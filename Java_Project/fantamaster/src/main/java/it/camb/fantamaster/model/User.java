@@ -46,4 +46,13 @@ public class User implements Serializable {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof User)) return false;
+        User user = (User) obj;
+        return (id == user.id) && 
+               (username != null ? username.equals(user.username) : user.username == null) &&
+               (email != null ? email.equals(user.email) : user.email == null);
+    }
 }

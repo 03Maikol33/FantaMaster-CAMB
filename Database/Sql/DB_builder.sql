@@ -21,9 +21,12 @@ DROP TABLE IF EXISTS leghe;
 CREATE TABLE leghe (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
+    icona mediumblob, /*Fino a 16MB*/
     max_membri INT NOT NULL,
+    id_creatore INT NOT NULL,
     iscrizioni_chiuse BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_creatore) REFERENCES utenti(id) ON DELETE CASCADE
 );
 
 -- Tabella Utenti_Leghe (relazione molti-a-molti)

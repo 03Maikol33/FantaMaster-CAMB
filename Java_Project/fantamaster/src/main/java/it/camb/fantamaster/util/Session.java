@@ -15,4 +15,9 @@ public class Session implements Serializable{
     public LocalDateTime getLastAccess() {
         return lastAccess;
     }
+
+    @Override
+    public String toString() {
+        return "Session [user=" + user + ", lastAccess=" + lastAccess + "]";
+    }
 }

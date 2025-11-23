@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import it.camb.fantamaster.util.ConnectionFactory;
+
 import java.sql.Connection;
 
 public class Main extends Application {

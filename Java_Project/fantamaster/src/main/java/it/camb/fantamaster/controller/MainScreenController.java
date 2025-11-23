@@ -10,7 +10,7 @@ public class MainScreenController {
 
     @FXML
     private void showLeghe() {
-        loadView("/fxml/leghe.fxml");
+        loadView("/fxml/leagueList.fxml");
     }
 
     @FXML

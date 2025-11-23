@@ -10,6 +10,7 @@ import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.PasswordUtil;
 import it.camb.fantamaster.util.SessionUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -51,6 +52,11 @@ public class LoginController {
             errorLabel.setVisible(true);
         }
     }*/
+    @FXML
+    private void initialize() {
+        //deve aspettare che la UI sia caricata per fare l'auto login
+        Platform.runLater(() -> autoLoginIfSessionExists());
+    }
 
     @FXML
     private void handleLogin() throws IOException {
@@ -67,8 +73,13 @@ public class LoginController {
             //crea la sessione
             System.out.println("Test la sessione esiste già per l'utente?: " + SessionUtil.loadSession(user.getEmail()));
             SessionUtil.createSession(user);
-            Main.showHome();
+            openHomeScreen();
         }
+    }
+
+    @FXML
+    private void openHomeScreen() throws IOException {
+        Main.showHome();
     }
 
     @FXML
@@ -114,11 +125,25 @@ public class LoginController {
 
     private boolean checkEmail(String email) {
         // Implementa la logica di validazione dell'email
+        System.out.println("Email inserita: " + email);
         return email != null && email.contains("@");
     }
     private boolean checkPassword(String password) {
         // Implementa la logica di validazione della password
-        return password != null && password.length() >= 6 && password.length() <= 12 && !password.contains(" ");
+        System.out.println("Password inserita: " + password);
+        return password != null && password.length() >= 6 && password.length() <= 100 && !password.contains(" ");
+    }
+
+    @FXML
+    private void autoLoginIfSessionExists() {
+        System.out.println("Tentativo di auto-login...");
+        if(SessionUtil.findLastSession() != null) {
+            try {
+                openHomeScreen();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

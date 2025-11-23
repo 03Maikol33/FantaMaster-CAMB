@@ -113,7 +113,7 @@ public class RegisterController {
     }
 
     private boolean checkPasswordStrength(String password) {
-        if (password.length() < 8 || password.contains(" ") || password.length() > 20) return false;
+        if (password.length() < 8 || password.contains(" ") || password.length() > 100) return false;
         if (!password.matches(".*[A-Z].*")) return false; // Almeno una lettera maiuscola
         if (!password.matches(".*[a-z].*")) return false; // Almeno una lettera minuscola
         if (!password.matches(".*\\d.*")) return false; // Almeno un numero
