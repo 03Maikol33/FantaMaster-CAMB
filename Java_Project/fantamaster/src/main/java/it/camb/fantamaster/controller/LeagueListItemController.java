@@ -1,7 +1,10 @@
 package it.camb.fantamaster.controller;
 
+import it.camb.fantamaster.Main;
+import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
+import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -18,13 +21,17 @@ public class LeagueListItemController {
     @FXML private Label participantCount;
     @FXML private Label adminLabel;
 
-    @FXML
-    public void handleOpenLeagueScreen(League league){
-        System.out.println("Apro la schermata della lega: " + league);
-        // Implementa la logica per aprire la schermata della lega
+    private League league;
+
+    public League getLeague() {
+        return league;
+    }
+    public void setLeague(League league) {
+        this.league = league;
+        setLeagueData();
     }
 
-    public void setLeagueData(League league) {
+    private void setLeagueData() {
         User creator = league.getCreator();
         if(creator == null) {
             throw new IllegalArgumentException("Il creatore della lega è nullo");
@@ -39,6 +46,7 @@ public class LeagueListItemController {
         this.leagueName.setText(leagueName);
         this.creatorName.setText(creatorName);
         this.participantCount.setText(participantCount);
+        System.out.println("League ID impostato in LeagueListItemController: " + league.getId());
 
         if (league.getImage() != null) {
             Image img = new Image(new ByteArrayInputStream(league.getImage()));
@@ -54,5 +62,19 @@ public class LeagueListItemController {
             adminLabel.visibleProperty().set(false);
         }
 
+    }
+
+    @FXML
+    private void handleLeagueOpening() throws Exception {
+        User currentUser = SessionUtil.getCurrentSession().getUser();
+        if(currentUser.equals(league.getCreator())) {
+            // apri schermata lega come admin
+            System.out.println("Apro schermata lega come admin: " + league.getName());
+            Main.showLeagueAdminScreen(league);
+        } else {
+            // apri schermata lega come partecipante
+            System.out.println("Apro schermata lega come partecipante: " + league.getName());
+            Main.showLeagueScreen(league);
+        }
     }
 }

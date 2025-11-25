@@ -52,6 +52,44 @@ public class LeagueDAO {
         return leagues;
     }
 
+    //ottieni leghe amministrate dall'utente
+    public List<League> getLeaguesCreatedByUser(User user) {
+        List<League> leagues = new ArrayList<>();
+
+        String sql = "SELECT * FROM leghe WHERE id_creatore = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, user.getId());
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    League league = new League();
+                    league.setId(rs.getInt("id"));
+                    league.setName(rs.getString("nome"));
+                    league.setMaxMembers(rs.getInt("max_membri"));
+
+                    UserDAO userDAO = new UserDAO(this.conn);
+                    league.setCreator(userDAO.findById(rs.getInt("id_creatore")));
+
+                    league.setRegistrationsClosed(rs.getBoolean("iscrizioni_chiuse"));
+                    Timestamp ts = rs.getTimestamp("created_at");
+                    if (ts != null) {
+                        league.setCreatedAt(ts.toLocalDateTime());
+                    }
+
+                    Blob blob = rs.getBlob("icona");
+                    if (blob != null) {
+                        league.setImage(blob.getBytes(1, (int) blob.length()));
+                    }
+
+                    leagues.add(league);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return leagues;
+    }
+
     public boolean insertLeague(League league) {
         String sql = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse) VALUES (?, ?, ?, ?, ?)";
 

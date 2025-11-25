@@ -1,5 +1,6 @@
 it\camb\fantamaster\util\PasswordUtil.class
 it\camb\fantamaster\util\Session.class
+it\camb\fantamaster\controller\RequestListController.class
 it\camb\fantamaster\controller\LeagueListController.class
 it\camb\fantamaster\util\HibernateUtil.class
 it\camb\fantamaster\util\ConnectionFactory.class
@@ -7,11 +8,16 @@ it\camb\fantamaster\util\SessionUtil.class
 it\camb\fantamaster\dao\UsersLeaguesDAO.class
 it\camb\fantamaster\controller\MainScreenController.class
 it\camb\fantamaster\Main.class
+it\camb\fantamaster\dao\RequestDAO.class
 it\camb\fantamaster\dao\LeagueDAO.class
 it\camb\fantamaster\dao\UserDAO.class
 it\camb\fantamaster\model\League.class
 it\camb\fantamaster\model\User.class
+it\camb\fantamaster\controller\LeagueAdminScreenController.class
 it\camb\fantamaster\controller\LoginController.class
 it\camb\fantamaster\controller\SuccessfulRegisterController.class
+it\camb\fantamaster\model\Request.class
 it\camb\fantamaster\controller\RegisterController.class
+it\camb\fantamaster\util\RequestStatus.class
 it\camb\fantamaster\controller\LeagueListItemController.class
+it\camb\fantamaster\controller\RequestListItemController.class

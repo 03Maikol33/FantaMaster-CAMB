@@ -66,3 +66,20 @@ INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 11); -- Super League
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 12); -- MLS Fantasy
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 13); -- Friendly Cup
 
+-- Richieste di iscrizione per le leghe amministrate da Maikol --
+-- Richieste di iscrizione per Serie A Legends (lega_id = 1, admin Maikol)
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (2, 1, 'in_attesa'); -- Giulia
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 1, 'in_attesa'); -- Luca
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (4, 1, 'in_attesa'); -- Marta
+
+-- Richieste di iscrizione per World Cup Legends (lega_id = 9, admin Maikol)
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (2, 9, 'in_attesa'); -- Giulia
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 9, 'in_attesa'); -- Luca
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (4, 9, 'in_attesa'); -- Marta
+
+-- Richieste di iscrizione per Friendly Cup (lega_id = 13, admin Maikol)
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (2, 13, 'in_attesa'); -- Giulia
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 13, 'in_attesa'); -- Luca
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (4, 13, 'in_attesa'); -- Marta
+
+

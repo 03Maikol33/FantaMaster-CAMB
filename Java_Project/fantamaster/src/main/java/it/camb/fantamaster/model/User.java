@@ -2,6 +2,7 @@ package it.camb.fantamaster.model;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.sql.Blob;
 
 public class User implements Serializable {
     private int id;
@@ -9,6 +10,7 @@ public class User implements Serializable {
     private String email;
     private String hashPassword;
     private LocalDateTime createdAt;
+    private byte[] avatar;
 
     // Costruttori
     public User() {}
@@ -36,6 +38,9 @@ public class User implements Serializable {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public byte[] getAvatar() { return avatar; }
+    public void setAvatar(byte[] avatar) { this.avatar = avatar; }
 
     @Override
     public String toString() {

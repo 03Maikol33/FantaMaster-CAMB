@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.MainScreenController">
+<BorderPane prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.LeagueAdminScreenController">
 
     <!-- Barra superiore con logo -->
     <top>
@@ -16,7 +16,7 @@
             <ImageView fitHeight="36.0" preserveRatio="true">
                 <image>
                     <!-- percorso relativo al file FXML: ../images/FantaMaster-logo.png -->
-                    <Image url="@../../../../../../../../images/FantaMaster-logo.png" />
+                    <Image url="@/images/FantaMaster-logo.png" />
                 </image>
             </ImageView>
         </HBox>
@@ -34,30 +34,30 @@
             <children>
                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../../../../../../../../fxml/FantaMaster-logo.png" />
+                     <Image url="@/icons/admin-crown.png" />
                   </image>
                </ImageView>
-               <Button onAction="#showLeghe" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Da Impl" />
+               <Button style="-fx-background-color: transparent; -fx-text-fill: white;" text="Da Impl" />
             </children>
          </VBox>
-         <VBox alignment="TOP_CENTER" layoutX="128.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0">
+         <VBox alignment="TOP_CENTER" layoutX="128.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0" onMouseClicked="#showRichieste">
             <children>
                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../../../../../../../../fxml/FantaMaster-logo.png" />
+                     <Image url="@/icons/richieste-icon.png" />
                   </image>
                </ImageView>
-               <Button onAction="#showLeghe" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Richieste" />
+               <Button style="-fx-background-color: transparent; -fx-text-fill: white;" text="Richieste" />
             </children>
          </VBox>
          <VBox alignment="TOP_CENTER" layoutX="198.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0">
             <children>
                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../../../../../../../../fxml/FantaMaster-logo.png" />
+                     <Image url="@/icons/impostazioni-icon.png" />
                   </image>
                </ImageView>
-               <Button onAction="#showLeghe" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Impostazioni" />
+               <Button  style="-fx-background-color: transparent; -fx-text-fill: white;" text="Impostazioni" />
             </children>
          </VBox>
         </HBox>

@@ -35,7 +35,8 @@ public class LeagueListController {
                 Node item = loader.load();
 
                 LeagueListItemController controller = loader.getController();
-                controller.setLeagueData(league);
+                controller.setLeague(league);
+                //controller.setLeagueData();
 
                 leagueContainer.getChildren().add(item);
             } catch (Exception e) {
