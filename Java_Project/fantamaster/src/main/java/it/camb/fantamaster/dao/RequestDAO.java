@@ -123,22 +123,27 @@ public class RequestDAO {
             return false;
         }
     }
-
+    //DA RIVEDERE
     //approva una richiesta di iscrizione
     public boolean approveRequest(User user, League league) {
-        String sql = "UPDATE richieste_accesso SET stato = ? WHERE utente_id = ? AND lega_id = ?";
-        //il server del database si occupa di aggiungere l'utente alla lega una volta che la richiesta è approvata e di eliminare la richiesta
-        try (var stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, RequestStatus.accettata.toDb());
-            stmt.setInt(2, user.getId());
-            stmt.setInt(3, league.getId());
+        // Aggiungi l'utente alla lega
+        UsersLeaguesDAO usersLeaguesDAO = new UsersLeaguesDAO(conn);
+        Boolean isSubscribed = usersLeaguesDAO.subscribeUserToLeague(user, league);
+        int rowsAffected = 0;
+        if(!isSubscribed) {
+            String sql = "UPDATE richieste_accesso SET stato = ? WHERE utente_id = ? AND lega_id = ?";
+            try (var stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, RequestStatus.accettata.toDb());
+                stmt.setInt(2, user.getId());
+                stmt.setInt(3, league.getId());
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+                rowsAffected = stmt.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+            return isSubscribed && rowsAffected > 0;
     }
 
     //rifuta una richiesta di iscrizione con eliminazione immediata

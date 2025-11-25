@@ -66,12 +66,31 @@ INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 11); -- Super League
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 12); -- MLS Fantasy
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 13); -- Friendly Cup
 
+-- Altri utenti --
+INSERT INTO utenti (username, email, hash_password)
+/* La password è: Password1234! per ogni utente */
+VALUES 
+('gianluca', 'gianluca@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('tommaso', 'tommaso@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('nicoletta', 'nicoletta@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('jasmine', 'jasmine@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('clotilde', 'clotilde@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('renilde', 'renilde@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('genoveffa', 'genoveffa@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),
+('anacleto', 'anacleto@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q');
 -- Richieste di iscrizione per le leghe amministrate da Maikol --
 -- Richieste di iscrizione per Serie A Legends (lega_id = 1, admin Maikol)
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (2, 1, 'in_attesa'); -- Giulia
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 1, 'in_attesa'); -- Luca
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (4, 1, 'in_attesa'); -- Marta
-
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (5, 1, 'in_attesa'); -- gianluca
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (6, 1, 'in_attesa'); -- tommaso
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (7, 1, 'in_attesa'); -- NICOLETTA
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (8, 1, 'in_attesa'); -- jasmine
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (9, 1, 'in_attesa'); -- clotilde
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (10, 1, 'in_attesa'); -- renilde
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (11, 1, 'in_attesa'); -- genoveffa
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (12, 1, 'in_attesa'); -- anacleto
 -- Richieste di iscrizione per World Cup Legends (lega_id = 9, admin Maikol)
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (2, 9, 'in_attesa'); -- Giulia
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 9, 'in_attesa'); -- Luca
