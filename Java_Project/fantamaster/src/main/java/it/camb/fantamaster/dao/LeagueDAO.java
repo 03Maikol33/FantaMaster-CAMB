@@ -148,4 +148,17 @@ public class LeagueDAO {
 
         return null;
     }
+
+    //chiudi iscrizioni lega
+    public boolean closeRegistrations(int leagueId) {
+        String sql = "UPDATE leghe SET iscrizioni_chiuse = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBoolean(1, true);
+            stmt.setInt(2, leagueId);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane fx:controller="it.camb.fantamaster.controller.LeagueAdminSettingsController"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="600.0" prefWidth="335.0"
+            stylesheets="@css/style.css"
+            >
+
+    <!-- Titolo -->
+    <Label text="Impostazioni Lega" layoutX="10.0" layoutY="10.0" />
+
+    <!-- ScrollPane -->
+    <ScrollPane fx:id="leagueAdminSettingsScroll"
+                fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                AnchorPane.topAnchor="40.0" AnchorPane.leftAnchor="10.0"
+                AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="50.0">
+
+        <content>
+            <!-- Contenitore verticale -->
+            <VBox spacing="10" prefWidth="Infinity">
+                <Button text="Chiudi Iscrizioni"
+                        maxWidth="Infinity"
+                        fx:id="closeRegistrationsButton"
+                        styleClass=""
+                        style="-fx-padding: 10; -fx-text-fill: white; -fx-font-weight: bold;"
+                        onAction="#handleCloseRegistrations" />
+                <Label text="Attenzione: questa azione è irreversibile e impedirà a nuovi utenti di iscriversi alla lega." 
+                       wrapText="true" 
+                       fx:id="closeRegistrationsWarningLabel"
+                       styleClass=""
+                       style="-fx-padding: 0 0 10 0; -fx-text-fill: white;" />
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</AnchorPane>

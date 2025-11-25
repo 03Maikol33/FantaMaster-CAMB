@@ -35,7 +35,19 @@ public class LeagueAdminScreenController {
 
     @FXML
     private void showImpostazioniLega() {
-        loadView("/fxml/impostazioniLega.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueAdminSettings.fxml"));
+            Parent view = loader.load();
+
+            // Recupero il controller della schermata richieste
+            LeagueAdminSettingsController controller = loader.getController();
+            controller.setCurrentLeague(currentLeague); // passo la lega corrente
+
+            // Mostro la view dentro contentArea
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadView(String fxmlPath) {

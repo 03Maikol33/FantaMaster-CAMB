@@ -45,7 +45,9 @@
 <?import javafx.scene.text.Font?>
 
 
-<View fx:controller="it.camb.fantamaster.controller.LoginController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<View fx:controller="it.camb.fantamaster.controller.LoginController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="@css/style.css"
+>
    <center>
       <VBox alignment="TOP_CENTER" maxWidth="300.0" prefHeight="300.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -80,7 +82,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Label>
-            <Button mnemonicParsing="false" style="-fx-background-color: #7a0076; -fx-text-fill: white;" text="Accedi" onAction="#handleLogin"/>
+            <Button mnemonicParsing="false" styleClass="main-theme-color" style=" -fx-text-fill: white;" text="Accedi" onAction="#handleLogin"/>
             <Label layoutX="138.0" layoutY="160.0" text="Non hai ancora un account?">
                <font>
                   <Font name="Arial" size="17.0" />
@@ -89,7 +91,7 @@
                   <Insets top="50.0" />
                </VBox.margin>
             </Label>
-            <Button mnemonicParsing="false" style="-fx-background-color: #7a0076; -fx-text-fill: white;" text="Resgistrami!" onAction="#handleRegister" />
+            <Button mnemonicParsing="false" styleClass="main-theme-color" style=" -fx-text-fill: white;" text="Resgistrami!" onAction="#handleRegister" />
          </children>
       </VBox>
    </center>

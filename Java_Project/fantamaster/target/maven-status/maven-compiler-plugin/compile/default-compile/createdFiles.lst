@@ -1,3 +1,4 @@
+it\camb\fantamaster\controller\RequestDAO.class
 it\camb\fantamaster\util\PasswordUtil.class
 it\camb\fantamaster\util\Session.class
 it\camb\fantamaster\controller\RequestListController.class
@@ -16,6 +17,7 @@ it\camb\fantamaster\model\User.class
 it\camb\fantamaster\controller\LeagueAdminScreenController.class
 it\camb\fantamaster\controller\LoginController.class
 it\camb\fantamaster\controller\SuccessfulRegisterController.class
+it\camb\fantamaster\controller\LeagueAdminSettingsController.class
 it\camb\fantamaster\model\Request.class
 it\camb\fantamaster\controller\RegisterController.class
 it\camb\fantamaster\util\RequestStatus.class

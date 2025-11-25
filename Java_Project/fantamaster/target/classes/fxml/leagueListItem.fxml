@@ -8,10 +8,12 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="it.camb.fantamaster.controller.LeagueListItemController">
+            fx:controller="it.camb.fantamaster.controller.LeagueListItemController"
+            stylesheets="@css/style.css"
+            >
 
     <!-- Contenuto principale: occupa tutta l'area -->
-    <HBox onMouseClicked="#handleLeagueOpening" spacing="10" style="-fx-padding: 10; -fx-background-color: #7a00766a; -fx-background-radius:5; -fx-border-radius:5; -fx-border-color: #7a0076; -fx-border-width:1;"
+    <HBox onMouseClicked="#handleLeagueOpening" spacing="10" styleClass="secondary-theme-color" style="-fx-padding: 10; -fx-background-radius:5; -fx-border-radius:5; -fx-border-color: #7a0076; -fx-border-width:1;"
           AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
         <ImageView fx:id="leagueIcon" fitHeight="40" fitWidth="40" preserveRatio="true" />
 

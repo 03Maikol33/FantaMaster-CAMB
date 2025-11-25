@@ -8,11 +8,13 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.LeagueAdminScreenController">
+<BorderPane prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.LeagueAdminScreenController"
+   stylesheets="@css/style.css"
+>
 
     <!-- Barra superiore con logo -->
     <top>
-        <HBox alignment="CENTER" style="-fx-background-color: #7a0076; -fx-padding: 10;">
+        <HBox alignment="CENTER" styleClass="main-theme-color" style="-fx-padding: 10;">
             <ImageView fitHeight="36.0" preserveRatio="true">
                 <image>
                     <!-- percorso relativo al file FXML: ../images/FantaMaster-logo.png -->
@@ -29,7 +31,7 @@
 
     <!-- Navigazione inferiore con icone (modifica i nomi dei file se necessario) -->
     <bottom>
-        <HBox alignment="CENTER" maxHeight="50.0" spacing="40" style="-fx-background-color: #7a0076; -fx-padding: 10;">
+        <HBox alignment="CENTER" maxHeight="50.0" spacing="40" styleClass="main-theme-color" style="-fx-padding: 10;">
          <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
             <children>
                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -50,7 +52,7 @@
                <Button style="-fx-background-color: transparent; -fx-text-fill: white;" text="Richieste" />
             </children>
          </VBox>
-         <VBox alignment="TOP_CENTER" layoutX="198.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0">
+         <VBox alignment="TOP_CENTER" layoutX="198.0" layoutY="20.0" prefHeight="200.0" prefWidth="100.0" onMouseClicked="#showImpostazioniLega">
             <children>
                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                   <image>

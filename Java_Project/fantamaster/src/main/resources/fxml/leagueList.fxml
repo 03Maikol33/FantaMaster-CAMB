@@ -5,7 +5,9 @@
 
 <AnchorPane fx:controller="it.camb.fantamaster.controller.LeagueListController"
                xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-               prefHeight="600.0" prefWidth="335.0">
+               prefHeight="600.0" prefWidth="335.0"
+               stylesheets="@css/style.css"
+               >
 
      <!-- ScrollPane ancorato: lascia 70px in basso per la bottom nav bar -->
      <ScrollPane fx:id="leagueScroll"

@@ -53,6 +53,15 @@ public class RequestListItemController {
             //userIcon.setImage(new Image(getClass().getResourceAsStream("/images/userDefaultPic.png")));
         }
 
+        //se la legha ha le iscrizioni chiuse oppure è piena, disabilita il pulsante di approvazione
+        if(request.getLeague().isRegistrationsClosed() || request.getLeague().getParticipants().size() >= request.getLeague().getMaxMembers()) {
+            approveLabel.setDisable(true);
+            approveLabel.getStyleClass().add("disabled-label");
+        }else{
+            approveLabel.setDisable(false);
+            approveLabel.getStyleClass().remove("disabled-label");
+        }
+
         // rendi cliccabili i label di approva/rifiuta
         approveLabel.setOnMouseClicked(e -> handleApprove());
         rejectLabel.setOnMouseClicked(e -> handleReject());
@@ -60,6 +69,10 @@ public class RequestListItemController {
 
     @FXML
     private void handleApprove(){
+        if(request.getLeague().isRegistrationsClosed()) {
+            System.out.println("Impossibile approvare la richiesta: le iscrizioni sono chiuse per questa lega.");
+            return;
+        }
         try{
             Connection conn = ConnectionFactory.getConnection();
             System.out.println("Approvata richiesta di: " + request.getUser());
