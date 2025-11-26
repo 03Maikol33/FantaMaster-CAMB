@@ -10,6 +10,12 @@
                >
 
      <!-- ScrollPane ancorato: lascia 70px in basso per la bottom nav bar -->
+     <Button fx:id="createLeagueButton"
+             text="Crea Lega"
+             styleClass="primary-button"
+             onAction="#openCreateLeague"
+             AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
+             AnchorPane.rightAnchor="10.0" prefHeight="30.0"/>
      <ScrollPane fx:id="leagueScroll"
                     fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                     AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"

@@ -2,7 +2,6 @@
 package it.camb.fantamaster.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.UserDAO;
@@ -15,13 +14,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
 
 public class LoginController {
     @FXML private TextField emailField;

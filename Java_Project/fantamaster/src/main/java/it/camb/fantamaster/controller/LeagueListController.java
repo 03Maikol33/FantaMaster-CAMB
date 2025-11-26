@@ -1,5 +1,8 @@
 package it.camb.fantamaster.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
@@ -8,9 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-
-import java.util.Collections;
-import java.util.List;
 
 public class LeagueListController {
 
@@ -42,6 +42,22 @@ public class LeagueListController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @FXML
+    private void openCreateLeague() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createLeague.fxml"));
+            Node createLeagueNode = loader.load();
+
+            // Apre la finestra di creazione lega
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Crea Nuova Lega");
+            stage.setScene(new javafx.scene.Scene((javafx.scene.Parent) createLeagueNode));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();  
         }
     }
 }

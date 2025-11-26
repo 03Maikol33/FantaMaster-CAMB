@@ -1,6 +1,5 @@
 package it.camb.fantamaster.model;
 
-import java.sql.Blob;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +20,15 @@ public class League {
 
     // Costruttori
     public League() {}
+    public League(String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt) {
+        this.name = name;
+        this.image = image;
+        this.maxMembers = maxMembers;
+        this.creator = creator;
+        this.createdAt = createdAt;
+        this.registrationsClosed = false;
+        this.participants = new ArrayList<>();
+    }
     public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
