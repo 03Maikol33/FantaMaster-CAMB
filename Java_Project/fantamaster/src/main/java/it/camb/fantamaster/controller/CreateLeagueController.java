@@ -76,6 +76,7 @@ public class CreateLeagueController {
             feedbackLabel.setText("Lega \"" + name + "\" creata con " + max + " partecipanti!");
 
             //creo la lega nel sistema
+            
             byte[] imageBytes = null;
             try {
                 imageBytes = toByteArray(imagePath);

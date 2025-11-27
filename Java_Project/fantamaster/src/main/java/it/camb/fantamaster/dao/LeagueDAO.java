@@ -1,12 +1,18 @@
 package it.camb.fantamaster.dao;
 
-import it.camb.fantamaster.model.League;
-import it.camb.fantamaster.model.User;
-
 import java.io.ByteArrayInputStream;
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.model.User;
 
 public class LeagueDAO {
     private final Connection conn;
@@ -91,7 +97,7 @@ public class LeagueDAO {
     }
 
     public boolean insertLeague(League league) {
-        String sql = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, league.getName());
@@ -105,6 +111,7 @@ public class LeagueDAO {
             stmt.setInt(3, league.getMaxMembers());
             stmt.setInt(4, league.getCreator().getId());
             stmt.setBoolean(5, league.isRegistrationsClosed());
+            stmt.setTimestamp(6, Timestamp.valueOf(league.getCreatedAt()));
 
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
