@@ -3,27 +3,43 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane fx:controller="it.camb.fantamaster.controller.LeagueListController"
-               xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-               prefHeight="600.0" prefWidth="335.0"
-               stylesheets="@css/style.css"
-               >
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            prefHeight="600.0" prefWidth="335.0"
+            stylesheets="@css/style.css"
+            style="-fx-background-color: transparent;">
 
-     <!-- ScrollPane ancorato: lascia 70px in basso per la bottom nav bar -->
-     <Button fx:id="createLeagueButton"
-             text="Crea Lega"
-             styleClass="primary-button"
-             onAction="#openCreateLeague"
-             AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
-             AnchorPane.rightAnchor="10.0" prefHeight="30.0"/>
-     <ScrollPane fx:id="leagueScroll"
-                    fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                    AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
-                    AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="50.0">
-          <content>
-               <VBox fx:id="leagueContainer" spacing="10" style="-fx-padding: 10;" />
-          </content>
-     </ScrollPane>
+    <!-- Header Section -->
+    <VBox spacing="15" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <StackPane>
+                <Circle radius="20" fill="#667eea" opacity="0.1"/>
+                <Label text="🏆" style="-fx-font-size: 16;"/>
+            </StackPane>
+            <VBox spacing="2">
+                <Label text="Le tue Leghe" styleClass="modern-title"/>
+                <Label text="Gestisci le tue leghe" styleClass="subtitle"/>
+            </VBox>
+        </HBox>
 
+        <!-- Create League Button - Ora in cima -->
+        <Button fx:id="createLeagueButton" text="+ Crea Nuova Lega" styleClass="floating-action-button"
+                onAction="#openCreateLeague" prefHeight="50.0" maxWidth="Infinity"/>
+    </VBox>
+
+    <!-- List Section -->
+    <ScrollPane fx:id="leagueScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                styleClass="modern-scroll" 
+                AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="20.0"
+                AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+        <content>
+            <VBox fx:id="leagueContainer" spacing="12" style="-fx-padding: 10 0; -fx-background-color: transparent;" />
+        </content>
+    </ScrollPane>
 </AnchorPane>

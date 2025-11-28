@@ -11,77 +11,55 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
 
 <View fx:controller="it.camb.fantamaster.controller.RegisterController"
       maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="600.0" prefWidth="335.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@css/style.css"
-      >
+      style="-fx-background-color: white;">
+      
    <center>
-      <VBox alignment="TOP_CENTER" maxWidth="300.0" prefHeight="300.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <image>
+      <VBox alignment="TOP_CENTER" maxWidth="280.0" spacing="25" BorderPane.alignment="CENTER" styleClass="auth-card">
+         <padding>
+            <Insets top="40" bottom="30" left="25" right="25"/>
+         </padding>
+         
+         <StackPane>
+            <Circle radius="40" fill="rgba(255,255,255,0.1)"/>
+            <ImageView fitHeight="45.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                <image>
                   <Image url="@/images/FantaMaster-logo.png" />
                </image>
             </ImageView>
-            <Label text="REGISTRAZIONE">
-               <font>
-                  <Font name="Arial Bold" size="25.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="40.0" />
-               </VBox.margin>
-            </Label>
+         </StackPane>
+         
+         <VBox spacing="8" alignment="CENTER">
+            <Label text="CREA ACCOUNT" styleClass="modern-title"/>
+            <Label text="Unisciti alla lega dei campioni" styleClass="subtitle"/>
+         </VBox>
 
-            <!-- Username -->
-            <TextField maxWidth="200.0" promptText="Username" fx:id="usernameField" style="-fx-border-color: #7a0076; " onKeyTyped="#hideMessageLabel">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-            </TextField>
+         <VBox spacing="12" style="-fx-padding: 10 0;">
+            <TextField maxWidth="240.0" prefHeight="42.0" promptText="Username" fx:id="usernameField" 
+                       styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
+            <TextField maxWidth="240.0" prefHeight="42.0" promptText="Email" fx:id="emailField" 
+                       styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
+            <PasswordField maxWidth="240.0" prefHeight="42.0" promptText="Password" fx:id="passwordField" 
+                           styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
+         </VBox>
 
-            <!-- Email -->
-            <TextField maxWidth="200.0" promptText="Email" fx:id="emailField" style="-fx-border-color: #7a0076; " onKeyTyped="#hideMessageLabel">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-            </TextField>
+         <Label text="" fx:id="messageLabel" styleClass="error-text" visible="false" wrapText="true"/>
 
-            <!-- Password -->
-            <PasswordField maxWidth="200.0" promptText="Password" fx:id="passwordField" style="-fx-border-color: #7a0076;" onKeyTyped="#hideMessageLabel">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-            </PasswordField>
+         <Button mnemonicParsing="false" styleClass="primary-button" maxWidth="240.0" prefHeight="45.0"
+                 text="REGISTRATI" onAction="#handleRegister"/>
 
-            <!-- Messaggi di errore/successo -->
-            <Label text="" fx:id="messageLabel" textFill="RED" visible="false">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="15.0" />
-               </VBox.margin>
-            </Label>
-
-            <!-- Pulsante di registrazione -->
-            <Button mnemonicParsing="false"
-                    styleClass="main-theme-color" style=" -fx-text-fill: white;"
-                    text="Registrati"
-                    onAction="#handleRegister"/>
-
-            <Label layoutX="138.0" layoutY="160.0" text="Hai già un account?">
-               <font>
-                  <Font name="Arial" size="17.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="50.0" />
-               </VBox.margin>
-            </Label>
-            <Button mnemonicParsing="false" style="-fx-background-color: #7a0076; -fx-text-fill: white;" text="Accedi!" onAction="#handleLogin" />
-         </children>
+         <VBox alignment="CENTER" spacing="8" style="-fx-padding: 15 0 0 0;">
+            <Label text="Hai già un account?" styleClass="hint-text"/>
+            <Button mnemonicParsing="false" styleClass="text-button"
+                    text="Accedi qui" onAction="#handleLogin" />
+         </VBox>
       </VBox>
    </center>
 </View>

@@ -6,26 +6,40 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="it.camb.fantamaster.controller.LeagueListItemController"
-            stylesheets="@css/style.css"
-            >
+            stylesheets="@css/style.css">
 
-    <!-- Contenuto principale: occupa tutta l'area -->
-    <HBox onMouseClicked="#handleLeagueOpening" spacing="10" styleClass="secondary-theme-color" style="-fx-padding: 10; -fx-background-radius:5; -fx-border-radius:5; -fx-border-color: #7a0076; -fx-border-width:1;"
+    <HBox onMouseClicked="#handleLeagueOpening" spacing="15" alignment="CENTER_LEFT"
+          styleClass="modern-card" 
           AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
-        <ImageView fx:id="leagueIcon" fitHeight="40" fitWidth="40" preserveRatio="true" />
+        
+        <StackPane>
+            <Circle radius="25" fill="rgba(102, 126, 234, 0.1)"/>
+            <ImageView fx:id="leagueIcon" fitHeight="30" fitWidth="30" preserveRatio="true" />
+        </StackPane>
 
-        <!-- Info -->
-        <VBox spacing="5" style="-fx-padding:5;">
-            <Label fx:id="leagueName" style="-fx-font-weight: bold; -fx-text-fill: white;" />
-            <Label fx:id="creatorName" style="-fx-text-fill: white;" />
-            <Label fx:id="participantCount" style="-fx-text-fill: white;" />
-        </VBox>
+        <HBox spacing="5" HBox.hgrow="ALWAYS">
+            <VBox spacing="10">
+                <Label fx:id="leagueName" styleClass="card-title"/>
+                <Label fx:id="creatorName" styleClass="card-subtitle"/>
+                <Label fx:id="participantCount" styleClass="card-subtitle"/>
+                <HBox spacing="5" fx:id="adminBadgeContainer" visible="false">
+                    <HBox alignment="CENTER" spacing="5">
+                        <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                            <image>
+                                <Image url="@/icons/admin-crown-gold.png" />
+                            </image>
+                        </ImageView>
+                        <Label fx:id="adminLabel" text="ADMIN" styleClass="admin-badge"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+        </HBox>
 
-        <!--Scritta admin in alto a destra invisibile-->
-        <Label visible="false" fx:id="adminLabel" text="ADMIN" style="-fx-text-fill: white; -fx-font-weight: bold;"
-               AnchorPane.topAnchor="5.0" AnchorPane.rightAnchor="5.0" />
     </HBox>
 </AnchorPane>

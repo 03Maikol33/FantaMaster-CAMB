@@ -1,10 +1,15 @@
 package it.camb.fantamaster.controller;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
@@ -12,74 +17,82 @@ import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 
 public class CreateLeagueController {
 
     @FXML
-    private TextField nameField;
+    private ImageView leagueLogoView;
 
     @FXML
-    private TextField maxPlayersField;
+    private Button pickImageButton;
 
     @FXML
-    private Label imageLabel;
+    private Label imageNameLabel;
 
     @FXML
-    private Label feedbackLabel;
+    private TextField leagueNameField;
 
     @FXML
-    private Button uploadImageBtn;
+    private TextField maxParticipantsField;
 
     @FXML
-    private Button createLeagueBtn;
-
-    private String imagePath;
+    private Label messageLabel;
 
     @FXML
-    private void handleUploadImage() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Seleziona immagine");
-        chooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Immagini", "*.png", "*.jpg", "*.jpeg")
+    private Button createLeagueButton;
+
+    // Variabile per salvare il file immagine scelto
+    private File selectedImageFile;
+
+    // Nasconde il messaggio di errore quando l’utente digita
+    @FXML
+    private void hideMessageLabel() {
+        messageLabel.setVisible(false);
+        messageLabel.setText("");
+    }
+
+    // Gestione scelta immagine
+    @FXML
+    private void handlePickImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleziona immagine lega");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Immagini", "*.png", "*.jpg", "*.jpeg")
         );
-        File selected = chooser.showOpenDialog(uploadImageBtn.getScene().getWindow());
 
-        if (selected != null) {
-            imagePath = selected.getAbsolutePath();
-            imageLabel.setText(selected.getName());
-        } else {
-            imageLabel.setText("Nessuna immagine selezionata");
+        Stage stage = (Stage) pickImageButton.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+
+        if (file != null) {
+            selectedImageFile = file;
+            imageNameLabel.setText(file.getName());
+            leagueLogoView.setImage(new Image(file.toURI().toString()));
         }
     }
 
     @FXML
     private void handleCreateLeague() {
-        String name = nameField.getText().trim();
-        String maxStr = maxPlayersField.getText().trim();
+        String name = leagueNameField.getText().trim();
+        String maxStr = maxParticipantsField.getText().trim();
 
         if (name.isEmpty() || maxStr.isEmpty()) {
-            feedbackLabel.setText("Compila tutti i campi.");
+            messageLabel.setText("Compila tutti i campi.");
             return;
         }
 
         try {
             int max = Integer.parseInt(maxStr);
             if (max <= 0) {
-                feedbackLabel.setText("Inserisci un numero valido (> 0).");
+                messageLabel.setText("Inserisci un numero valido (> 0).");
                 return;
             }
-            feedbackLabel.setText("Lega \"" + name + "\" creata con " + max + " partecipanti!");
+            messageLabel.setText("Lega \"" + name + "\" creata con " + max + " partecipanti!");
 
             //creo la lega nel sistema
             
             byte[] imageBytes = null;
-            try {
-                imageBytes = toByteArray(imagePath);
+            try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
+                imageBytes = fis.readAllBytes(); // disponibile da Java 9
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -106,11 +119,29 @@ public class CreateLeagueController {
 
 
         } catch (NumberFormatException ex) {
-            feedbackLabel.setText("Inserisci un numero valido.");
+            messageLabel.setText("Inserisci un numero valido.");
         }
     }
 
-    private static byte[] toByteArray(String imagePath) throws IOException {
-        return Files.readAllBytes(Paths.get(imagePath));
+    // Annulla e torna indietro
+    @FXML
+    private void handleCancel() {
+        Stage stage = (Stage) createLeagueButton.getScene().getWindow();
+        stage.close();
+    }
+
+    // Utility per mostrare errori
+    private void showError(String message) {
+        messageLabel.setText(message);
+        messageLabel.setVisible(true);
+        messageLabel.setStyle("-fx-text-fill: red;");
+    }
+
+    // Utility per mostrare successo
+    private void showSuccess(String message) {
+        messageLabel.setText(message);
+        messageLabel.setVisible(true);
+        messageLabel.setStyle("-fx-text-fill: green;");
     }
 }
+

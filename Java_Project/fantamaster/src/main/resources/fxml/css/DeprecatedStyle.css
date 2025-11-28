@@ -1,0 +1,42 @@
+/* ScrollPane senza bordi */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Bottone con colore tema principale */
+.button-theme {
+    -fx-background-color: #00067a; /* blu del tema */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+}
+
+/* Classi di colore */
+.main-theme-color {
+    -fx-background-color: #00067a;
+}
+
+.secondary-theme-color {
+    -fx-background-color: #1d227f;
+}
+
+.irreversible-action-color {
+    -fx-background-color: #c50000ff;
+}
+.success-action-color {
+    -fx-background-color: #00a300ff;
+}
+.warning-action-color {
+    -fx-background-color: #ffcc00ff;
+}
+.info-action-color {
+    -fx-background-color: #0066ccff;
+}
+.error-action-color {
+    -fx-background-color: #cc0000ff;
+}
+.disabled-action-color {
+    -fx-background-color: #a0a0a0ff;
+}

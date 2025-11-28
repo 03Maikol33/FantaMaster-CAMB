@@ -1,42 +1,579 @@
-/* ScrollPane senza bordi */
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+/* 
+ * style.css - Modern Design System for FantaMaster
+ * Schema colori blu - Versione aggiornata
+ */
+
+/* ===== STILI DI BASE E RESET ===== */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    /* Applicato: Tutta l'applicazione - Imposta il font di base */
 }
 
-/* Bottone con colore tema principale */
-.button-theme {
-    -fx-background-color: #00067a; /* blu del tema */
+/* ===== VARIABILI DI COLORE PRINCIPALI ===== */
+.root {
+    -fx-primary-blue: #1e40af;       /* Blu principale */
+    -fx-secondary-blue: #3b82f6;     /* Blu secondario */
+    -fx-accent-blue: #60a5fa;        /* Blu accento */
+    -fx-light-blue: #dbeafe;         /* Blu chiaro per sfondi */
+    -fx-dark-blue: #1e3a8a;          /* Blu scuro */
+}
+
+/* ===== CLASSI DI GRADIENTE PER SFONDI PRINCIPALI ===== */
+.primary-gradient {
+    -fx-background-color: linear-gradient(to bottom, #1e40af 0%, #3b82f6 100%);
+    /* Applicato: Schermate di login, registrazione, creazione lega - Sfondo principale blu */
+}
+
+.light-gradient {
+    -fx-background-color: linear-gradient(to bottom, #f0f9ff 0%, #e0f2fe 100%);
+    /* Applicato: Main screen, liste, admin panel - Sfondo azzurro chiaro */
+}
+
+/* ===== SFONDI TRASPARENTI PER CONTENUTI IN OVERLAY ===== */
+AnchorPane {
+    -fx-background-color: transparent;
+    /* Applicato: Tutti gli AnchorPane - Permette di vedere il gradient del main screen */
+}
+
+View {
+    -fx-background-color: transparent;
+    /* Applicato: View di login/registrazione - Background trasparente */
+}
+
+/* ===== STILI DI TIPOGRAFIA ===== */
+.modern-title {
+    -fx-text-fill: #1e3a8a;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 5 0;
+    /* Applicato: Titoli principali delle schermate (Le tue Leghe, Richieste, etc.) */
+}
+
+.success-title {
+    -fx-text-fill: #1e3a8a;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+    /* Applicato: Titolo nella schermata di registrazione completata */
+}
+
+.subtitle {
+    -fx-text-fill: #475569;
+    -fx-font-size: 14px;
+    /* Applicato: Sottotitoli sotto i titoli principali */
+}
+
+.hint-text {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+    /* Applicato: Testi di aiuto, label sotto i bottoni, messaggi informativi */
+}
+
+.error-text {
+    -fx-text-fill: #dc2626;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    /* Applicato: Messaggi di errore in login, registrazione, creazione lega */
+}
+
+.warning-text {
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    /* Applicato: Testi di avviso nelle zone pericolose (chiudi iscrizioni) */
+}
+
+/* ===== STILI PER CARD E CONTENITORI ===== */
+.auth-card {
+    -fx-background-color: white;
+    /* Applicato: Card centrale in login.fxml e register.fxml */
+}
+
+.modern-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.1), 10, 0, 0, 3);
+    -fx-padding: 15;
+    -fx-cursor: hand;
+    /* Applicato: Elementi delle liste (leagueListItem.fxml, requestListItem.fxml) */
+}
+
+.modern-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.2), 15, 0, 0, 5);
+    -fx-translate-y: -2;
+    /* Applicato: Hover sugli elementi delle liste */
+}
+
+.danger-card {
+    -fx-background-color: #fef2f2;
+    -fx-background-radius: 12;
+    -fx-border-color: #fecaca;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 15;
+    /* Applicato: Zona pericolosa in leagueAdminSettings.fxml */
+}
+
+/* ===== STILI PER BOTTONI ===== */
+.primary-button {
+    -fx-background-color: linear-gradient(to bottom, #1e40af, #3b82f6);
+    -fx-background-radius: 25;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 10, 0, 0, 3);
+    /* Applicato: Bottoni principali (Accedi, Registrati, Crea Lega) */
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #1e3a8a, #2563eb);
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.4), 15, 0, 0, 5);
+    /* Applicato: Hover sui bottoni principali */
+}
+
+.primary-button:pressed {
+    -fx-background-color: #1e3a8a;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.2), 5, 0, 0, 2);
+    /* Applicato: Stato pressed sui bottoni principali */
+}
+
+.floating-action-button {
+    -fx-background-color: linear-gradient(to bottom, #1e40af, #3b82f6);
+    -fx-background-radius: 12;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 8, 0, 0, 3);
+    -fx-padding: 12 20;
+    /* Applicato: Bottone "Crea Nuova Lega" in leagueList.fxml */
+}
+
+.floating-action-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #1e3a8a, #2563eb);
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.4), 12, 0, 0, 5);
+    /* Applicato: Hover sul bottone floating action */
+}
+
+.text-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1e40af;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-underline: false;
+    /* Applicato: Bottoni testuali (Registrati ora, Accedi qui) */
+}
+
+.text-button:hover {
+    -fx-text-fill: #1e3a8a;
+    -fx-underline: true;
+    /* Applicato: Hover sui bottoni testuali */
+}
+
+.icon-button {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 50;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255,255,255,0.3);
+    -fx-border-radius: 50;
+    -fx-border-width: 2;
+    /* Applicato: Bottone icona per upload logo in createLeague.fxml */
+}
+
+.icon-button:hover {
+    -fx-background-color: rgba(255,255,255,0.3);
+    /* Applicato: Hover sul bottone icona */
+}
+
+.success-button {
+    -fx-background-color: #16a34a;
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
     -fx-padding: 8 12;
+    -fx-cursor: hand;
+    -fx-min-width: 40;
+    -fx-alignment: center;
+    /* Applicato: Bottone "Accetta" in requestListItem.fxml */
 }
 
-/* Classi di colore */
-.main-theme-color {
-    -fx-background-color: #00067a;
+.success-button:hover {
+    -fx-background-color: #15803d;
+    /* Applicato: Hover sul bottone success */
 }
 
-.secondary-theme-color {
-    -fx-background-color: #1d227f;
+.danger-button {
+    -fx-background-color: #dc2626;
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 8 12;
+    -fx-cursor: hand;
+    -fx-min-width: 40;
+    -fx-alignment: center;
+    /* Applicato: Bottone "Rifiuta" in requestListItem.fxml e "Chiudi Iscrizioni" */
 }
 
-.irreversible-action-color {
-    -fx-background-color: #c50000ff;
+.danger-button:hover {
+    -fx-background-color: #b91c1c;
+    /* Applicato: Hover sui bottoni danger */
 }
-.success-action-color {
-    -fx-background-color: #00a300ff;
+
+/* ===== STILI PER CONTROLLI FORM ===== */
+.modern-textfield {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 12;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 12;
+    -fx-border-width: 2;
+    -fx-padding: 12 15;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #94a3b8;
+    /* Applicato: TextField e PasswordField in login.fxml, register.fxml, createLeague.fxml */
 }
-.warning-action-color {
-    -fx-background-color: #ffcc00ff;
+
+.modern-textfield:focused {
+    -fx-border-color: #3b82f6;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(59, 130, 246, 0.1), 10, 0, 0, 3);
+    /* Applicato: Stato focused sui campi di input */
 }
-.info-action-color {
-    -fx-background-color: #0066ccff;
+
+/* ===== STILI PER SCROLL PANE ===== */
+.modern-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-radius: 10;
+    -fx-max-height: 400;
+    /* Applicato: ScrollPane in leagueList.fxml, requestList.fxml, leagueAdminSettings.fxml */
 }
-.error-action-color {
-    -fx-background-color: #cc0000ff;
+
+.modern-scroll .viewport {
+    -fx-background-color: transparent;
+    /* Applicato: Viewport interno degli ScrollPane */
 }
-.disabled-action-color {
-    -fx-background-color: #a0a0a0ff;
+
+.modern-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6;
+    /* Applicato: Scrollbar verticale */
+}
+
+.modern-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #e2e8f0;
+    -fx-border-color: transparent;
+    -fx-background-radius: 3;
+    /* Applicato: Track della scrollbar verticale */
+}
+
+.modern-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #94a3b8;
+    -fx-background-radius: 3;
+    /* Applicato: Thumb della scrollbar verticale */
+}
+
+.modern-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #64748b;
+    /* Applicato: Hover sul thumb della scrollbar verticale */
+}
+
+.modern-scroll .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-height: 6;
+    /* Applicato: Scrollbar orizzontale */
+}
+
+.modern-scroll .scroll-bar:horizontal .track {
+    -fx-background-color: #e2e8f0;
+    -fx-border-color: transparent;
+    -fx-background-radius: 3;
+    /* Applicato: Track della scrollbar orizzontale */
+}
+
+.modern-scroll .scroll-bar:horizontal .thumb {
+    -fx-background-color: #94a3b8;
+    -fx-background-radius: 3;
+    /* Applicato: Thumb della scrollbar orizzontale */
+}
+
+.modern-scroll .scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #64748b;
+    /* Applicato: Hover sul thumb della scrollbar orizzontale */
+}
+
+/* ===== STILI PER BADGES E ETICHETTE ===== */
+.admin-badge {
+    -fx-text-fill: #d97706;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+    -fx-border-color: #d97706;
+    -fx-border-radius: 8;
+    -fx-padding: 4 8;
+    -fx-background-color: rgba(217, 119, 6, 0.1);
+    -fx-background-radius: 8;
+    /* Applicato: Badge "ADMIN" in leagueListItem.fxml */
+}
+
+.card-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3a8a;
+    -fx-font-size: 15px;
+    /* Applicato: Titoli nelle card (nome lega, nome utente) */
+}
+
+.card-subtitle {
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+    /* Applicato: Sottotitoli nelle card (creator name, timestamp) */
+}
+
+/* ===== STILI PER NAVIGATION BARS (BLU) ===== */
+.navBarCircle {
+    -fx-fill: linear-gradient(to bottom, #1e40af, #3b82f6);
+    /* Applicato: Cerchio dietro le icone nella navigation bar di LeagueAdminScreen.fxml */
+}
+.navBarCircleActive {
+    -fx-border-color: #fbbf24;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 10, 0, 0, 2);
+    /* Applicato: Cerchio attivo dietro l'icona selezionata nella navigation bar di LeagueAdminScreen.fxml */
+}
+.navBarLabel {
+    -fx-text-fill: #2d3748;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    /* Applicato: Label sotto le icone nella navigation bar di LeagueAdminScreen.fxml */
+}
+
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 10 20;
+    /* Applicato: Bottoni di navigazione (da usare nelle navigation bars) */
+}
+
+.nav-button:hover {
+    -fx-text-fill: #dbeafe;
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-background-radius: 8;
+    /* Applicato: Hover sui bottoni di navigazione */
+}
+
+.nav-button:selected {
+    -fx-text-fill: #fbbf24;
+    /* Applicato: Stato selected sui bottoni di navigazione */
+}
+
+/* ===== STILI PER TOP BAR (BLU) ===== */
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #1e40af, #3b82f6);
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 10, 0, 0, 2);
+    -fx-padding: 15 20;
+    /* Applicato: Top bar in mainScreen.fxml e LagueAdminScreen.fxml */
+}
+
+.top-bar Label {
+    -fx-text-fill: white;
+    /* Applicato: Tutte le label nella top bar - Testo bianco su sfondo blu */
+}
+
+/* ===== STILI PER BOTTOM BAR (BLU) ===== */
+.bottom-bar {
+    -fx-background-color: linear-gradient(to right, #1e40af, #3b82f6);
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 10, 0, 0, -2);
+    -fx-padding: 15 0;
+    /* Applicato: Bottom navigation in mainScreen.fxml e LagueAdminScreen.fxml */
+}
+
+.bottom-bar Label {
+    -fx-text-fill: white;
+    /* Applicato: Tutte le label nella bottom bar - Testo bianco su sfondo blu */
+}
+
+.bottom-bar Button {
+    -fx-text-fill: white;
+    /* Applicato: Tutti i bottoni nella bottom bar - Testo bianco */
+}
+
+.bottom-bar .active-tab {
+    -fx-text-fill: #fbbf24;
+    /* Applicato: Tab attivo nella bottom bar - Giallo per evidenziare */
+}
+
+/* ===== STILI PER CONTENT AREA ===== */
+.content-area {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+    /* Applicato: Area contenuto centrale in mainScreen.fxml */
+}
+
+/* ===== ANIMAZIONI E TRANSIZIONI ===== */
+* {
+    -fx-transition: all 0.3s ease;
+    /* Applicato: Tutti gli elementi - Transizioni fluide per hover e interazioni */
+}
+
+/* ===== DESIGN RESPONSIVO ===== */
+@media (max-width: 340px) {
+    .root {
+        -fx-font-size: 12px;
+        /* Applicato: Tutta l'app su schermi piccoli */
+    }
+    
+    .modern-title {
+        -fx-font-size: 18px;
+        /* Applicato: Titoli su schermi piccoli */
+    }
+    
+    .subtitle {
+        -fx-font-size: 12px;
+        /* Applicato: Sottotitoli su schermi piccoli */
+    }
+    
+    .primary-button, .floating-action-button {
+        -fx-font-size: 12px;
+        -fx-padding: 10 16;
+        /* Applicato: Bottoni su schermi piccoli */
+    }
+    
+    .modern-textfield {
+        -fx-padding: 10 12;
+        -fx-font-size: 12px;
+        /* Applicato: Campi input su schermi piccoli */
+    }
+    
+    .modern-card {
+        -fx-padding: 12;
+        -fx-background-radius: 12;
+        /* Applicato: Card su schermi piccoli */
+    }
+}
+
+/* ===== CLASSI UTILITY PER LAYOUT RAPIDO ===== */
+.text-center {
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    /* Applicato: Qualsiasi elemento che necessita allineamento centrale */
+}
+
+.text-left {
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
+    /* Applicato: Allineamento a sinistra */
+}
+
+.text-right {
+    -fx-text-alignment: right;
+    -fx-alignment: center-right;
+    /* Applicato: Allineamento a destra */
+}
+
+.full-width {
+    -fx-max-width: infinity;
+    -fx-pref-width: infinity;
+    /* Applicato: Elementi che devono occupare tutta la larghezza */
+}
+
+.full-height {
+    -fx-max-height: infinity;
+    -fx-pref-height: infinity;
+    /* Applicato: Elementi che devono occupare tutta l'altezza */
+}
+
+.spacing-small {
+    -fx-spacing: 5;
+    /* Applicato: VBox/HBox con spacing piccolo */
+}
+
+.spacing-medium {
+    -fx-spacing: 10;
+    /* Applicato: VBox/HBox con spacing medio */
+}
+
+.spacing-large {
+    -fx-spacing: 20;
+    /* Applicato: VBox/HBox con spacing grande */
+}
+
+.padding-small {
+    -fx-padding: 5;
+    /* Applicato: Elementi con padding piccolo */
+}
+
+.padding-medium {
+    -fx-padding: 10;
+    /* Applicato: Elementi con padding medio */
+}
+
+.padding-large {
+    -fx-padding: 20;
+    /* Applicato: Elementi con padding grande */
+}
+
+/* ===== STILI SPECIFICI PER COMPONENTI ===== */
+.league-item {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.1), 8, 0, 0, 2);
+    -fx-padding: 15;
+    -fx-cursor: hand;
+    -fx-border-color: #dbeafe;
+    -fx-border-width: 1;
+    /* Applicato: Elementi della lista leghe (alternativa a modern-card) */
+}
+
+.league-item:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.2), 12, 0, 0, 4);
+    -fx-translate-y: -1;
+    -fx-border-color: #3b82f6;
+    /* Applicato: Hover sugli elementi lega */
+}
+
+.request-item {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.1), 8, 0, 0, 2);
+    -fx-padding: 12;
+    -fx-cursor: hand;
+    -fx-border-color: #dbeafe;
+    -fx-border-width: 1;
+    /* Applicato: Elementi della lista richieste (alternativa a modern-card) */
+}
+
+.request-item:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.2), 12, 0, 0, 4);
+    -fx-translate-y: -1;
+    -fx-border-color: #3b82f6;
+    /* Applicato: Hover sugli elementi richiesta */
+}
+
+/* ===== OVERLAY CON GRADIENTI PER EFFETTI VISIVI ===== */
+.gradient-overlay {
+    -fx-background-color: linear-gradient(to bottom, rgba(30, 64, 175, 0.1), rgba(59, 130, 246, 0.1));
+    /* Applicato: Overlay con gradient blu trasparente */
+}
+
+.light-overlay {
+    -fx-background-color: linear-gradient(to bottom, rgba(240, 249, 255, 0.9), rgba(224, 242, 254, 0.9));
+    /* Applicato: Overlay con gradient azzurro chiaro trasparente */
+}
+
+/* ===== STILI PER ICONE E ELEMENTI GRAFICI ===== */
+.circle-blue {
+    -fx-fill: rgba(59, 130, 246, 0.1);
+    /* Applicato: Cerchi decorativi blu trasparenti */
+}
+
+.circle-accent {
+    -fx-fill: rgba(96, 165, 250, 0.2);
+    /* Applicato: Cerchi decorativi blu accento */
 }
