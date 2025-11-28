@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="458.0" prefWidth="293.0" spacing="10" style="-fx-background-color: #F1F8E9;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreateLeagueController">
+<VBox alignment="CENTER" prefHeight="458.0" prefWidth="293.0" spacing="10" style="-fx-background-color: #F1F8E9;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.it.camb.fantamaster.controller.CreateLeagueController">
   <Label prefHeight="61.0" prefWidth="160.0" style="-fx-background-size: 18;" text="  Crea nuova Lega" textFill="#265108">
       <font>
          <Font name="System Bold" size="18.0" />
