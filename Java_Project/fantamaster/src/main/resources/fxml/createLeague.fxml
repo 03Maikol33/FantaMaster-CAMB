@@ -1,25 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.TextField?>
+<?import com.gluonhq.charm.glisten.mvc.View?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SpinnerValueFactory?>
 
-<VBox alignment="CENTER" prefHeight="458.0" prefWidth="293.0" spacing="10" style="-fx-background-color: #F1F8E9;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.it.camb.fantamaster.controller.CreateLeagueController">
-  <Label prefHeight="61.0" prefWidth="160.0" style="-fx-background-size: 18;" text="  Crea nuova Lega" textFill="#265108">
-      <font>
-         <Font name="System Bold" size="18.0" />
-      </font></Label>
-  <Button onAction="#onUploadImage" prefHeight="91.0" prefWidth="105.0" text="Carica immagine" textFill="#106717" />
-  <TextField fx:id="nameField" prefHeight="7.0" prefWidth="215.0" promptText="Nome lega" style="-fx-background-color: #C8E6C9;" />
-  <TextField fx:id="maxPlayersField" prefHeight="25.0" prefWidth="289.0" promptText="Numero massimo partecipanti" style="-fx-background-color: #C8E6C9;" />
-  <Label fx:id="imageLabel" />
-  <Button onAction="#onCreateLeague" style="-fx-background-color: #C8E6C9;" text="Crea lega">
-      <font>
-         <Font name="System Bold" size="12.0" />
-      </font></Button>
-  <Label fx:id="feedbackLabel" />
-   <Accordion />
-</VBox>
+<View fx:controller="it.camb.fantamaster.controller.CreateLeagueController"
+    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+    prefHeight="600.0" prefWidth="335.0"
+    xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+    stylesheets="@css/style.css"
+    style="-fx-background-color: white;">
+
+   <center>
+    <VBox alignment="TOP_CENTER" maxWidth="300.0" spacing="20" BorderPane.alignment="CENTER" styleClass="auth-card">
+       <padding>
+        <Insets top="30" bottom="30" left="25" right="25"/>
+       </padding>
+
+       <!-- Logo area -->
+       <StackPane>
+        <Circle radius="40" fill="rgba(255,255,255,0.1)"/>
+        <ImageView fx:id="leagueLogoView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+           <!-- placeholder image; controller can replace the image at runtime -->
+           <image>
+            <Image url="@/images/leagueDefaultPic.png" />
+           </image>
+        </ImageView>
+       </StackPane>
+
+       <!-- File picker: button + filename label -->
+       <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="pickImageButton" text="Scegli immagine" onAction="#handlePickImage" styleClass="text-button"/>
+        <Label fx:id="imageNameLabel" text="Nessuna immagine selezionata" styleClass="hint-text" wrapText="true" />
+       </HBox>
+
+       <!-- League name -->
+       <TextField fx:id="leagueNameField" maxWidth="260.0" prefHeight="42.0" promptText="Nome della lega"
+              styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
+
+       <!-- Max participants: integer and even -->
+       <VBox spacing="6" alignment="CENTER">
+        <TextField fx:id="maxParticipantsField" maxWidth="260.0" prefHeight="42.0" promptText="Num. max. di partecipanti (intero pari)"
+               styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
+       </VBox>
+
+       <!-- Message label for errors/validation -->
+       <Label text="" fx:id="messageLabel" styleClass="error-text" visible="false" wrapText="true"/>
+
+       <!-- Create league button -->
+       <Button mnemonicParsing="false" fx:id="createLeagueButton" styleClass="primary-button" maxWidth="240.0" prefHeight="45.0"
+             text="CREA LEGA" onAction="#handleCreateLeague"/>
+
+       <!-- Optional navigation -->
+       <VBox alignment="CENTER" spacing="8" style="-fx-padding: 10 0 0 0;">
+        <Label text="Torna alla schermata iniziale" styleClass="hint-text"/>
+        <Button mnemonicParsing="false" styleClass="text-button" text="Annulla" onAction="#handleCancel"/>
+       </VBox>
+    </VBox>
+   </center>
+</View>

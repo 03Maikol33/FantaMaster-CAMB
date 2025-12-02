@@ -1,5 +1,6 @@
 package it.camb.fantamaster.controller;
 
+import it.camb.fantamaster.Main;
 import it.camb.fantamaster.model.League;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -45,6 +46,15 @@ public class LeagueAdminScreenController {
 
             // Mostro la view dentro contentArea
             contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goBackToLeagueList() {
+        try{
+            Main.showHome();
         } catch (Exception e) {
             e.printStackTrace();
         }

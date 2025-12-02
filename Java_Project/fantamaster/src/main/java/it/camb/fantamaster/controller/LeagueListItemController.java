@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 import java.io.ByteArrayInputStream;
 
@@ -19,7 +20,7 @@ public class LeagueListItemController {
     @FXML private Label leagueName;
     @FXML private Label creatorName;
     @FXML private Label participantCount;
-    @FXML private Label adminLabel;
+    @FXML private HBox adminBadgeContainer;
 
     private League league;
 
@@ -57,9 +58,9 @@ public class LeagueListItemController {
         }
 
         if(creator.equals(SessionUtil.getCurrentSession().getUser())) {
-            adminLabel.visibleProperty().set(true);
+            adminBadgeContainer.visibleProperty().set(true);
         } else {
-            adminLabel.visibleProperty().set(false);
+            adminBadgeContainer.visibleProperty().set(false);
         }
 
     }

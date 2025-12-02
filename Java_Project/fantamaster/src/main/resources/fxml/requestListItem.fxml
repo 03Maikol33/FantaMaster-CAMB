@@ -5,33 +5,35 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="it.camb.fantamaster.controller.RequestListItemController"
-            stylesheets="@css/style.css"
-            >
+            stylesheets="@css/style.css">
 
-    <HBox spacing="10" alignment="CENTER_LEFT"
-            styleClass="secondary-theme-color"
-          style="-fx-padding: 10; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #7a0076; -fx-border-width: 1;"
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="modern-card"
           AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
 
-        <!-- Icona lega -->
-        <ImageView fx:id="leagueIcon" fitHeight="40" fitWidth="40" preserveRatio="true" />
-
-        <!-- Info utente -->
-        <VBox spacing="5" style="-fx-padding: 5;">
-            <ImageView fx:id="userIcon" fitHeight="40" fitWidth="40" preserveRatio="true" />
-            <Label fx:id="userName" style="-fx-font-weight: bold; -fx-text-fill: white;" />
-            <Label fx:id="requestTimestamp" style="-fx-text-fill: white;" />
+        <VBox spacing="8" alignment="CENTER">
+             
+             <StackPane>
+                 <Circle radius="18" fill="#4fd1c7" opacity="0.1"/>
+                 <ImageView fx:id="userIcon" fitHeight="20" fitWidth="20" preserveRatio="true" />
+             </StackPane>
         </VBox>
 
-        <!-- Pulsanti verticali -->
-        <VBox spacing="8" alignment="CENTER_RIGHT" style="-fx-padding: 5;">
-            <Label onMouseClicked="#handleApprove" fx:id="approveLabel" text="✔ Approva"
-                   style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand;" />
-            <Label onMouseClicked="#handleReject" fx:id="rejectLabel" text="✘ Rifiuta"
-                   style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand;" />
+        <VBox spacing="4" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label fx:id="userName" styleClass="card-title"/>
+            <Label fx:id="requestTimestamp" styleClass="card-subtitle"/>
+        </VBox>
+
+        <VBox spacing="6" alignment="CENTER_RIGHT">
+            <Label onMouseClicked="#handleApprove" fx:id="approveLabel" text="✔"
+                   styleClass="success-button" />
+            
+            <Label onMouseClicked="#handleReject" fx:id="rejectLabel" text="✘"
+                   styleClass="danger-button" />
         </VBox>
     </HBox>
 </AnchorPane>

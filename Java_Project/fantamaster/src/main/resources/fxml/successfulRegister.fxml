@@ -11,32 +11,36 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
 
 <View fx:controller="it.camb.fantamaster.controller.SuccessfulRegisterController"
       maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="600.0" prefWidth="335.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       stylesheets="@css/style.css"
-      >
+      style="-fx-background-color: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);">
+      
    <center>
-      <VBox alignment="TOP_CENTER" maxWidth="300.0" prefHeight="300.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@/images/FantaMaster-logo.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="titleLabel" text="La Registrazione è avvenuta con successo!" wrapText="true" maxWidth="260.0" textAlignment="CENTER">
-                <font>
-                    <Font name="Arial Bold" size="15.0" />
-                </font>
-                <VBox.margin>
-                    <Insets bottom="40.0" />
-                </VBox.margin>
-            </Label>
+      <VBox alignment="CENTER" maxWidth="280.0" spacing="30" BorderPane.alignment="CENTER" styleClass="auth-card">
+         <padding>
+            <Insets top="40" bottom="40" left="25" right="25"/>
+         </padding>
+         
+         <StackPane>
+            <Circle radius="50" fill="rgba(76, 175, 80, 0.1)" stroke="rgba(76, 175, 80, 0.3)" strokeWidth="2"/>
+            <Label text="✅" style="-fx-font-size: 32;"/>
+         </StackPane>
+         
+         <VBox spacing="15" alignment="CENTER">
+            <Label fx:id="titleLabel" text="La Registrazione è avvenuta con successo!" 
+                   wrapText="true" textAlignment="CENTER" styleClass="success-title"/>
+            <Label text="Ora puoi accedere al tuo account e iniziare a giocare!" 
+                   wrapText="true" textAlignment="CENTER" styleClass="subtitle"/>
+         </VBox>
 
-            <Button mnemonicParsing="false"  styleClass="main-theme-color" style=" -fx-text-fill: white;" text="Accedi!" onAction="#handleLogin" />
-         </children>
+         <Button mnemonicParsing="false" styleClass="primary-button" 
+                 text="Accedi!" onAction="#handleLogin" prefWidth="200" prefHeight="45"/>
       </VBox>
    </center>
 </View>
