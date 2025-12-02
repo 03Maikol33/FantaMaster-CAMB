@@ -34,7 +34,7 @@
                 <VBox spacing="0" prefWidth="20" alignment="CENTER">
                     <ImageView fitHeight="35.0" preserveRatio="true">
                         <image>
-                            <Image url="@/images/FantaMaster-logo.png" />
+                            <Image url="@/images/wideLogo.png" />
                         </image>
                     </ImageView>
                     <Label text="Admin Panel" style="-fx-font-size: 12; -fx-text-fill: #718096;"/>
