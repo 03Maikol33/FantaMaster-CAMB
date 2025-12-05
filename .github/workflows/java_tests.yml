@@ -14,26 +14,29 @@ on:
 
 jobs:
   build-and-test:
-
     runs-on: ubuntu-latest
 
     steps:
-     - name: Scarica il codice dalla repository
-       uses: actions/checkout@v4
-     - name: Set up JDK 17
-       uses: actions/setup-java@v4
-       with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-     - name: Compilazione ed esecuzione dei test
-       run: mvn clean install
-
-     - name: Pubblica i report su GitHub
-       uses: dorny/test-reporter@v1
-       if: always() #esegue sempre i test anche se falliscono
-       with:
-        name: Risultati JUnit
-        path: target/surefire-reports/*xml #Mette il report nel percorso standard
-        reporter: java-junit
-
+      - name: Scarica il codice dalla repository
+        uses: actions/checkout@v4
+        
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Compilazione ed esecuzione dei test
+        # L'esecuzione di Maven deve avvenire nella directory che contiene il pom.xml
+        run: mvn clean install
+        working-directory: ./Java_Project/fantamaster 
+        
+      - name: Pubblica i report su GitHub
+        uses: dorny/test-reporter@v1
+        if: always() # Esegue sempre i test anche se falliscono
+        with:
+          name: Risultati JUnit
+          # Il percorso dei report deve tenere conto della working-directory
+          path: Java_Project/target/surefire-reports/*.xml
+          reporter: java-junit
