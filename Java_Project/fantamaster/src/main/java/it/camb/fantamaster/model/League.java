@@ -18,8 +18,7 @@ public class League {
     private boolean registrationsClosed;
     private LocalDateTime createdAt;
 
-    // Costruttori
-    public League() {}
+    // Costruttore, caso creazione nuova lega da java a DB
     public League(String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt) {
         this.name = name;
         this.image = image;
@@ -28,26 +27,19 @@ public class League {
         this.createdAt = createdAt;
         this.registrationsClosed = false;
         this.participants = new ArrayList<>();
+        this.participants.add(creator); // Aggiungi il creatore come primo partecipante
     }
-    public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt) {
+
+    // Costruttore completo, caso caricamento lega da DB a java
+    public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt, boolean registrationsClosed, List<User> participants) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.maxMembers = maxMembers;
         this.creator = creator;
         this.createdAt = createdAt;
-        this.registrationsClosed = false;
-        this.participants = new ArrayList<>();
-        /* 
-        try {
-            java.sql.Connection conn = ConnectionFactory.getConnection();
-            UsersLeaguesDAO usersLeaguesDAO = new UsersLeaguesDAO(conn);
-            this.participants = usersLeaguesDAO.getUsersInLeague(this);
-            System.err.println("Partecipanti trovati in League.java: " + this.participants);
-        } catch (Exception e) {
-            // In caso di errore, inizializza lista vuota per evitare NPE
-            this.participants = new java.util.ArrayList<>();
-        }*/
+        this.registrationsClosed = registrationsClosed;
+        this.participants = (participants != null) ? participants : new ArrayList<>();
     }
 
     public void addParticipant(User user) {
@@ -58,17 +50,7 @@ public class League {
         }
     }
 
-    // Getters and setters
-
     public List<User> getParticipants() {
-        try{
-            Connection conn = ConnectionFactory.getConnection();
-            UsersLeaguesDAO usersLeaguesDAO = new UsersLeaguesDAO(conn);
-            this.participants = usersLeaguesDAO.getUsersInLeague(this);
-        } catch (Exception e) {
-            // In caso di errore, inizializza lista vuota per evitare NPE
-            this.participants = new java.util.ArrayList<>();
-        }
         return participants;
     }
 

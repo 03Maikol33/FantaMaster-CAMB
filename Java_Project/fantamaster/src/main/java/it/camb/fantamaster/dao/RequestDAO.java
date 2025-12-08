@@ -1,11 +1,12 @@
-
 package it.camb.fantamaster.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.camb.fantamaster.model.League;
@@ -20,133 +21,174 @@ public class RequestDAO {
         this.conn = conn;
     }
 
-    //query
-    //ottieni le richieste di iscrizione per una lega
-    public List<Request> getRequestsForLeague(League league) {
-    String sql = """
-        SELECT id, utente_id, lega_id, data_richiesta, stato
-        FROM richieste_accesso
-        WHERE lega_id = ? AND stato = 'in_attesa'
-        ORDER BY data_richiesta ASC
-    """;
-
-    List<Request> requests = new ArrayList<>();
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, league.getId());
-
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                int id = rs.getInt("id"); // id della richiesta
-                int userId = rs.getInt("utente_id"); // id dell'utente che ha fatto la richiesta
-                int leagueId = rs.getInt("lega_id"); // id della lega per cui è stata fatta la richiesta
-                RequestStatus status = RequestStatus.fromDb(rs.getString("stato")); // stato della richiesta
-                java.sql.Timestamp ts = rs.getTimestamp("data_richiesta"); // timestamp della richiesta
-
-                UserDAO userDAO = new UserDAO(conn);
-                User user = userDAO.findById(userId);
-                // Se ti serve, carica altri campi: userDAO.findById(userId)
-                Request request = new Request(league, user, status);
-                request.setTimestamp(ts != null ? ts.toLocalDateTime() : null);
-
-                /*
-                Request request = new Request(
-                    id,
-                    league,
-                    user,
-                    ts != null ? ts.toLocalDateTime() : null,
-                    RequestStatus.fromDb(statoDb)
-                );*/
-                requests.add(request);
-            }
+    /**
+     * Helper per mappare il ResultSet in un oggetto Request.
+     * Carica anche l'oggetto User completo.
+     */
+    private Request mapResultSetToRequest(ResultSet rs, League league) throws SQLException {
+        int id = rs.getInt("id");
+        int userId = rs.getInt("utente_id");
+        String statusStr = rs.getString("stato");
+        
+        // Conversione sicura dell'enum
+        RequestStatus status;
+        try {
+            // Assumendo che nel DB salvi le stringhe come "in_attesa", "accettata", ecc.
+            // Se usi RequestStatus.fromDb() mantienilo, altrimenti usa valueOf case-insensitive
+            status = RequestStatus.valueOf(statusStr); 
+        } catch (IllegalArgumentException e) {
+            status = RequestStatus.in_attesa; // Fallback
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return java.util.Collections.emptyList();
-    }
-    return requests;
-}
-    //vecchia versione
-    /* 
-    public List<Request> getRequestsForLeague(League league) {
-        String sql = "SELECT * FROM richieste_accesso WHERE lega_id = ? AND stato = 'in_attesa'";
-        List<Request> requests = new java.util.ArrayList<>();
 
-        try (var stmt = conn.prepareStatement(sql)) {
+        Timestamp ts = rs.getTimestamp("data_richiesta");
+        java.time.LocalDateTime requestedAt = (ts != null) ? ts.toLocalDateTime() : null;
+
+        // Carichiamo l'User completo usando UserDAO
+        UserDAO userDAO = new UserDAO(conn);
+        User user = userDAO.findById(userId);
+
+        Request request = new Request(league, user, status);
+        request.setId(id); // Assicurati che Request abbia setId
+        request.setTimestamp(requestedAt);
+        
+        return request;
+    }
+
+    // Ottieni le richieste di iscrizione "in_attesa" per una lega
+    public List<Request> getRequestsForLeague(League league) {
+        String sql = "SELECT * FROM richieste_accesso WHERE lega_id = ? AND stato = 'in_attesa' ORDER BY data_richiesta ASC";
+        List<Request> requests = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, league.getId());
 
-            try (var rs = stmt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    int userId = rs.getInt("utente_id");
-                    User user = new User();
-                    user.setId(userId);
-                    // Potresti voler caricare più dettagli dell'utente qui
-
-                    Request request = new Request(league, user, rs.getBoolean("accepted"));
-                    requests.add(request);
+                    requests.add(mapResultSetToRequest(rs, league));
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
         return requests;
-    }*/
+    }
 
-    //crea una richiesta di iscrizione
+    // Crea una richiesta di iscrizione
     public boolean createRequest(User user, League league) {
-        String sql = "INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (?, ?, ?)";
+        // Controllo preventivo: se esiste già una richiesta pendente, non crearne un'altra
+        if (hasPendingRequest(user, league)) {
+            return false;
+        }
 
-        try (var stmt = conn.prepareStatement(sql)) {
+        String sql = "INSERT INTO richieste_accesso (utente_id, lega_id, stato, data_richiesta) VALUES (?, ?, ?, NOW())";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
-            stmt.setString(3, RequestStatus.in_attesa.name());
+            stmt.setString(3, RequestStatus.in_attesa.name()); // O .toDb() se lo hai implementato
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (Exception e) {
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    //elimina una richiesta di iscrizione
+
+    // Metodo helper per evitare duplicati
+    public boolean hasPendingRequest(User user, League league) {
+        String sql = "SELECT 1 FROM richieste_accesso WHERE utente_id = ? AND lega_id = ? AND stato = 'in_attesa'";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, user.getId());
+            stmt.setInt(2, league.getId());
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Elimina una richiesta (usato per rifiutare o annullare)
     public boolean deleteRequest(User user, League league) {
         String sql = "DELETE FROM richieste_accesso WHERE utente_id = ? AND lega_id = ?";
-
-        try (var stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
-
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (Exception e) {
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    //DA RIVEDERE
-    //approva una richiesta di iscrizione
-    public boolean approveRequest(User user, League league) {
-        // Aggiungi l'utente alla lega
-        UsersLeaguesDAO usersLeaguesDAO = new UsersLeaguesDAO(conn);
-        Boolean isSubscribed = usersLeaguesDAO.subscribeUserToLeague(user, league);
-        int rowsAffected = 0;
-        if(!isSubscribed) {
-            String sql = "UPDATE richieste_accesso SET stato = ? WHERE utente_id = ? AND lega_id = ?";
-            try (var stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, RequestStatus.accettata.toDb());
-                stmt.setInt(2, user.getId());
-                stmt.setInt(3, league.getId());
 
-                rowsAffected = stmt.executeUpdate();
-            } catch (Exception e) {
-                e.printStackTrace();
+    /**
+     * Approva una richiesta.
+     * 1. Iscrive l'utente alla lega (tabella utenti_leghe)
+     * 2. Aggiorna lo stato della richiesta a 'accettata'
+     * Esegue tutto in una TRANSAZIONE.
+     */
+    public boolean approveRequest(User user, League league) {
+        String updateSql = "UPDATE richieste_accesso SET stato = ? WHERE utente_id = ? AND lega_id = ?";
+        
+        try {
+            // 1. Inizio Transazione
+            conn.setAutoCommit(false);
+
+            // 2. Iscrizione Utente (usando UsersLeaguesDAO)
+            UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
+            boolean subscribed = ulDAO.subscribeUserToLeague(user, league);
+            
+            // Se l'iscrizione fallisce (e l'utente non era già iscritto), abortiamo
+            // Nota: subscribeUserToLeague ritorna false se l'utente è già iscritto. 
+            // Se è già iscritto, vogliamo comunque aggiornare la richiesta per pulizia.
+            if (!subscribed && !ulDAO.isUserSubscribed(user, league)) {
+                conn.rollback();
                 return false;
             }
+
+            // 3. Aggiornamento Stato Richiesta
+            try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                stmt.setString(1, RequestStatus.accettata.name()); // O .toDb()
+                stmt.setInt(2, user.getId());
+                stmt.setInt(3, league.getId());
+                
+                int rows = stmt.executeUpdate();
+                if (rows == 0) {
+                    // Se non troviamo la richiesta da aggiornare, qualcosa non va
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 4. Commit
+            conn.commit();
+            
+            // 5. Aggiorniamo il modello in memoria per riflettere il cambiamento
+            // (Opzionale, ma buona pratica se l'oggetto user/league è usato nella UI subito dopo)
+            league.addParticipant(user); 
+            
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-            return isSubscribed && rowsAffected > 0;
     }
 
-    //rifuta una richiesta di iscrizione con eliminazione immediata
+    // Rifiuta una richiesta: la elimina dal DB
     public boolean rejectRequest(User user, League league) {
         return deleteRequest(user, league);
     }

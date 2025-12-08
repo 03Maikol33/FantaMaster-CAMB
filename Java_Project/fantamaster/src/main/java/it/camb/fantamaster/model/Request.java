@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import it.camb.fantamaster.util.RequestStatus;
 
 public class Request {
+    private int id;
     private League league;
     private User user;
     private LocalDateTime timestamp;
@@ -29,6 +30,13 @@ public class Request {
         this.league = league;
         this.user = user;
         this.status = accepted ? RequestStatus.accettata : RequestStatus.rifiutata;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     public League getLeague() {

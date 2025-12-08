@@ -17,6 +17,10 @@ public class SessionUtil {
     private static final String SESSION_FOLDER = ".sessions";
     private static Session currentSession;
 
+    /**
+     * Cerca l'ultimo file di sessione salvato e lo carica.
+     * @return L'ultima sessione caricata o null se non esiste.
+     */
     //cerca l'ultimo file sessione e lo carica
     public static Session findLastSession() {
         File folder = new File(SESSION_FOLDER);
@@ -54,6 +58,10 @@ public class SessionUtil {
         return null;
     }
 
+    /**
+     * Crea o aggiorna la sessione salvandola su file.
+     * @param user L'utente per cui creare o aggiornare la sessione.
+     */
     // Crea o aggiorna la sessione
     public static void createSession(User user) {
         ensureSessionFolder();
@@ -72,6 +80,11 @@ public class SessionUtil {
         }
     }
 
+    /**
+     * Recupera la sessione se esiste.
+     * @param email L'email dell'utente per cui caricare la sessione.
+     * @return La sessione caricata o null se non esiste.
+     */
     // Recupera la sessione se esiste
     public static Session loadSession(String email) {
         File file = getSessionFile(email);
@@ -87,6 +100,11 @@ public class SessionUtil {
         }
     }
 
+    /**
+     * Elimina la sessione associata all'email.
+     * @param email L'email dell'utente per cui eliminare la sessione.
+     * @return true se la sessione è stata eliminata, false altrimenti.
+     */
     // Cancella la sessione
     public static boolean deleteSession(String email) {
         File file = getSessionFile(email);
@@ -96,12 +114,20 @@ public class SessionUtil {
         return file.exists() && file.delete();
     }
 
+    /**
+     * Ottiene il file di sessione per l'email specificata.
+     * @param email L'email dell'utente per cui ottenere il file di sessione.
+     * @return Il file di sessione corrispondente all'email.
+     */
     // Utility: percorso file
     private static File getSessionFile(String email) {
         String safeName = email.replaceAll("[^a-zA-Z0-9]", "_");
         return new File(SESSION_FOLDER + File.separator + safeName + ".session");
     }
 
+    /**
+     * Crea la cartella delle sessioni se non esiste.
+     */
     // Crea la cartella se non esiste
     private static void ensureSessionFolder() {
         Path path = Path.of(SESSION_FOLDER);
@@ -114,6 +140,10 @@ public class SessionUtil {
         }
     }
 
+    /**
+     * Recupera la sessione corrente in memoria.
+     * @return La sessione corrente.
+     */
     // Recupera la sessione corrente in memoria
     public static Session getCurrentSession() {
         return currentSession;

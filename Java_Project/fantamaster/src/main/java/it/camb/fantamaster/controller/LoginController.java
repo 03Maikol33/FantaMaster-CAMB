@@ -1,7 +1,8 @@
-
 package it.camb.fantamaster.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.UserDAO;
@@ -20,120 +21,101 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class LoginController {
+
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
-/*
-    @FXML
-    private void handleLogin() throws IOException {
-        //simulazione del login
-        User user = checkUser();
-        if(user != null) {
-            //crea la sessione
-            System.out.println("Test la sessione esiste già per l'utente?: " + SessionUtil.loadSession(user.getEmail()));
-            SessionUtil.createSession(user);
-            Main.showHome();
-        } else {
-            boolean validEmail = checkEmail(emailField.getText());
-            boolean validPassword = checkPassword(passwordField.getText());
-            String errorMessage = "";
-            if (!validEmail) {
-                errorMessage += "Email non valida. ";
-            }
-            if (!validPassword) {
-                errorMessage += "Password non valida. ";
-            }
-            //mostra la error label
-            errorLabel.setText(errorMessage);
-            errorLabel.setVisible(true);
-        }
-    }*/
+
     @FXML
     private void initialize() {
-        //deve aspettare che la UI sia caricata per fare l'auto login
-        Platform.runLater(() -> autoLoginIfSessionExists());
+        // Platform.runLater assicura che questo codice giri dopo che la UI è pronta
+        Platform.runLater(this::autoLoginIfSessionExists);
     }
 
+    /**
+     * Gestisce il click sul bottone Login.
+     * Si occupa SOLO del flusso UI: Validazione -> Autenticazione -> Navigazione o Errore.
+     */
     @FXML
-    private void handleLogin() throws IOException {
-        boolean validEmail = checkEmail(emailField.getText());
-        boolean validPassword = checkPassword(passwordField.getText());
-        if (!validEmail || !validPassword) {
-            //mostra la error label
-            errorLabel.setText("Email o Password non valide.");
-            errorLabel.visibleProperty().set(true);
+    private void handleLogin() {
+        String email = emailField.getText();
+        String password = passwordField.getText();
+
+        // 1. Validazione Input (Client Side)
+        if (!isValidInput(email, password)) {
+            showError("Email o Password non valide.");
             return;
         }
-        User user = checkUser();
-        if (user != null) {
-            //crea la sessione
-            System.out.println("Test la sessione esiste già per l'utente?: " + SessionUtil.loadSession(user.getEmail()));
+
+        try {
+            // 2. Logica di Business (Server Side)
+            User user = authenticateUser(email, password);
+            
+            // 3. Successo: Creazione Sessione e Navigazione
+            System.out.println("Login effettuato con successo: " + user.getUsername());
             SessionUtil.createSession(user);
             openHomeScreen();
+
+        } catch (SecurityException e) {
+            // Errore credenziali (Utente non trovato o Password errata)
+            showError(e.getMessage());
+        } catch (SQLException e) {
+            // Errore tecnico (Database down, timeout, ecc.)
+            e.printStackTrace();
+            showError("Errore di connessione al server. Riprova.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Errore nel caricamento della Home Page.");
         }
     }
 
+    /**
+     * Verifica le credenziali nel Database.
+     * NON tocca la UI. Lancia eccezioni se qualcosa non va.
+     * * @return User l'oggetto utente se autenticato.
+     * @throws SQLException Errore DB.
+     * @throws SecurityException Se le credenziali sono errate.
+     */
+    private User authenticateUser(String email, String password) throws SQLException, SecurityException {
+        // NOTA: Non usiamo try-with-resources perché usiamo il Singleton ConnectionFactory 
+        // che mantiene la connessione viva per evitare timeout/limiti cloud.
+        Connection conn = ConnectionFactory.getConnection();
+        
+        UserDAO userDAO = new UserDAO(conn);
+        User user = userDAO.findByEmail(email);
+
+        if (user == null) {
+            throw new SecurityException("Utente non trovato. Registrati.");
+        }
+
+        if (!PasswordUtil.checkPassword(password, user.getHashPassword())) {
+            throw new SecurityException("Password errata.");
+        }
+
+        return user;
+    }
+
     @FXML
+    private void handleRegister() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/register.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Impossibile aprire la registrazione.");
+        }
+    }
+
     private void openHomeScreen() throws IOException {
         Main.showHome();
     }
 
-    @FXML
-    private User checkUser() {
-        String email = emailField.getText();
-        String password = passwordField.getText();
-        try{
-            UserDAO userDAO = new UserDAO(ConnectionFactory.getConnection());
-
-            User user = userDAO.findByEmail(email);
-            if(user == null) {
-                errorLabel.setText("Utente non trovato. Registrati.");
-                errorLabel.visibleProperty().set(true);
-                return null;
-            }
-            if(PasswordUtil.checkPassword(password, user.getHashPassword())) { //se la password è corretta
-                return user; //ritorna l'utente
-            }
-            else{
-                errorLabel.setText("La Password è errata.");
-                errorLabel.visibleProperty().set(true);
-                return null;
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @FXML
-    private void handleRegister() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/register.fxml"));
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) emailField.getScene().getWindow(); // recupera lo stage corrente
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    @FXML
-    private void hideErrorLabel() {
-        errorLabel.visibleProperty().set(false);
-    }
-
-    private boolean checkEmail(String email) {
-        // Implementa la logica di validazione dell'email
-        System.out.println("Email inserita: " + email);
-        return email != null && email.contains("@");
-    }
-    private boolean checkPassword(String password) {
-        // Implementa la logica di validazione della password
-        System.out.println("Password inserita: " + password);
-        return password != null && password.length() >= 6 && password.length() <= 100 && !password.contains(" ");
-    }
-
-    @FXML
     private void autoLoginIfSessionExists() {
-        System.out.println("Tentativo di auto-login...");
-        if(SessionUtil.findLastSession() != null) {
+        if (SessionUtil.findLastSession() != null) {
+            System.out.println("Sessione trovata, auto-login in corso...");
             try {
                 openHomeScreen();
             } catch (IOException e) {
@@ -142,5 +124,22 @@ public class LoginController {
         }
     }
 
+    // --- Metodi Helper e Validatori ---
 
+    @FXML
+    private void hideErrorLabel() {
+        errorLabel.setVisible(false);
+    }
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+    }
+
+    private boolean isValidInput(String email, String password) {
+        // Validazione sintattica semplice
+        boolean validEmail = email != null && email.contains("@") && email.length() > 3;
+        boolean validPass = password != null && !password.isEmpty();
+        return validEmail && validPass;
+    }
 }

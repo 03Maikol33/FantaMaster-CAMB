@@ -1,27 +1,31 @@
 package it.camb.fantamaster.controller;
 
-import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.dao.RequestDAO;
-import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Request;
 import it.camb.fantamaster.util.ConnectionFactory;
-import it.camb.fantamaster.util.SessionUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.concurrent.CompletableFuture;
 
 public class RequestListController {
-    private League currentLeague; // tiene il riferimento alla lega attualmente aperta
+
     @FXML private VBox requestContainer;
+    @FXML private Label statusLabel; 
+
+    private League currentLeague; 
 
     public void setCurrentLeague(League league) {
         this.currentLeague = league;
@@ -30,37 +34,57 @@ public class RequestListController {
 
     @FXML
     private void loadListData() {
-        // ottengo la lista delle richieste per la lega aperta
-        List<Request> requests;
-        try (Connection conn = ConnectionFactory.getConnection()) { // usa la mia ConnectionFactory in package Util
-            RequestDAO requestDAO = new RequestDAO(conn);
-            requests = requestDAO.getRequestsForLeague(currentLeague);
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-            requests = Collections.emptyList();
-        }
+        requestContainer.getChildren().clear();
+        if (statusLabel != null) statusLabel.setVisible(false);
 
-        for (Request request : requests) {
-            System.out.println("Caricamento richiesta: " + request);
+        // Aggiungo spinner
+        ProgressIndicator spinner = new ProgressIndicator();
+        VBox spinnerBox = new VBox(spinner);
+        spinnerBox.setAlignment(Pos.CENTER);
+        spinnerBox.setPrefHeight(100);
+        requestContainer.getChildren().add(spinnerBox);
+
+        // BACKGROUND THREAD
+        CompletableFuture.supplyAsync(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RequestListItem.fxml"));
-                Node item = loader.load();
-
-                RequestListItemController controller = loader.getController();
-                controller.setRequestData(request);
-                controller.setRequest(request);
-                controller.setParentController(this);
-
-                requestContainer.getChildren().add(item);
-            } catch (Exception e) {
+                Connection conn = ConnectionFactory.getConnection();
+                RequestDAO requestDAO = new RequestDAO(conn);
+                return requestDAO.getRequestsForLeague(currentLeague);
+            } catch (SQLException e) {
                 e.printStackTrace();
+                return Collections.<Request>emptyList();
             }
-        }
+        }).thenAccept(requests -> {
+            // UI THREAD
+            Platform.runLater(() -> {
+                requestContainer.getChildren().remove(spinnerBox); // Via lo spinner
+
+                if (requests.isEmpty()) {
+                    if (statusLabel != null) {
+                        statusLabel.setText("Nessuna richiesta in attesa.");
+                        statusLabel.setVisible(true);
+                    }
+                    return;
+                }
+
+                for (Request request : requests) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RequestListItem.fxml"));
+                        Node item = loader.load();
+                        RequestListItemController controller = loader.getController();
+                        controller.setRequest(request);
+                        controller.setParentController(this);
+                        requestContainer.getChildren().add(item);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        });
     }
 
     @FXML
     public void refreshList() {
-        requestContainer.getChildren().clear();
         loadListData();
     }
 }

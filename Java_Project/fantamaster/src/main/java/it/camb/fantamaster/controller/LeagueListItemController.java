@@ -1,10 +1,8 @@
 package it.camb.fantamaster.controller;
 
 import it.camb.fantamaster.Main;
-import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
-import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -24,58 +22,81 @@ public class LeagueListItemController {
 
     private League league;
 
-    public League getLeague() {
-        return league;
-    }
     public void setLeague(League league) {
         this.league = league;
         setLeagueData();
     }
 
     private void setLeagueData() {
+        if (league == null) return;
+
+        // 1. Gestione Nome
+        leagueName.setText(league.getName() != null ? league.getName() : "Lega senza nome");
+
+        // 2. Gestione Creatore (Difensiva)
         User creator = league.getCreator();
-        if(creator == null) {
-            throw new IllegalArgumentException("Il creatore della lega è nullo");
-        }
-        String leagueName = league.getName();
-        String creatorName = "Creatore: " + league.getCreator().getUsername();
-        String participantCount = "Partecipanti: " + league.getParticipants().size();
-        if(leagueName == null || creatorName == null || participantCount == null) {
-            throw new IllegalArgumentException("Uno dei dati della lega è nullo");
-        }
-
-        this.leagueName.setText(leagueName);
-        this.creatorName.setText(creatorName);
-        this.participantCount.setText(participantCount);
-        System.out.println("League ID impostato in LeagueListItemController: " + league.getId());
-
-        if (league.getImage() != null) {
-            Image img = new Image(new ByteArrayInputStream(league.getImage()));
-            leagueIcon.setImage(img);
-        }else {
-            // Imposta un'immagine di default se non è presente un'immagine della lega
-            leagueIcon.setImage(new Image(getClass().getResourceAsStream("/images/leagueDefaultPic.png")));
-        }
-
-        if(creator.equals(SessionUtil.getCurrentSession().getUser())) {
-            adminBadgeContainer.visibleProperty().set(true);
+        if (creator != null) {
+            creatorName.setText("Creatore: " + creator.getUsername());
         } else {
-            adminBadgeContainer.visibleProperty().set(false);
+            creatorName.setText("Creatore: Sconosciuto");
+            // Se non c'è creatore, non possiamo confrontarlo per il badge admin
+            adminBadgeContainer.setVisible(false);
+            return; 
         }
 
+        // 3. Gestione Partecipanti (Null Safe)
+        // Grazie al refactoring del Model, getParticipants() non dovrebbe mai essere null,
+        // ma un controllo in più non guasta mai nella UI.
+        int count = (league.getParticipants() != null) ? league.getParticipants().size() : 0;
+        participantCount.setText("Partecipanti: " + count);
+
+        // 4. Gestione Immagine
+        if (league.getImage() != null && league.getImage().length > 0) {
+            try {
+                Image img = new Image(new ByteArrayInputStream(league.getImage()));
+                leagueIcon.setImage(img);
+            } catch (Exception e) {
+                // Se l'immagine è corrotta, usa quella di default
+                setDefaultImage();
+            }
+        } else {
+            setDefaultImage();
+        }
+
+        // 5. Gestione Badge Admin
+        // Qui sfruttiamo il metodo equals() di User che abbiamo testato
+        User currentUser = SessionUtil.getCurrentSession().getUser();
+        boolean isAdmin = creator.equals(currentUser);
+        
+        // Usa setVisible(boolean) invece di visibleProperty().set(...) -> è più idiomatico
+        adminBadgeContainer.setVisible(isAdmin);
+    }
+
+    private void setDefaultImage() {
+        try {
+            leagueIcon.setImage(new Image(getClass().getResourceAsStream("/images/leagueDefaultPic.png")));
+        } catch (Exception e) {
+            System.err.println("Impossibile caricare immagine di default.");
+        }
     }
 
     @FXML
-    private void handleLeagueOpening() throws Exception {
-        User currentUser = SessionUtil.getCurrentSession().getUser();
-        if(currentUser.equals(league.getCreator())) {
-            // apri schermata lega come admin
-            System.out.println("Apro schermata lega come admin: " + league.getName());
-            Main.showLeagueAdminScreen(league);
-        } else {
-            // apri schermata lega come partecipante
-            System.out.println("Apro schermata lega come partecipante: " + league.getName());
-            Main.showLeagueScreen(league);
+    private void handleLeagueOpening() {
+        try {
+            User currentUser = SessionUtil.getCurrentSession().getUser();
+            User creator = league.getCreator();
+
+            // Controllo null-safe
+            if (creator != null && creator.equals(currentUser)) {
+                System.out.println("Apro schermata lega come admin: " + league.getName());
+                Main.showLeagueAdminScreen(league);
+            } else {
+                System.out.println("Apro schermata lega come partecipante: " + league.getName());
+                Main.showLeagueScreen(league);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Errore nell'apertura della lega.");
         }
     }
 }

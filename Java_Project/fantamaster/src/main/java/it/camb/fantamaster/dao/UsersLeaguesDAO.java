@@ -15,17 +15,20 @@ public class UsersLeaguesDAO {
         this.connection = connection;
     }
 
-    // ottieni gli utenti di una lega
-    public List<User> getUsersInLeague(League league) {
+    /**
+     * Recupera la lista degli utenti iscritti a una lega dato l'ID della lega.
+     * Questo metodo è usato da LeagueDAO durante la costruzione dell'oggetto League.
+     */
+    public List<User> getUsersInLeagueId(int leagueId) {
         List<User> users = new ArrayList<>();
-
+        
+        // CORREZIONE: ul.lega_id (invece di id_leghe)
         String sql = "SELECT u.* FROM utenti u " +
                      "JOIN utenti_leghe ul ON u.id = ul.utente_id " +
                      "WHERE ul.lega_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-            stmt.setInt(1, league.getId());
+            stmt.setInt(1, leagueId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = new User();
@@ -33,36 +36,41 @@ public class UsersLeaguesDAO {
                     user.setUsername(rs.getString("username"));
                     user.setEmail(rs.getString("email"));
                     user.setHashPassword(rs.getString("hash_password"));
+                    
                     Timestamp ts = rs.getTimestamp("created_at");
                     if (ts != null) {
                         user.setCreatedAt(ts.toLocalDateTime());
                     }
 
+                    // Nota: se l'utente ha un avatar, dovresti mapparlo qui
+                    // Blob blob = rs.getBlob("avatar"); ...
+
                     users.add(user);
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return users;
+    }
+
+    // Wrapper per comodità
+    public List<User> getUsersInLeague(League league) {
+        return getUsersInLeagueId(league.getId());
     }
 
     // Iscrive un utente a una lega
     public boolean subscribeUserToLeague(User user, League league) {
+        // CORREZIONE: lega_id (invece di id_leghe)
         String sql = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
-
             stmt.executeUpdate();
             return true;
-
         } catch (SQLIntegrityConstraintViolationException e) {
-            // già iscritto
+            // Già iscritto
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,76 +80,30 @@ public class UsersLeaguesDAO {
 
     // Verifica se l'utente è iscritto a una lega
     public boolean isUserSubscribed(User user, League league) {
+        // CORREZIONE: lega_id (invece di id_leghe)
         String sql = "SELECT 1 FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
-
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    // Recupera tutte le leghe a cui è iscritto un utente
-    public List<League> getLeaguesForUser(User user) {
-        List<League> leagues = new ArrayList<>();
-
-        String sql = "SELECT l.* FROM leghe l " +
-                     "JOIN utenti_leghe ul ON l.id = ul.lega_id " +
-                     "WHERE ul.utente_id = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-            stmt.setInt(1, user.getId());
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    League league = new League();
-                    league.setId(rs.getInt("id"));
-                    league.setName(rs.getString("nome"));
-                    league.setMaxMembers(rs.getInt("max_membri"));
-                    UserDAO userDAO = new UserDAO(this.connection);
-                    league.setCreator(userDAO.findById(rs.getInt("id_creatore")));
-                    league.setRegistrationsClosed(rs.getBoolean("iscrizioni_chiuse"));
-                    Timestamp ts = rs.getTimestamp("created_at");
-                    if (ts != null) {
-                        league.setCreatedAt(ts.toLocalDateTime());
-                    }
-
-                    Blob blob = rs.getBlob("icona");
-                    if (blob != null) {
-                        league.setImage(blob.getBytes(1, (int) blob.length()));
-                    }
-
-                    // Puoi caricare il creatore con UserDAO se serve
-                    leagues.add(league);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return leagues;
-    }
-
     // Rimuove l'iscrizione
     public boolean unsubscribeUserFromLeague(User user, League league) {
+        // CORREZIONE: lega_id (invece di id_leghe)
         String sql = "DELETE FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
-
             return stmt.executeUpdate() == 1;
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

@@ -4,11 +4,9 @@
 # Ignora cartella target (build Maven/Gradle)
 target/
 
+
 # Ignora cartella .sessions
 .sessions/
-
-# Ignora la classe ConnectionFactory.java
-#src/main/java/it/camb/fantamaster/util/ConnectionFactory.java
 
 # Ignora file di configurazione DB
 database.properties

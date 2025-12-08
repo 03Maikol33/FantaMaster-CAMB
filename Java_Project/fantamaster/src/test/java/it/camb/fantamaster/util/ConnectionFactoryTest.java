@@ -15,6 +15,10 @@ public class ConnectionFactoryTest {
     
     private Connection conn; // Campo di classe per tenere traccia della connessione
 
+    /**
+     * Inizializza la connessione prima di ogni test.
+     * @throws SQLException
+     */
     @Before // Eseguito prima di OGNI test (Inizializzazione)
     public void setUp() throws SQLException {
         conn = ConnectionFactory.getConnection();

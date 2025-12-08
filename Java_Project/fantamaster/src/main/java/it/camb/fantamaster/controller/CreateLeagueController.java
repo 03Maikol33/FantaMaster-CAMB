@@ -11,47 +11,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 
 public class CreateLeagueController {
 
-    @FXML
-    private ImageView leagueLogoView;
+    @FXML private ImageView leagueLogoView;
+    @FXML private Button pickImageButton;
+    @FXML private Label imageNameLabel;
+    @FXML private TextField leagueNameField;
+    @FXML private TextField maxParticipantsField;
+    @FXML private Label messageLabel;
+    @FXML private Button createLeagueButton;
 
-    @FXML
-    private Button pickImageButton;
-
-    @FXML
-    private Label imageNameLabel;
-
-    @FXML
-    private TextField leagueNameField;
-
-    @FXML
-    private TextField maxParticipantsField;
-
-    @FXML
-    private Label messageLabel;
-
-    @FXML
-    private Button createLeagueButton;
-
-    // Variabile per salvare il file immagine scelto
     private File selectedImageFile;
 
-    // Nasconde il messaggio di errore quando l’utente digita
     @FXML
     private void hideMessageLabel() {
         messageLabel.setVisible(false);
         messageLabel.setText("");
     }
 
-    // Gestione scelta immagine
     @FXML
     private void handlePickImage() {
         FileChooser fileChooser = new FileChooser();
@@ -75,73 +61,84 @@ public class CreateLeagueController {
         String name = leagueNameField.getText().trim();
         String maxStr = maxParticipantsField.getText().trim();
 
+        // 1. Validazione Input Base
         if (name.isEmpty() || maxStr.isEmpty()) {
-            messageLabel.setText("Compila tutti i campi.");
+            showError("Compila tutti i campi.");
             return;
         }
 
         try {
             int max = Integer.parseInt(maxStr);
             if (max <= 0) {
-                messageLabel.setText("Inserisci un numero valido (> 0).");
+                showError("Inserisci un numero valido (> 0).");
                 return;
             }
-            messageLabel.setText("Lega \"" + name + "\" creata con " + max + " partecipanti!");
 
-            //creo la lega nel sistema
-            
+            // 2. Gestione Immagine (Null Safe)
             byte[] imageBytes = null;
-            try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
-                imageBytes = fis.readAllBytes(); // disponibile da Java 9
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (selectedImageFile != null) {
+                try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
+                    imageBytes = fis.readAllBytes();
+                } catch (IOException e) {
+                    showError("Errore nella lettura dell'immagine.");
+                    e.printStackTrace();
+                    return;
+                }
             }
-            //String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt
-            League lega = new League(
-            name,
-            imageBytes,
-            max,
-            SessionUtil.getCurrentSession().getUser(),
-            LocalDateTime.now());
 
+            // 3. Creazione del Model (POJO)
+            // Nota: Questo usa il costruttore "Nuova Lega" che abbiamo fatto nel refactoring.
+            // Inserisce automaticamente l'utente corrente nella lista partecipanti in memoria.
+            User currentUser = SessionUtil.getCurrentSession().getUser();
+            League lega = new League(name, imageBytes, max, currentUser, LocalDateTime.now());
 
-            //crea la lega nel database
+            // 4. Interazione con DAO (Transazionale)
             try {
                 Connection conn = ConnectionFactory.getConnection();
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
 
-                leagueDAO.insertLeague(lega);
+                // Controlliamo il booleano di ritorno!
+                boolean success = leagueDAO.insertLeague(lega);
 
-            } catch (Exception e) {
+                if (success) {
+                    showSuccess("Lega \"" + name + "\" creata con successo!");
+                    // Opzionale: Chiudi la finestra dopo il successo
+                    closeWindow();
+                } else {
+                    showError("Errore: Impossibile creare la lega nel database.");
+                }
+
+            } catch (SQLException e) {
                 e.printStackTrace();
+                showError("Errore di connessione al Database.");
             }
-            
-
 
         } catch (NumberFormatException ex) {
-            messageLabel.setText("Inserisci un numero valido.");
+            showError("Il numero di partecipanti deve essere un numero intero.");
         }
     }
 
-    // Annulla e torna indietro
     @FXML
     private void handleCancel() {
-        Stage stage = (Stage) createLeagueButton.getScene().getWindow();
-        stage.close();
+        closeWindow();
     }
 
-    // Utility per mostrare errori
+    private void closeWindow() {
+        Stage stage = (Stage) createLeagueButton.getScene().getWindow();
+        if (stage != null) {
+            stage.close();
+        }
+    }
+
     private void showError(String message) {
         messageLabel.setText(message);
         messageLabel.setVisible(true);
         messageLabel.setStyle("-fx-text-fill: red;");
     }
 
-    // Utility per mostrare successo
     private void showSuccess(String message) {
         messageLabel.setText(message);
         messageLabel.setVisible(true);
         messageLabel.setStyle("-fx-text-fill: green;");
     }
 }
-

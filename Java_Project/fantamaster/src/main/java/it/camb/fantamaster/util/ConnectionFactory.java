@@ -1,17 +1,3 @@
-/*
- * Questo file contiene credenziali. NON committare nel repository.
- *
- * Per ignorare con git, aggiungi nella radice del repo una riga in .gitignore:
- * src/main/java/it/camb/fantamaster/util/ConnectionFactory.java
- *
- * Se il file è già tracciato, rimuovilo dall'index e committa:
- * git rm --cached src/main/java/it/camb/fantamaster/util/ConnectionFactory.java
- * git commit -m "Remove sensitive ConnectionFactory from index"
- *
- * Consigliato: sposta le credenziali in un file di configurazione non tracciato
- * o usa variabili d'ambiente/properties esterni.
- */
-
 package it.camb.fantamaster.util;
 
 import java.io.IOException;
@@ -21,59 +7,37 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-//singleton per la gestione delle connessioni al DB
-//all'avvio del programma viene creata una sola connessione
 public class ConnectionFactory {
 
-    private static ConnectionFactory instance;
-    private static Connection connection;
+    private static Connection connection; // L'unica istanza condivisa
     
     private static final String PROPERTIES_FILE = "database.properties";
-    
-    // Inizializza le costanti direttamente con i valori letti dal file
     private static final String URL = loadProperty("db.url");
     private static final String USER = loadProperty("db.username");
     private static final String PASSWORD = loadProperty("db.password");
 
-
-    public static ConnectionFactory getInstance() {
-        if (instance == null) {
-            instance = new ConnectionFactory();
-        }
-        return instance;
-    }
-
-    // Metodo statico per ottenere una connessione (sempre la stessa)
+    // Metodo statico per ottenere LA connessione (Singleton)
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
+        // Controllo a 3 livelli:
+        // 1. connection == null: Mai aperta prima
+        // 2. connection.isClosed(): Chiusa esplicitamente
+        // 3. !connection.isValid(2): Il server l'ha chiusa per timeout (il check dura max 2 sec)
+        if (connection == null || connection.isClosed() || !connection.isValid(2)) {
+            // Se una di queste è vera, ne apriamo una nuova fresca
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         }
+        // Altrimenti restituiamo quella vecchia che funziona ancora
         return connection;
     }
 
-
-    /**
-     * Funzione privata per caricare un singolo valore dal file di proprietà.
-     * Fallisce (lancia RuntimeException) se il file o la chiave non vengono trovati.
-     */
     private static String loadProperty(String key) {
         Properties properties = new Properties();
         try (InputStream inputStream = ConnectionFactory.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            
-            if (inputStream == null) {
-                throw new RuntimeException("Impossibile trovare il file di configurazione DB: " + PROPERTIES_FILE);
-            }
-            
+            if (inputStream == null) throw new RuntimeException("File config non trovato: " + PROPERTIES_FILE);
             properties.load(inputStream);
-            String value = properties.getProperty(key);
-            
-            if (value == null) {
-                throw new RuntimeException("Chiave di configurazione DB mancante: " + key);
-            }
-            return value;
-
+            return properties.getProperty(key);
         } catch (IOException e) {
-            throw new RuntimeException("Errore I/O durante il caricamento del file di proprietà.", e);
+            throw new RuntimeException("Errore lettura properties", e);
         }
     }
 }
