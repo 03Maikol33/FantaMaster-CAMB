@@ -1,16 +1,14 @@
 name: Generazione e Pubblicazione Javadoc
 
-# 1. Trigger: Esegui solo dopo un merge sul main o manualmente
 on:
   push:
-    branches: [ "main" ] # Esegui quando il codice viene aggiornato sul branch main
-  workflow_dispatch: # Permette di eseguire questo workflow tramite l'interfaccia utente di GitHub, senza bisogno di una push o pull etc...
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   publish-javadoc:
     runs-on: ubuntu-latest
     
-    # Permessi necessari per il checkout e la scrittura sul branch gh-pages
     permissions:
       contents: write 
 
@@ -25,20 +23,24 @@ jobs:
           distribution: 'temurin'
           cache: maven
           
-      # 1. GENERAZIONE JAVADOC con Maven
-      # Questo comando crea la directory 'target/site/apidocs' con i file HTML
+      # 1. GENERAZIONE JAVADOC
       - name: Genera Javadoc
         run: mvn javadoc:javadoc
         working-directory: ./Java_Project/fantamaster 
         
-      # 2. PUBBLICAZIONE sul branch gh-pages
-      # Questa azione prende il contenuto generato e lo pubblica sul branch gh-pages
+      # 2. DEBUG: Vediamo dove sono finiti i file!
+      # Questo step stamperà nel log la lista dei file generati
+      - name: Debug - Cerca file index.html
+        run: |
+          echo "=== Contenuto della cartella target ==="
+          ls -R Java_Project/fantamaster/target
+          echo "======================================="
+
+      # 3. PUBBLICAZIONE
       - name: Pubblica su GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          # TOKEN: Usa il token di sicurezza predefinito per i permessi di scrittura
-          github_token: ${{ secrets.GITHUB_TOKEN }} #token di accesso temp. segreto generato da GitHub quando un workflow inizia
-          # PUBBLICAZIONE: La directory di output standard di Maven Javadoc
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Usiamo il percorso standard, ma il log ci dirà se è giusto
           publish_dir: ./Java_Project/fantamaster/target/site/apidocs
-          # BRANCH: Pubblica sul branch gh-pages (o master a seconda delle impostazioni)
           publish_branch: gh-pages
