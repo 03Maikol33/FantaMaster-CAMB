@@ -1,0 +1,44 @@
+name: Generazione e Pubblicazione Javadoc
+
+# 1. Trigger: Esegui solo dopo un merge sul main o manualmente
+on:
+  push:
+    branches: [ "main" ] # Esegui quando il codice viene aggiornato sul branch main
+  workflow_dispatch: # Permette di eseguire questo workflow tramite l'interfaccia utente di GitHub, senza bisogno di una push o pull etc...
+
+jobs:
+  publish-javadoc:
+    runs-on: ubuntu-latest
+    
+    # Permessi necessari per il checkout e la scrittura sul branch gh-pages
+    permissions:
+      contents: write 
+
+    steps:
+      - name: Checkout del codice sorgente
+        uses: actions/checkout@v4
+        
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+          
+      # 1. GENERAZIONE JAVADOC con Maven
+      # Questo comando crea la directory 'target/site/apidocs' con i file HTML
+      - name: Genera Javadoc
+        run: mvn javadoc:javadoc
+        working-directory: ./Java_Project/fantamaster 
+        
+      # 2. PUBBLICAZIONE sul branch gh-pages
+      # Questa azione prende il contenuto generato e lo pubblica sul branch gh-pages
+      - name: Pubblica su GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # TOKEN: Usa il token di sicurezza predefinito per i permessi di scrittura
+          github_token: ${{ secrets.GITHUB_TOKEN }} #token di accesso temp. segreto generato da GitHub quando un workflow inizia
+          # PUBBLICAZIONE: La directory di output standard di Maven Javadoc
+          publish_dir: ./Java_Project/fantamaster/target/site/apidocs
+          # BRANCH: Pubblica sul branch gh-pages (o master a seconda delle impostazioni)
+          publish_branch: gh-pages
