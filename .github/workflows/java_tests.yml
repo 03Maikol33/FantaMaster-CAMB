@@ -15,6 +15,11 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    
+    # 1. CORREZIONE: Aggiungi i permessi di scrittura per il token GitHub
+    permissions:
+      checks: write # Necessario per l'azione dorny/test-reporter
+      contents: read # Necessario per actions/checkout
 
     steps:
       - name: Scarica il codice dalla repository
@@ -28,15 +33,15 @@ jobs:
           cache: maven
           
       - name: Compilazione ed esecuzione dei test
-        # L'esecuzione di Maven deve avvenire nella directory che contiene il pom.xml
-        run: mvn clean install
-        working-directory: ./Java_Project/fantamaster 
+        # Esegue il comando nella directory del pom.xml
+        run: mvn clean verify 
+        working-directory: ./Java_Project/fantamaster
         
       - name: Pubblica i report su GitHub
         uses: dorny/test-reporter@v1
-        if: always() # Esegue sempre i test anche se falliscono
+        if: always() 
         with:
           name: Risultati JUnit
-          # Il percorso dei report deve tenere conto della working-directory
-          path: Java_Project/fantamaster/target/surefire-reports/*.xml
+          # Il percorso corretto per i report dei test
+          path: Java_Project/fantamaster/target/surefire-reports/*.xml 
           reporter: java-junit
