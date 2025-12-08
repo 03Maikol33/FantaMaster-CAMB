@@ -38,5 +38,5 @@ jobs:
         with:
           name: Risultati JUnit
           # Il percorso dei report deve tenere conto della working-directory
-          path: Java_Project/target/surefire-reports/*.xml
+          path: Java_Project/fantamaster/target/surefire-reports/*.xml
           reporter: java-junit
