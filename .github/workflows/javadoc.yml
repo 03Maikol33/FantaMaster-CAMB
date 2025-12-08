@@ -42,5 +42,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Usiamo il percorso standard, ma il log ci dirà se è giusto
-          publish_dir: ./Java_Project/fantamaster/target/site/apidocs
+          publish_dir: ./Java_Project/fantamaster/target/reports/apidocs
           publish_branch: gh-pages
