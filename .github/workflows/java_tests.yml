@@ -1,4 +1,4 @@
-name: Java Test Automatico
+name: Java Test Automatico (con Mock DB)
 
 on:
   push:
@@ -8,10 +8,25 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # 1. PERMESSI: Necessari per pubblicare i report dei test
     permissions:
       checks: write
       contents: read
+
+    # 1. SERVIZIO DATABASE: Avvia un contenitore MySQL 8.0
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: fantamaster_toolduckmy # Usiamo lo stesso nome che usi nel codice per semplicità
+        ports:
+          - 3306:3306
+        # Health check per assicurarsi che il DB sia pronto prima di iniziare gli step
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Scarica il codice dalla repository
@@ -24,29 +39,34 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 2. CONFIGURAZIONE DB: Creiamo il file properties usando i Secrets
-      # Questo serve perché il file è nel .gitignore e i test ne hanno bisogno
-      - name: Crea file di configurazione DB per i test
+      # 2. INIZIALIZZAZIONE DB: Eseguiamo i tuoi script SQL sul container
+      - name: Inizializza Database (Builder & Populator)
+        run: |
+          # Esegue il builder per creare le tabelle
+          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/sql/DB_builder.sql
+          
+          # Esegue il populator per inserire i dati di prova
+          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/sql/DB_populator.sql
+
+      # 3. CONFIGURAZIONE JAVA: Creiamo il file properties che punta a LOCALHOST
+      - name: Configura connessione per i Test
         run: |
           mkdir -p src/test/resources
-          echo "db.url=${{ secrets.DB_URL }}" > src/test/resources/database.properties
-          echo "db.username=${{ secrets.DB_USERNAME }}" >> src/test/resources/database.properties
-          echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/database.properties
-        # Fondamentale: operiamo nella cartella del progetto
+          # L'URL punta a 127.0.0.1 (il container service)
+          echo "db.url=jdbc:mysql://127.0.0.1:3306/fantamaster_toolduckmy?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" > src/test/resources/database.properties
+          # Le credenziali sono quelle definite nella sezione 'services' sopra
+          echo "db.username=root" >> src/test/resources/database.properties
+          echo "db.password=root" >> src/test/resources/database.properties
         working-directory: ./Java_Project/fantamaster 
 
-      # 3. COMPILAZIONE: Eseguiamo Maven nella cartella corretta
       - name: Compilazione ed esecuzione dei test
         run: mvn clean verify
-        # Fondamentale: Maven deve sapere dov'è il pom.xml
         working-directory: ./Java_Project/fantamaster
 
-      # 4. REPORT: Cerchiamo i file XML nel percorso corretto
       - name: Pubblica i report su GitHub
         uses: dorny/test-reporter@v1
         if: always()
         with:
           name: Risultati JUnit
-          # Fondamentale: Il percorso completo partendo dalla root della repo
           path: Java_Project/fantamaster/target/surefire-reports/*.xml
           reporter: java-junit
