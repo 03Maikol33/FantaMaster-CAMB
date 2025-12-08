@@ -12,16 +12,14 @@ jobs:
       checks: write
       contents: read
 
-    # 1. SERVIZIO DATABASE: Avvia un contenitore MySQL 8.0
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: fantamaster_toolduckmy # Usiamo lo stesso nome che usi nel codice per semplicità
+          MYSQL_DATABASE: fantamaster_toolduckmy
         ports:
           - 3306:3306
-        # Health check per assicurarsi che il DB sia pronto prima di iniziare gli step
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
@@ -39,22 +37,23 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 2. INIZIALIZZAZIONE DB: Eseguiamo i tuoi script SQL sul container
+      # --- STEP DI DEBUG AGGIUNTO ---
+      # Questo ci mostrerà esattamente dove si trovano i file e come si chiamano
+      - name: Debug - Mostra struttura file
+        run: ls -R
+      # ------------------------------
+
       - name: Inizializza Database (Builder & Populator)
         run: |
-          # Esegue il builder per creare le tabelle
+          # Tentativo con path relativo alla root. 
+          # Se fallisce, controlla il log dello step "Debug" precedente per il percorso corretto.
           mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/sql/DB_builder.sql
-          
-          # Esegue il populator per inserire i dati di prova
           mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/sql/DB_populator.sql
 
-      # 3. CONFIGURAZIONE JAVA: Creiamo il file properties che punta a LOCALHOST
       - name: Configura connessione per i Test
         run: |
           mkdir -p src/test/resources
-          # L'URL punta a 127.0.0.1 (il container service)
           echo "db.url=jdbc:mysql://127.0.0.1:3306/fantamaster_toolduckmy?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" > src/test/resources/database.properties
-          # Le credenziali sono quelle definite nella sezione 'services' sopra
           echo "db.username=root" >> src/test/resources/database.properties
           echo "db.password=root" >> src/test/resources/database.properties
         working-directory: ./Java_Project/fantamaster 
