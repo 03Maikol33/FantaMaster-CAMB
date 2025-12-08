@@ -31,6 +31,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+        # STEP CRUCIALE: Crea il file di proprietà nel classpath di test
+      - name: Crea file di configurazione DB per i test
+        # Questo comando usa i Secrets e scrive il file nella cartella 'resources'
+        run: |
+          mkdir -p src/test/resources
+          echo "db.url=${{ secrets.DB_URL }}" > src/test/resources/database.properties
+          echo "db.username=${{ secrets.DB_USERNAME }}" >> src/test/resources/database.properties
+          echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/database.properties
+        # La directory di lavoro è la radice del repository per questo step
+        working-directory: ./Java_Project/fantamaster
           
       - name: Compilazione ed esecuzione dei test
         # Esegue il comando nella directory del pom.xml
