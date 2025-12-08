@@ -47,8 +47,8 @@ jobs:
         run: |
           # Tentativo con path relativo alla root. 
           # Se fallisce, controlla il log dello step "Debug" precedente per il percorso corretto.
-          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/sql/DB_builder.sql
-          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/sql/DB_populator.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_builder.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_populator.sql
 
       - name: Configura connessione per i Test
         run: |
