@@ -3,6 +3,7 @@ package it.camb.fantamaster.controller;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
@@ -10,7 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
 
 
@@ -29,6 +32,7 @@ public class LeagueAdminSettingsController {
     /**
      * Ricarica la lega dal database per assicurarsi di avere i partecipanti aggiornati.
      */
+    @FXML
     private void refreshLeagueData(int leagueId) {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -48,6 +52,7 @@ public class LeagueAdminSettingsController {
         }
     }
 
+    @FXML
     private void updateUI() {
         if (currentLeague == null) return;
 
@@ -97,7 +102,7 @@ public class LeagueAdminSettingsController {
     }
 
     // --- Metodi Helper per UI ---
-
+    @FXML
     private void disableCloseButton(String message, boolean isInfo) {
         closeRegistrationsButton.setDisable(true);
         closeRegistrationsButton.getStyleClass().add("disabled-action-color");
@@ -108,6 +113,7 @@ public class LeagueAdminSettingsController {
         closeRegistrationsWarningLabel.getStyleClass().add("info-action-color");
     }
 
+    @FXML
     private void enableCloseButton() {
         closeRegistrationsButton.setDisable(false);
         closeRegistrationsButton.getStyleClass().removeAll("disabled-action-color");
@@ -118,12 +124,46 @@ public class LeagueAdminSettingsController {
         closeRegistrationsWarningLabel.getStyleClass().add("irreversible-action-color");
     }
 
+    @FXML
     private void showAlert(String title, String content) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public boolean handleDeleteLeague() {
+        // Usa il try-with-resources per gestire la connessione (best practice)
+        try{
+            Connection conn = ConnectionFactory.getConnection();
+            LeagueDAO leagueDAO = new LeagueDAO(conn);
+            
+            // Chiedi conferma prima di eliminare (opzionale ma consigliato)
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Sei sicuro di voler eliminare questa lega? L'operazione non è annullabile.", ButtonType.YES, ButtonType.NO);
+            confirm.showAndWait();
+
+            if (confirm.getResult() == ButtonType.YES) {
+                boolean success = leagueDAO.deleteLeague(currentLeague.getId());
+                
+                if (success) {
+                    showAlert("Successo", "Lega eliminata con successo.");
+                    
+                    // Chiudi la finestra e torna alla home
+                    Stage stage = (Stage) closeRegistrationsButton.getScene().getWindow();
+                    stage.close();
+                    Main.showHome();
+                    
+                    return true;
+                } else {
+                    showAlert("Errore", "Impossibile eliminare la lega.");
+                }
+            }
+        } catch (Exception e) { // Cattura generica per SQLException e IOException di showHome
+            e.printStackTrace();
+            showAlert("Errore", "Errore durante l'eliminazione della lega: " + e.getMessage());
+        }
+        return false;
     }
 }
 // Fix conflitti definitivo

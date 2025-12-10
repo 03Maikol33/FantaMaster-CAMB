@@ -11,11 +11,11 @@ VALUES
 ('marta', 'marta@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q');
 
 -- 2. Inserimento Prime 3 Leghe (ID 1-3)
-INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse)
+INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito)
 VALUES
-('Serie A Legends', NULL, 10, 1, FALSE),
-('Premier Fantasy', NULL, 12, 3, FALSE),
-('Liga Master', NULL, 8, 3, TRUE);
+('Serie A Legends', NULL, 10, 1, FALSE, 'A1B2C3'),
+('Premier Fantasy', NULL, 12, 3, FALSE, 'D4E5F6'),
+('Liga Master', NULL, 8, 3, TRUE, 'G7H8I9');
 
 -- 3. Associazioni Utenti-Leghe Iniziali
 -- Maikol e Giulia nella Serie A Legends (Lega 1)
@@ -32,17 +32,17 @@ INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (1, 3, 'rifiuta
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 1, 'accettata'); -- Luca -> Serie A
 
 -- 5. Inserimento Altre Leghe (ID 4-13)
-INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse) VALUES
-('Bundesliga Stars', NULL, 10, 2, FALSE),
-('Champions Fantasy', NULL, 12, 3, FALSE),
-('Serie B Challenge', NULL, 8, 4, FALSE),
-('Coppa Italia Dream', NULL, 16, 2, FALSE),
-('Europa League Heroes', NULL, 10, 3, FALSE),
-('World Cup Legends', NULL, 20, 1, FALSE),
-('Calcio Vintage', NULL, 6, 4, FALSE),
-('Super League', NULL, 14, 2, FALSE),
-('MLS Fantasy', NULL, 12, 3, FALSE),
-('Friendly Cup', NULL, 8, 1, FALSE);
+INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito) VALUES
+('Bundesliga Stars', NULL, 10, 2, FALSE, 'J0K1L2'),
+('Champions Fantasy', NULL, 12, 3, FALSE, 'M3N4O5'),
+('Serie B Challenge', NULL, 8, 4, FALSE, 'P6Q7R8'),
+('Coppa Italia Dream', NULL, 16, 2, FALSE, 'S9T0U1'),
+('Europa League Heroes', NULL, 10, 3, FALSE, 'V2W3X4'),
+('World Cup Legends', NULL, 20, 1, FALSE, 'Y5Z6A7'),
+('Calcio Vintage', NULL, 6, 4, FALSE, 'B8C9D0'),
+('Super League', NULL, 14, 2, FALSE, 'E1F2G3'),
+('MLS Fantasy', NULL, 12, 3, FALSE, 'H4I5J6'),
+('Friendly Cup', NULL, 8, 1, FALSE, 'K7L8M9');
 
 -- 6. Iscrizione massiva di Maikol (ID 1) nelle nuove leghe
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 2);  -- Premier

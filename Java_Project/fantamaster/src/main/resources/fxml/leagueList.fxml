@@ -15,8 +15,8 @@
             stylesheets="@css/style.css"
             style="-fx-background-color: transparent;">
 
-    <!-- Header Section -->
     <VBox spacing="15" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+        
         <HBox alignment="CENTER_LEFT" spacing="15">
             <StackPane>
                 <Circle radius="20" fill="#667eea" opacity="0.1"/>
@@ -28,19 +28,22 @@
             </VBox>
         </HBox>
 
-        <!-- Create League Button - Ora in cima -->
-        <Button fx:id="createLeagueButton" text="+ Crea Nuova Lega" styleClass="floating-action-button"
-                onAction="#openCreateLeague" prefHeight="50.0" maxWidth="Infinity"/>
-        <!-- Cerca lega con codice di invito -->
-        <Button text="🔑 Unisciti con Codice" styleClass="floating-action-button"
-            onAction="#handleJoinByCode" prefHeight="50.0" HBox.hgrow="ALWAYS" maxWidth="Infinity"
-            style="-fx-background-color: #6c757d;"/> </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="createLeagueButton" text="+ Crea" styleClass="floating-action-button"
+                    onAction="#openCreateLeague" prefHeight="50.0" 
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            
+            <Button text="🔑 Unisciti" styleClass="floating-action-button"
+                    onAction="#handleJoinByCode" prefHeight="50.0" 
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    style="-fx-background-color: #6c757d;"/> 
+        </HBox>
+        
     </VBox>
 
-    <!-- List Section -->
     <ScrollPane fx:id="leagueScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                 styleClass="modern-scroll" 
-                AnchorPane.topAnchor="150.0" AnchorPane.leftAnchor="20.0"
+                AnchorPane.topAnchor="160.0" AnchorPane.leftAnchor="20.0"
                 AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
         <content>
             <VBox fx:id="leagueContainer" spacing="12" style="-fx-padding: 10 0; -fx-background-color: transparent;" />
