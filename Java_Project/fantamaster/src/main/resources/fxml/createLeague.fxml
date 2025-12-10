@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SpinnerValueFactory?>
+<?import javafx.scene.control.ComboBox?>
 
 <View fx:controller="it.camb.fantamaster.controller.CreateLeagueController"
     maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
@@ -30,41 +31,36 @@
         <Insets top="30" bottom="30" left="25" right="25"/>
        </padding>
 
-       <!-- Logo area -->
        <StackPane>
         <Circle radius="40" fill="rgba(255,255,255,0.1)"/>
         <ImageView fx:id="leagueLogoView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
-           <!-- placeholder image; controller can replace the image at runtime -->
            <image>
             <Image url="@/images/leagueDefaultPic.png" />
            </image>
         </ImageView>
        </StackPane>
 
-       <!-- File picker: button + filename label -->
        <HBox spacing="10" alignment="CENTER">
         <Button fx:id="pickImageButton" text="Scegli immagine" onAction="#handlePickImage" styleClass="text-button"/>
         <Label fx:id="imageNameLabel" text="Nessuna immagine selezionata" styleClass="hint-text" wrapText="true" />
        </HBox>
 
-       <!-- League name -->
        <TextField fx:id="leagueNameField" maxWidth="260.0" prefHeight="42.0" promptText="Nome della lega"
               styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
 
-       <!-- Max participants: integer and even -->
+       <ComboBox fx:id="gameModeComboBox" maxWidth="260.0" prefHeight="42.0" promptText="Seleziona Modalità"
+                 styleClass="modern-textfield" onAction="#handleGameModeSelection"/>
+
        <VBox spacing="6" alignment="CENTER">
         <TextField fx:id="maxParticipantsField" maxWidth="260.0" prefHeight="42.0" promptText="Num. max. di partecipanti (intero pari)"
-               styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
+                styleClass="modern-textfield" onKeyTyped="#hideMessageLabel"/>
        </VBox>
 
-       <!-- Message label for errors/validation -->
        <Label text="" fx:id="messageLabel" styleClass="error-text" visible="false" wrapText="true"/>
 
-       <!-- Create league button -->
        <Button mnemonicParsing="false" fx:id="createLeagueButton" styleClass="primary-button" maxWidth="240.0" prefHeight="45.0"
              text="CREA LEGA" onAction="#handleCreateLeague"/>
 
-       <!-- Optional navigation -->
        <VBox alignment="CENTER" spacing="8" style="-fx-padding: 10 0 0 0;">
         <Label text="Torna alla schermata iniziale" styleClass="hint-text"/>
         <Button mnemonicParsing="false" styleClass="text-button" text="Annulla" onAction="#handleCancel"/>

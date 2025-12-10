@@ -3,6 +3,7 @@ package it.camb.fantamaster.controller;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import it.camb.fantamaster.Main; // Import Main per showHome
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
@@ -11,8 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
-
+import javafx.stage.Stage; // Import Stage per chiudere la finestra
 
 public class LeagueAdminSettingsController {
     @FXML private Button closeRegistrationsButton;
@@ -21,20 +21,14 @@ public class LeagueAdminSettingsController {
     private League currentLeague;
 
     public void setCurrentLeague(League league) {
-        // Non ci fidiamo dell'oggetto passato (potrebbe essere vecchio).
-        // Usiamo il suo ID per scaricare la versione più fresca dal DB.
+        // Ricarica i dati freschi dal DB
         refreshLeagueData(league.getId());
     }
 
-    /**
-     * Ricarica la lega dal database per assicurarsi di avere i partecipanti aggiornati.
-     */
     private void refreshLeagueData(int leagueId) {
         try {
             Connection conn = ConnectionFactory.getConnection();
             LeagueDAO leagueDAO = new LeagueDAO(conn);
-            
-            // Grazie al refactoring di LeagueDAO, questo metodo carica anche i partecipanti!
             this.currentLeague = leagueDAO.getLeagueById(leagueId);
             
             if (this.currentLeague != null) {
@@ -51,13 +45,11 @@ public class LeagueAdminSettingsController {
     private void updateUI() {
         if (currentLeague == null) return;
 
-        // 1. Controllo se le iscrizioni sono già chiuse
         if (currentLeague.isRegistrationsClosed()) {
             disableCloseButton("Le iscrizioni sono già chiuse per questa lega.", true);
             return;
         }
 
-        // 2. Controllo la regola di business (Numero Pari)
         if (!isParticipantCountEven()) {
             disableCloseButton("Puoi chiudere le iscrizioni solo se il numero di partecipanti è pari (" + currentLeague.getParticipants().size() + ").", true);
         } else {
@@ -65,16 +57,12 @@ public class LeagueAdminSettingsController {
         }
     }
 
-    /**
-     * Logica di Business: verifica se il numero di partecipanti è pari.
-     */
     private boolean isParticipantCountEven() {
         return currentLeague.getParticipants().size() % 2 == 0;
     }
 
     @FXML
     public void handleCloseRegistrations() {
-        // Refresh di sicurezza all'ultimo secondo prima di scrivere
         refreshLeagueData(currentLeague.getId());
 
         if (currentLeague != null && isParticipantCountEven()) {
@@ -85,7 +73,7 @@ public class LeagueAdminSettingsController {
                 if (leagueDAO.closeRegistrations(currentLeague.getId())) {
                     currentLeague.setRegistrationsClosed(true);
                     showAlert("Successo", "Iscrizioni chiuse con successo per la lega: " + currentLeague.getName());
-                    updateUI(); // Aggiorna l'interfaccia
+                    updateUI(); 
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -96,7 +84,29 @@ public class LeagueAdminSettingsController {
         }
     }
 
-    // --- Metodi Helper per UI ---
+    @FXML
+    public void handleDeleteLeague() {
+        if (currentLeague != null) {
+            try {
+                Connection conn = ConnectionFactory.getConnection();
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                if(leagueDAO.deleteLeague(currentLeague.getId())) {
+                    showAlert("Successo", "Lega eliminata con successo: " + currentLeague.getName());
+                    
+                    // Chiudi la finestra corrente e torna alla home
+                    Stage stage = (Stage) closeRegistrationsButton.getScene().getWindow();
+                    stage.close(); 
+                    Main.showHome();
+
+                } else {
+                    showAlert("Errore", "Errore durante l'eliminazione della lega.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert("Errore", "Eccezione durante l'eliminazione.");
+            }
+        }
+    }
 
     private void disableCloseButton(String message, boolean isInfo) {
         closeRegistrationsButton.setDisable(true);
@@ -126,4 +136,3 @@ public class LeagueAdminSettingsController {
         alert.showAndWait();
     }
 }
-// Fix conflitti definitivo
