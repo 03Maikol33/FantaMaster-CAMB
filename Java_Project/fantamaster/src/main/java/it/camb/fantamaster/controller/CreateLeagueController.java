@@ -12,51 +12,41 @@ import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView; // Import aggiunto per l'iscrizione bass
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-
-
-
 public class CreateLeagueController {
 
-    @FXML
-    private ImageView leagueLogoView;
+    @FXML private ImageView leagueLogoView;
+    @FXML private Button pickImageButton;
+    @FXML private Label imageNameLabel;
+    @FXML private TextField leagueNameField;
+    @FXML private TextField maxParticipantsField;
+    @FXML private Label messageLabel;
+    @FXML private Button createLeagueButton;
+    @FXML private ComboBox<String> gameModeComboBox;
 
-    @FXML
-    private Button pickImageButton;
-
-    @FXML
-    private Label imageNameLabel;
-
-    @FXML
-    private TextField leagueNameField;
-
-    @FXML
-    private TextField maxParticipantsField;
-
-    @FXML
-    private Label messageLabel;
-
-    @FXML
-    private Button createLeagueButton;
-
-    // Variabile per salvare il file immagine scelto
     private File selectedImageFile;
 
-    // Nasconde il messaggio di errore quando l’utente digita
+    @FXML
+    public void initialize() {
+        gameModeComboBox.getItems().addAll("Punti Totali", "Scontri Diretti");
+    }
+
     @FXML
     private void hideMessageLabel() {
         messageLabel.setVisible(false);
         messageLabel.setText("");
     }
 
-    // Gestione scelta immagine
     @FXML
     private void handlePickImage() {
         FileChooser fileChooser = new FileChooser();
@@ -76,58 +66,72 @@ public class CreateLeagueController {
     }
 
     @FXML
+    private void handleGameModeSelection() {
+        String selected = gameModeComboBox.getValue();
+        if ("Scontri Diretti".equals(selected)) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Funzionalità Premium");
+            alert.setHeaderText("Modalità riservata ai membri PRO");
+            alert.setContentText("La modalità 'Scontri Diretti' è disponibile solo con l'abbonamento Platinum a 100€/mese.\n\nLa selezione verrà reimpostata a 'Punti Totali'.");
+            alert.showAndWait();
+            gameModeComboBox.setValue("Punti Totali");
+        }
+        hideMessageLabel();
+    }
+
+    @FXML
     private void handleCreateLeague() {
         String name = leagueNameField.getText().trim();
         String maxStr = maxParticipantsField.getText().trim();
+        String mode = gameModeComboBox.getValue();
 
-        if (name.isEmpty() || maxStr.isEmpty()) {
-            messageLabel.setText("Compila tutti i campi.");
+        if (name.isEmpty() || maxStr.isEmpty() || mode == null) {
+            showError("Compila tutti i campi e seleziona una modalità.");
             return;
         }
 
         try {
             int max = Integer.parseInt(maxStr);
             if (max <= 0) {
-                messageLabel.setText("Inserisci un numero valido (> 0).");
+                showError("Inserisci un numero valido (> 0).");
                 return;
             }
-
             if (max % 2 != 0) {
                 showError("Il numero massimo di partecipanti deve essere pari.");
                 return;
             }
 
-            // Gestione immagine
             byte[] imageBytes = null;
             if (selectedImageFile != null) {
                 try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
                     imageBytes = fis.readAllBytes();
                 } catch (IOException e) {
-                    System.err.println("Errore nel caricamento dell'immagine: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
             User creator = SessionUtil.getCurrentSession().getUser();
             
-            // Nota: l'ID qui è 0 o null, verrà aggiornato dal DAO
             League lega = new League(
                 name,
                 imageBytes,
                 max,
                 creator,
+                mode,
                 LocalDateTime.now()
             );
 
             boolean success = false;
             
-            try (Connection conn = ConnectionFactory.getConnection()) {
+            // *** FIX: Non chiudere la connessione qui ***
+            try {
+                Connection conn = ConnectionFactory.getConnection();
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
                 
-                // Il metodo insertLeague ora gestisce anche l'iscrizione automatica
                 if (leagueDAO.insertLeague(lega)) {
-                    success = true; // *** IMPORTANTE: Impostiamo il successo ***
+                    success = true;
                 } else {
-                    showError("Errore nella creazione della lega. Riprova.");
+                    showError("Errore nella creazione della lega.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -135,70 +139,30 @@ public class CreateLeagueController {
             }
             
             if (success) {
-                // Mostra messaggio di successo
                 showSuccess("Lega \"" + name +"\" creata con successo!");
-                // Chiudi la finestra
                 handleCancel(); 
             } 
-            // Non serve l'else qui perché l'errore è già gestito nel blocco try
 
         } catch (NumberFormatException ex) {
             showError("Inserisci un numero valido.");
         }
     }
-    
 
-
-            /*String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt
-            League lega = new League(
-            name,
-            imageBytes,
-            max,
-            SessionUtil.getCurrentSession().getUser(),
-            LocalDateTime.now());
-
-
-            //crea la lega nel database
-            try {
-                Connection conn = ConnectionFactory.getConnection();
-                LeagueDAO leagueDAO = new LeagueDAO(conn);
-
-                leagueDAO.insertLeague(lega);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-
-
-        } catch (NumberFormatException ex) {
-            messageLabel.setText("Inserisci un numero valido.");
-        }
-    } */
-
-
-    
-
-    // Annulla e torna indietro
     @FXML
     private void handleCancel() {
         Stage stage = (Stage) createLeagueButton.getScene().getWindow();
         stage.close();
     }
 
-    // Utility per mostrare errori
     private void showError(String message) {
         messageLabel.setText(message);
         messageLabel.setVisible(true);
         messageLabel.setStyle("-fx-text-fill: red;");
     }
 
-    // Utility per mostrare successo
     private void showSuccess(String message) {
         messageLabel.setText(message);
         messageLabel.setVisible(true);
         messageLabel.setStyle("-fx-text-fill: green;");
     }
 }
-// Fix conflitti definitivo
-
