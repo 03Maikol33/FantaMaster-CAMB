@@ -2,6 +2,8 @@ package it.camb.fantamaster.controller;
 
 import java.io.ByteArrayInputStream;
 
+import java.io.ByteArrayInputStream;
+
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
@@ -9,8 +11,6 @@ import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 
 public class LeagueListItemController {
 
