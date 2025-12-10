@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.TextField?>
 
 <AnchorPane fx:controller="it.camb.fantamaster.controller.LeagueAdminSettingsController"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
@@ -34,7 +35,23 @@
 
         <content>
             <VBox spacing="15" prefWidth="Infinity" style="-fx-padding: 10 0;">
-                
+                <VBox spacing="15" styleClass="modern-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane>
+                            <Circle radius="15" fill="#48bb78" opacity="0.2"/>
+                            <Label text="💰" style="-fx-font-size: 12;"/>
+                        </StackPane>
+                        <Label text="Regole di Mercato" style="-fx-font-weight: bold; -fx-text-fill: #2f855a; -fx-font-size: 16;"/>
+                    </HBox>
+
+                    <VBox spacing="5">
+                        <Label text="Budget Iniziale (min. 500)" styleClass="hint-text"/>
+                        <HBox spacing="10">
+                            <TextField fx:id="budgetField" promptText="Es. 500" styleClass="modern-textfield" HBox.hgrow="ALWAYS"/>
+                            <Button text="Salva" onAction="#handleSaveBudget" styleClass="primary-button"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
                 <VBox spacing="15" styleClass="danger-card">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <StackPane>

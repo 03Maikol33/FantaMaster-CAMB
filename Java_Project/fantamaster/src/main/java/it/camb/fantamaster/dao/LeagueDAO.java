@@ -15,6 +15,9 @@ import java.util.List;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.CodeGenerator;
+import it.camb.fantamaster.dao.RulesDAO;
+import it.camb.fantamaster.dao.UserDAO;
+import it.camb.fantamaster.dao.UsersLeaguesDAO;
 
 public class LeagueDAO {
     private final Connection conn;
@@ -24,7 +27,7 @@ public class LeagueDAO {
     }
 
     // Metodo helper per mappare il ResultSet in un oggetto League
-    // AGGIORNATO: Ora gestisce anche il codice invito
+    // Esegue il mapping dei dati della lega e del budget dalla tabella regole collegata
     private League mapResultSetToLeague(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("nome");
@@ -46,21 +49,30 @@ public class LeagueDAO {
         // Creiamo l'oggetto
         League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants);
         
-        // **NOVITÀ**: Settiamo il codice invito letto dal DB
+        // Settiamo il codice invito letto dal DB
         league.setInviteCode(rs.getString("codice_invito"));
+        
+        // Mappiamo il budget dalla tabella collegata 'regole'
+        // Se la colonna nel DB è NULL (o la join non trova righe), getInt restituisce 0
+        int budget = rs.getInt("budget_iniziale");
+        league.setInitialBudget(budget > 0 ? budget : 500); // Fallback a 500 se 0 o null
         
         return league;
     }
 
     public List<League> getLeaguesForUser(User user) {
         List<League> leagues = new ArrayList<>();
-        String sql = "SELECT l.* FROM leghe l JOIN utenti_leghe ul ON l.id = ul.lega_id WHERE ul.utente_id = ?";
+        // JOIN con tabella regole per ottenere il budget
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "JOIN utenti_leghe ul ON l.id = ul.lega_id " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE ul.utente_id = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    // Ora usiamo il metodo helper che include già il codice invito
                     leagues.add(mapResultSetToLeague(rs));
                 }
             }
@@ -72,7 +84,11 @@ public class LeagueDAO {
 
     public List<League> getLeaguesCreatedByUser(User user) {
         List<League> leagues = new ArrayList<>();
-        String sql = "SELECT * FROM leghe WHERE id_creatore = ?";
+        // JOIN con tabella regole
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE l.id_creatore = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
@@ -88,7 +104,11 @@ public class LeagueDAO {
     }
 
     public League getLeagueById(int id) {
-        String sql = "SELECT * FROM leghe WHERE id = ?";
+        // JOIN con tabella regole
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE l.id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -103,18 +123,19 @@ public class LeagueDAO {
     }
 
     public boolean insertLeague(League league) {
-        // **NOVITÀ**: Generiamo il codice prima di inserire
         String code = CodeGenerator.generateCode();
         league.setInviteCode(code);
 
-        // **NOVITÀ**: Aggiunto codice_invito alla query
+        // Query per inserire la lega
         String sqlLeague = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at, codice_invito) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // Query per inserire il creatore come partecipante
         String sqlRelation = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
 
         try {
-            conn.setAutoCommit(false); // Inizio transazione
+            conn.setAutoCommit(false); // Inizio Transazione
             int generatedId = -1;
 
+            // 1. Inserimento Lega
             try (PreparedStatement stmt = conn.prepareStatement(sqlLeague, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, league.getName());
 
@@ -128,8 +149,6 @@ public class LeagueDAO {
                 stmt.setInt(4, league.getCreator().getId());
                 stmt.setBoolean(5, league.isRegistrationsClosed());
                 stmt.setTimestamp(6, Timestamp.valueOf(league.getCreatedAt()));
-                
-                // **NOVITÀ**: Settiamo il parametro 7 (codice invito)
                 stmt.setString(7, league.getInviteCode());
 
                 int affectedRows = stmt.executeUpdate();
@@ -147,14 +166,19 @@ public class LeagueDAO {
                 }
             }
 
-            // Inseriamo la relazione utente-lega (il creatore è automaticamente iscritto)
+            // 2. Inserimento Relazione Utente-Lega
             try (PreparedStatement stmtRel = conn.prepareStatement(sqlRelation)) {
                 stmtRel.setInt(1, league.getCreator().getId());
                 stmtRel.setInt(2, generatedId);
                 stmtRel.executeUpdate();
             }
 
-            conn.commit(); // Conferma transazione
+            // 3. Inserimento Regole di Default (USANDO IL NUOVO DAO)
+            // Passiamo la stessa connessione transazionale!
+            RulesDAO regoleDAO = new RulesDAO(conn);
+            regoleDAO.insertDefaultRules(generatedId);
+
+            conn.commit(); // Conferma tutto
             return true;
 
         } catch (SQLException e) {
@@ -187,6 +211,8 @@ public class LeagueDAO {
     }
 
     public boolean deleteLeague(int leagueId) {
+        // La cancellazione a cascata del DB (ON DELETE CASCADE) eliminerà automaticamente
+        // le righe corrispondenti in 'regole', 'utenti_leghe' e 'richieste_accesso'.
         String sql = "DELETE FROM leghe WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, leagueId);
@@ -201,14 +227,16 @@ public class LeagueDAO {
         return deleteLeague(league.getId());
     }
 
-    // Trova lega tramite codice
     public League findLeagueByInviteCode(String code) {
-        String sql = "SELECT * FROM leghe WHERE codice_invito = ?";
+        // JOIN con tabella regole
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE l.codice_invito = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, code);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Riutilizziamo il metodo helper per coerenza
                     return mapResultSetToLeague(rs);
                 }
             }
@@ -218,4 +246,3 @@ public class LeagueDAO {
         return null;
     }
 }
-// Fix conflitti definitivo

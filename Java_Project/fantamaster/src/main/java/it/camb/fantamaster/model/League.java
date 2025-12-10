@@ -14,6 +14,7 @@ public class League {
     private boolean registrationsClosed;
     private LocalDateTime createdAt;
     private String inviteCode;
+    private int initialBudget;
 
     // Costruttore, caso creazione nuova lega da java a DB
     public League(String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt) {
@@ -25,6 +26,7 @@ public class League {
         this.registrationsClosed = false;
         this.participants = new ArrayList<>();
         this.participants.add(creator); // Aggiungi il creatore come primo partecipante
+        this.initialBudget = 500;
     }
 
     // Costruttore completo, caso caricamento lega da DB a java
@@ -37,6 +39,7 @@ public class League {
         this.createdAt = createdAt;
         this.registrationsClosed = registrationsClosed;
         this.participants = (participants != null) ? participants : new ArrayList<>();
+        this.initialBudget = 500;
     }
 
     public void addParticipant(User user) {
@@ -116,6 +119,13 @@ public class League {
     }
     public void setInviteCode(String inviteCode) {
         this.inviteCode = inviteCode;
+    }
+
+    public int getInitialBudget() {
+        return initialBudget;
+    }
+    public void setInitialBudget(int initialBudget) {
+        this.initialBudget = initialBudget;
     }
 
     @Override
