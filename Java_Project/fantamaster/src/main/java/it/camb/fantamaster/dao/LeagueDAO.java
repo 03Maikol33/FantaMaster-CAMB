@@ -130,7 +130,7 @@ public class LeagueDAO {
         league.setInviteCode(code);
 
         // Query per inserire la lega
-        String sqlLeague = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at, codice_invito) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlLeague = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at, codice_invito, modalita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         // Query per inserire il creatore come partecipante
         String sqlRelation = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
 
