@@ -14,6 +14,7 @@ public class League {
     private boolean registrationsClosed;
     private LocalDateTime createdAt;
     private String inviteCode;
+    private int initialBudget;
     private String gameMode; // Nuovo campo per la modalità
 
     // Costruttore vuoto
@@ -38,8 +39,8 @@ public class League {
         this.createdAt = createdAt;
         this.registrationsClosed = false;
         this.participants = new ArrayList<>();
-        this.participants.add(creator); 
-    
+        this.participants.add(creator); // Aggiungi il creatore come primo partecipante
+        this.initialBudget = 500;
     }
 
     // Costruttore COMPLETO (usato da LeagueDAO per leggere dal DB)
@@ -53,6 +54,7 @@ public class League {
         this.createdAt = createdAt;
         this.registrationsClosed = closed;
         this.participants = (participants != null) ? participants : new ArrayList<>();
+        this.initialBudget = 500;
         this.gameMode = gameMode;
     }
 
@@ -95,6 +97,13 @@ public class League {
         } else {
             throw new IllegalStateException("Lega piena");
         }
+    }
+
+    public int getInitialBudget() {
+        return initialBudget;
+    }
+    public void setInitialBudget(int initialBudget) {
+        this.initialBudget = initialBudget;
     }
 
     @Override
