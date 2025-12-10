@@ -1,12 +1,8 @@
 package it.camb.fantamaster.model;
 
-import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import it.camb.fantamaster.dao.UsersLeaguesDAO;
-import it.camb.fantamaster.util.ConnectionFactory;
 
 public class League {
     private int id;
@@ -133,3 +129,4 @@ public class League {
                 '}';
     }
 }
+// Fix conflitti definitivo

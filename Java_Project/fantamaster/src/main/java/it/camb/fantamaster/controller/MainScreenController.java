@@ -2,8 +2,8 @@ package it.camb.fantamaster.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.StackPane;
 import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
 
 public class MainScreenController {
     @FXML private StackPane contentArea;
@@ -27,3 +27,4 @@ public class MainScreenController {
         }
     }
 }
+// Fix conflitti definitivo

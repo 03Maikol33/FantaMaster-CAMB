@@ -1,24 +1,15 @@
 package it.camb.fantamaster.controller;
 
-<<<<<<< HEAD
-import java.sql.Connection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import it.camb.fantamaster.dao.LeagueDAO;
-import it.camb.fantamaster.dao.RequestDAO;
-import it.camb.fantamaster.dao.UsersLeaguesDAO;
-=======
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import it.camb.fantamaster.dao.LeagueDAO;
->>>>>>> f9f011d35a5a716fc9370ae967a25efa64924aec
+import it.camb.fantamaster.dao.RequestDAO;
+import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
@@ -28,14 +19,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-<<<<<<< HEAD
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextInputDialog;
-=======
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ProgressIndicator;
->>>>>>> f9f011d35a5a716fc9370ae967a25efa64924aec
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -112,7 +100,6 @@ public class LeagueListController {
             e.printStackTrace();
         }
     }
-<<<<<<< HEAD
   
 
     @FXML
@@ -177,6 +164,4 @@ private void showAlert(Alert.AlertType type, String title, String header, String
     alert.showAndWait();
 }
 }
-=======
-}
->>>>>>> f9f011d35a5a716fc9370ae967a25efa64924aec
+// Fix conflitti definitivo

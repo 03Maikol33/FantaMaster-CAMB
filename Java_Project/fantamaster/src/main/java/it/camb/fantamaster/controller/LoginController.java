@@ -143,3 +143,4 @@ public class LoginController {
         return validEmail && validPass;
     }
 }
+// Fix conflitti definitivo

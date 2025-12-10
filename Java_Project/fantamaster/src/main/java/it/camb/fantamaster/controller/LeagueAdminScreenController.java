@@ -97,3 +97,4 @@ private void handleShareLeague() {
     alert.showAndWait();
 } 
 }
+// Fix conflitti definitivo

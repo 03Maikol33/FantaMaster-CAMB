@@ -1,8 +1,7 @@
 package it.camb.fantamaster.model;
 
-import java.time.LocalDateTime;
 import java.io.Serializable;
-import java.sql.Blob;
+import java.time.LocalDateTime;
 
 public class User implements Serializable {
     private int id;
@@ -61,3 +60,4 @@ public class User implements Serializable {
                (email != null ? email.equals(user.email) : user.email == null);
     }
 }
+// Fix conflitti definitivo

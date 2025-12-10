@@ -25,3 +25,4 @@ public class SuccessfulRegisterController {
         }
     }
 }
+// Fix conflitti definitivo

@@ -1,20 +1,21 @@
 package it.camb.fantamaster.controller;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import it.camb.fantamaster.dao.UserDAO;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.PasswordUtil;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class RegisterController {
 
@@ -139,3 +140,4 @@ public class RegisterController {
         return true;
     }
 }
+// Fix conflitti definitivo

@@ -10,11 +10,11 @@ import it.camb.fantamaster.dao.RequestDAO;
 import it.camb.fantamaster.model.Request;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.application.Platform;
 
 public class RequestListItemController {
 
@@ -177,3 +177,4 @@ public class RequestListItemController {
         }
     }
 }
+// Fix conflitti definitivo

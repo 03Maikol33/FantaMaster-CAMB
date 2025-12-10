@@ -200,4 +200,5 @@ public class CreateLeagueController {
         messageLabel.setStyle("-fx-text-fill: green;");
     }
 }
+// Fix conflitti definitivo
 

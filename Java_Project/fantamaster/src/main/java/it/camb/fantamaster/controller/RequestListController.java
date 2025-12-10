@@ -1,5 +1,11 @@
 package it.camb.fantamaster.controller;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+
 import it.camb.fantamaster.dao.RequestDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Request;
@@ -12,13 +18,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class RequestListController {
 
@@ -88,3 +87,4 @@ public class RequestListController {
         loadListData();
     }
 }
+// Fix conflitti definitivo

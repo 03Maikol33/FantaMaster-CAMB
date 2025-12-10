@@ -1,5 +1,7 @@
 package it.camb.fantamaster.controller;
 
+import java.io.ByteArrayInputStream;
+
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
@@ -9,8 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-
-import java.io.ByteArrayInputStream;
 
 public class LeagueListItemController {
 
@@ -100,3 +100,4 @@ public class LeagueListItemController {
         }
     }
 }
+// Fix conflitti definitivo
