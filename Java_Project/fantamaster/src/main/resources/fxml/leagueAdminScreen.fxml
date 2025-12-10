@@ -6,6 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
@@ -19,7 +20,8 @@
     <top>
         <StackPane style="-fx-padding: 20; -fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Button onAction="#goBackToLeagueList" style="-fx-background-color: transparent; -fx-padding: 0 25;">
+                
+                <Button onAction="#goBackToLeagueList" style="-fx-background-color: transparent; -fx-padding: 0 5;">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
                             <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
@@ -31,7 +33,8 @@
                         </VBox>
                     </graphic>
                 </Button>
-                <VBox spacing="0" prefWidth="20" alignment="CENTER">
+                
+                <VBox spacing="0" alignment="CENTER">
                     <ImageView fitHeight="35.0" preserveRatio="true">
                         <image>
                             <Image url="@/images/wideLogo.png" />
@@ -39,6 +42,12 @@
                     </ImageView>
                     <Label text="Admin Panel" style="-fx-font-size: 12; -fx-text-fill: #718096;"/>
                 </VBox>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button text="Condividi" onAction="#handleShareLeague" 
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 5 15; -fx-font-size: 12px; -fx-cursor: hand;"/>
+
             </HBox>
         </StackPane>
     </top>

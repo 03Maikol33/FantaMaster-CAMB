@@ -31,6 +31,10 @@
         <!-- Create League Button - Ora in cima -->
         <Button fx:id="createLeagueButton" text="+ Crea Nuova Lega" styleClass="floating-action-button"
                 onAction="#openCreateLeague" prefHeight="50.0" maxWidth="Infinity"/>
+        <!-- Cerca lega con codice di invito -->
+        <Button text="🔑 Unisciti con Codice" styleClass="floating-action-button"
+            onAction="#handleJoinByCode" prefHeight="50.0" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+            style="-fx-background-color: #6c757d;"/> </HBox>
     </VBox>
 
     <!-- List Section -->

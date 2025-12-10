@@ -2,12 +2,16 @@ package it.camb.fantamaster.controller;
 
 import java.sql.Connection;
 
+import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.Label; // Import aggiunto per gestire le eccezioni di I/O bass
+import javafx.stage.Stage; // Import aggiunto per la navigazione bass
+
+
 
 public class LeagueAdminSettingsController {
     @FXML private Button closeRegistrationsButton;
@@ -60,6 +64,35 @@ public class LeagueAdminSettingsController {
             }
         } else {
             System.out.println("Nessuna lega selezionata per chiudere le iscrizioni.");
+        }
+    }
+
+    // Metodo per aggiornare lista leghe bass
+    @FXML
+    public void handleDeleteLeague() {
+        if (currentLeague != null) {
+            try{
+                Connection conn = ConnectionFactory.getConnection();
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                if(leagueDAO.deleteLeague(currentLeague.getId())) {
+                    System.out.println("Lega eliminata con successo: " + currentLeague.getName());
+                    
+                    // Torna alla schermata principale/lista leghe
+                    Stage stage = (Stage) closeRegistrationsButton.getScene().getWindow();
+                    stage.close(); // Chiudo la finestra admin (se modale)
+                    
+                    // Navigo alla lista leghe nella MainScreen
+                    Main.showHome();
+
+                } else {
+                    System.out.println("Errore durante l'eliminazione della lega: " + currentLeague.getName());
+                    // In una versione completa, qui andrebbe gestito l'errore a livello UI
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Nessuna lega selezionata per l'eliminazione.");
         }
     }
 }

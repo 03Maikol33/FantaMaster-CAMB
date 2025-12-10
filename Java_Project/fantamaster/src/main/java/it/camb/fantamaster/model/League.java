@@ -17,6 +17,7 @@ public class League {
     private List<User> participants;
     private boolean registrationsClosed;
     private LocalDateTime createdAt;
+    private String inviteCode;
 
     // Costruttori
     public League() {}
@@ -130,6 +131,13 @@ public class League {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getInviteCode() {
+        return inviteCode;
+    }
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
     }
 
     @Override

@@ -1,12 +1,5 @@
 package it.camb.fantamaster.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,8 +8,20 @@ import java.time.LocalDateTime;
 
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView; // Import aggiunto per l'iscrizione bass
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+
+
 
 public class CreateLeagueController {
 
@@ -86,17 +91,65 @@ public class CreateLeagueController {
                 messageLabel.setText("Inserisci un numero valido (> 0).");
                 return;
             }
-            messageLabel.setText("Lega \"" + name + "\" creata con " + max + " partecipanti!");
 
-            //creo la lega nel sistema
-            
-            byte[] imageBytes = null;
-            try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
-                imageBytes = fis.readAllBytes(); // disponibile da Java 9
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (max % 2 != 0) {
+                showError("Il numero massimo di partecipanti deve essere pari.");
+                return;
             }
-            //String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt
+
+            // Gestione immagine
+            byte[] imageBytes = null;
+            if (selectedImageFile != null) {
+                try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
+                    imageBytes = fis.readAllBytes();
+                } catch (IOException e) {
+                    System.err.println("Errore nel caricamento dell'immagine: " + e.getMessage());
+                }
+            }
+
+            User creator = SessionUtil.getCurrentSession().getUser();
+            
+            // Nota: l'ID qui è 0 o null, verrà aggiornato dal DAO
+            League lega = new League(
+                name,
+                imageBytes,
+                max,
+                creator,
+                LocalDateTime.now()
+            );
+
+            boolean success = false;
+            
+            try (Connection conn = ConnectionFactory.getConnection()) {
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                
+                // Il metodo insertLeague ora gestisce anche l'iscrizione automatica
+                if (leagueDAO.insertLeague(lega)) {
+                    success = true; // *** IMPORTANTE: Impostiamo il successo ***
+                } else {
+                    showError("Errore nella creazione della lega. Riprova.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                showError("Errore di connessione al database.");
+            }
+            
+            if (success) {
+                // Mostra messaggio di successo
+                showSuccess("Lega \"" + name +"\" creata con successo!");
+                // Chiudi la finestra
+                handleCancel(); 
+            } 
+            // Non serve l'else qui perché l'errore è già gestito nel blocco try
+
+        } catch (NumberFormatException ex) {
+            showError("Inserisci un numero valido.");
+        }
+    }
+    
+
+
+            /*String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt
             League lega = new League(
             name,
             imageBytes,
@@ -121,7 +174,10 @@ public class CreateLeagueController {
         } catch (NumberFormatException ex) {
             messageLabel.setText("Inserisci un numero valido.");
         }
-    }
+    } */
+
+
+    
 
     // Annulla e torna indietro
     @FXML
