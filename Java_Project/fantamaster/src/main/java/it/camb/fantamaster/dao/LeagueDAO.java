@@ -39,6 +39,9 @@ public class LeagueDAO {
 
         Blob blob = rs.getBlob("icona");
         byte[] image = (blob != null) ? blob.getBytes(1, (int) blob.length()) : null;
+        
+        // Leggiamo la stringa grezza dal DB (es. "punti_totali")
+        String modalita = rs.getString("modalita"); 
 
         UserDAO userDAO = new UserDAO(this.conn);
         User creator = userDAO.findById(rs.getInt("id_creatore"));
@@ -46,8 +49,8 @@ public class LeagueDAO {
         UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(this.conn);
         List<User> participants = ulDAO.getUsersInLeagueId(id); 
 
-        // Creiamo l'oggetto
-        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants);
+        // Creiamo l'oggetto usando il costruttore completo aggiornato
+        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita);
         
         // Settiamo il codice invito letto dal DB
         league.setInviteCode(rs.getString("codice_invito"));
@@ -138,23 +141,32 @@ public class LeagueDAO {
             // 1. Inserimento Lega
             try (PreparedStatement stmt = conn.prepareStatement(sqlLeague, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, league.getName());
-
                 if (league.getImage() != null) {
                     stmt.setBlob(2, new ByteArrayInputStream(league.getImage()));
                 } else {
                     stmt.setNull(2, Types.BLOB);
                 }
-
                 stmt.setInt(3, league.getMaxMembers());
                 stmt.setInt(4, league.getCreator().getId());
                 stmt.setBoolean(5, league.isRegistrationsClosed());
                 stmt.setTimestamp(6, Timestamp.valueOf(league.getCreatedAt()));
                 stmt.setString(7, league.getInviteCode());
+                
+                // *** FIX PER "DATA TRUNCATED" ***
+                // Convertiamo il valore dell'interfaccia (es. "Punti Totali") nel valore del DB (es. "punti_totali")
+                String modalitaUI = league.getGameMode();
+                String modalitaDB;
+                
+                if (modalitaUI != null && (modalitaUI.equalsIgnoreCase("Scontri Diretti") || modalitaUI.equals("scontri_diretti"))) {
+                    modalitaDB = "scontri_diretti";
+                } else {
+                    // Default a "punti_totali" se è null, "Punti Totali", o qualsiasi altra cosa
+                    modalitaDB = "punti_totali";
+                }
+                stmt.setString(8, modalitaDB);
 
                 int affectedRows = stmt.executeUpdate();
-                if (affectedRows == 0) {
-                    throw new SQLException("Creazione lega fallita.");
-                }
+                if (affectedRows == 0) throw new SQLException("Creazione lega fallita.");
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -183,18 +195,10 @@ public class LeagueDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                conn.rollback(); // Annulla tutto in caso di errore
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             return false;
         } finally {
-            try {
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
 

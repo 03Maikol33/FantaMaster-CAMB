@@ -45,11 +45,11 @@ public class LeagueAdminSettingsController {
             if (this.currentLeague != null) {
                 updateUI();
             } else {
-                showAlert(AlertType.ERROR, "Errore", "Impossibile trovare la lega nel database.");
+                showAlert( "Errore", "Impossibile trovare la lega nel database.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(AlertType.ERROR, "Errore Database", "Impossibile aggiornare i dati della lega.");
+            showAlert( "Errore Database", "Impossibile aggiornare i dati della lega.");
         }
     }
 
@@ -81,7 +81,7 @@ public class LeagueAdminSettingsController {
 
         // 1. Validazione: è un numero intero?
         if (!input.matches("\\d+")) {
-            showAlert(AlertType.ERROR, "Errore", "Il budget deve essere un numero intero.");
+            showAlert("Errore", "Il budget deve essere un numero intero.");
             return;
         }
 
@@ -89,7 +89,7 @@ public class LeagueAdminSettingsController {
 
         // 2. Validazione: rispetta il minimo?
         if (newBudget < 500) {
-            showAlert(AlertType.ERROR, "Errore", "Il budget deve essere di almeno 500 crediti.");
+            showAlert( "Errore", "Il budget deve essere di almeno 500 crediti.");
             return;
         }
 
@@ -105,17 +105,17 @@ public class LeagueAdminSettingsController {
                 // Aggiorna il modello locale per riflettere il cambiamento immediatamente
                 currentLeague.setInitialBudget(newBudget);
                 
-                showAlert(AlertType.INFORMATION, "Successo", "Budget aggiornato correttamente a " + newBudget);
+                showAlert( "Successo", "Budget aggiornato correttamente a " + newBudget);
                 
                 // Ricarica i dati per sicurezza
                 refreshLeagueData(currentLeague.getId());
             } else {
-                showAlert(AlertType.ERROR, "Errore", "Impossibile aggiornare il budget nel database.");
+                showAlert( "Errore", "Impossibile aggiornare il budget nel database.");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(AlertType.ERROR, "Errore Database", "Errore di connessione.");
+            showAlert("Errore Database", "Errore di connessione.");
         }
     }
 
@@ -136,47 +136,43 @@ public class LeagueAdminSettingsController {
                 
                 if (leagueDAO.closeRegistrations(currentLeague.getId())) {
                     currentLeague.setRegistrationsClosed(true);
-                    showAlert(AlertType.INFORMATION, "Successo", "Iscrizioni chiuse con successo per la lega: " + currentLeague.getName());
+                    showAlert("Successo", "Iscrizioni chiuse con successo per la lega: " + currentLeague.getName());
                     updateUI(); 
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert(AlertType.ERROR, "Errore", "Errore durante la chiusura delle iscrizioni.");
+                showAlert("Errore", "Errore durante la chiusura delle iscrizioni.");
             }
         } else {
-            showAlert(AlertType.WARNING, "Attenzione", "Impossibile chiudere: il numero di partecipanti è dispari o la lega non esiste.");
+            showAlert( "Attenzione", "Impossibile chiudere: il numero di partecipanti è dispari o la lega non esiste.");
         }
     }
+
+    
 
     @FXML
     public void handleDeleteLeague() {
-        try {
-            Connection conn = ConnectionFactory.getConnection();
-            LeagueDAO leagueDAO = new LeagueDAO(conn);
-            
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Sei sicuro di voler eliminare questa lega? L'operazione non è annullabile.", ButtonType.YES, ButtonType.NO);
-            confirm.showAndWait();
-
-            if (confirm.getResult() == ButtonType.YES) {
-                boolean success = leagueDAO.deleteLeague(currentLeague.getId());
-                
-                if (success) {
-                    showAlert(AlertType.INFORMATION, "Successo", "Lega eliminata con successo.");
-                    // Chiudi la finestra e torna alla home
+        if (currentLeague != null) {
+            try {
+                Connection conn = ConnectionFactory.getConnection();
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                if(leagueDAO.deleteLeague(currentLeague.getId())) {
+                    showAlert("Successo", "Lega eliminata con successo: " + currentLeague.getName());
+                    
+                    // Chiudi la finestra corrente e torna alla home
                     Stage stage = (Stage) closeRegistrationsButton.getScene().getWindow();
-                    stage.close();
+                    stage.close(); 
                     Main.showHome();
+
                 } else {
-                    showAlert(AlertType.ERROR, "Errore", "Impossibile eliminare la lega.");
+                    showAlert("Errore", "Errore durante l'eliminazione della lega.");
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert("Errore", "Eccezione durante l'eliminazione.");
             }
-        } catch (Exception e) { 
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Errore", "Errore durante l'eliminazione della lega: " + e.getMessage());
         }
     }
-
-    // --- Metodi Helper per UI ---
 
     private void disableCloseButton(String message, boolean isInfo) {
         closeRegistrationsButton.setDisable(true);
@@ -199,8 +195,8 @@ public class LeagueAdminSettingsController {
     }
 
     // Metodo utility per mostrare alert
-    private void showAlert(AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
