@@ -15,6 +15,10 @@ public class HibernateUtil {
         }
     }
 
+    /**
+     * 
+     * @return L'istanza singleton di SessionFactory.
+     */
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }

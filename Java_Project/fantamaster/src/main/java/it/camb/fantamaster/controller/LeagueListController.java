@@ -1,5 +1,6 @@
 package it.camb.fantamaster.controller;
 
+<<<<<<< HEAD
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
@@ -8,16 +9,36 @@ import java.util.Optional;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.dao.RequestDAO;
 import it.camb.fantamaster.dao.UsersLeaguesDAO;
+=======
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import it.camb.fantamaster.dao.LeagueDAO;
+>>>>>>> f9f011d35a5a716fc9370ae967a25efa64924aec
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+<<<<<<< HEAD
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
+=======
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
+>>>>>>> f9f011d35a5a716fc9370ae967a25efa64924aec
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class LeagueListController {
 
@@ -25,48 +46,73 @@ public class LeagueListController {
 
     @FXML
     public void initialize() {
-        // ottengo la lista delle leghe per l'utente loggato usando ConnectionFactory
-        List<League> leagues;
-        try (java.sql.Connection conn = ConnectionFactory.getConnection()) { // usa la mia ConnectionFactory in package Util
-            UsersLeaguesDAO usersLeaguesDAO = new UsersLeaguesDAO(conn);
-            leagues = usersLeaguesDAO.getLeaguesForUser(SessionUtil.getCurrentSession().getUser());
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-            leagues = Collections.emptyList();
-        }
+        loadLeagues();
+    }
 
-        for (League league : leagues) {
-            System.out.println("Caricamento lega: " + league);
+    private void loadLeagues() {
+        // 1. Pulisci e mostra il caricamento
+        leagueContainer.getChildren().clear();
+        
+        ProgressIndicator spinner = new ProgressIndicator();
+        spinner.setMaxSize(50, 50);
+        VBox spinnerBox = new VBox(spinner);
+        spinnerBox.setAlignment(Pos.CENTER);
+        spinnerBox.setPrefHeight(200); // Spazio vuoto per centrarlo
+        
+        leagueContainer.getChildren().add(spinnerBox);
+
+        // 2. Esegui il lavoro pesante in un thread separato (BACKGROUND)
+        CompletableFuture.supplyAsync(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueListItem.fxml"));
-                Node item = loader.load();
-
-                LeagueListItemController controller = loader.getController();
-                controller.setLeague(league);
-                //controller.setLeagueData();
-
-                leagueContainer.getChildren().add(item);
-            } catch (Exception e) {
+                // NOTA: Qui siamo in un thread parallelo. Niente UI qui!
+                Connection conn = ConnectionFactory.getConnection();
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                User currentUser = SessionUtil.getCurrentSession().getUser();
+                return leagueDAO.getLeaguesForUser(currentUser);
+            } catch (SQLException e) {
                 e.printStackTrace();
+                return Collections.<League>emptyList();
             }
-        }
+        }).thenAccept(leagues -> {
+            // 3. Quando i dati sono pronti, torniamo al thread JavaFX (UI)
+            Platform.runLater(() -> {
+                // Rimuoviamo lo spinner
+                leagueContainer.getChildren().remove(spinnerBox);
+
+                // Popoliamo la lista
+                for (League league : leagues) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueListItem.fxml"));
+                        Node item = loader.load();
+                        LeagueListItemController controller = loader.getController();
+                        controller.setLeague(league);
+                        leagueContainer.getChildren().add(item);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        });
     }
 
     @FXML
     private void openCreateLeague() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/createLeague.fxml"));
-            Node createLeagueNode = loader.load();
-
-            // Apre la finestra di creazione lega
-            javafx.stage.Stage stage = new javafx.stage.Stage();
+            Parent createLeagueNode = loader.load();
+            Stage stage = new Stage();
             stage.setTitle("Crea Nuova Lega");
-            stage.setScene(new javafx.scene.Scene((javafx.scene.Parent) createLeagueNode));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();  
+            stage.setScene(new Scene(createLeagueNode));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            
+            // Ricarica la lista dopo la chiusura
+            loadLeagues();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+<<<<<<< HEAD
   
 
     @FXML
@@ -131,3 +177,6 @@ private void showAlert(Alert.AlertType type, String title, String header, String
     alert.showAndWait();
 }
 }
+=======
+}
+>>>>>>> f9f011d35a5a716fc9370ae967a25efa64924aec

@@ -1,0 +1,63 @@
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '21 22 * * 0' # Esegue la domenica alle 22:21
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        # Analizza anche i file delle action stesse (utile e veloce)
+        - language: actions
+          build-mode: none
+        
+        # Analisi Java configurata MANUALE
+        - language: java-kotlin
+          build-mode: manual 
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 1. SETUP JAVA (Necessario per la compilazione manuale)
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    # 2. INIZIALIZZA CODEQL
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+
+    # 3. BUILD MANUALE (Solo per Java)
+    # Qui specifichiamo il comando esatto e la cartella corretta
+    - name: Run manual build steps
+      if: matrix.build-mode == 'manual'
+      run: mvn clean package -DskipTests
+      working-directory: ./Java_Project/fantamaster
+
+    # 4. ESEGUI ANALISI
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: "/language:${{matrix.language}}"

@@ -1,47 +1,43 @@
-/*
- * Questo file contiene credenziali. NON committare nel repository.
- *
- * Per ignorare con git, aggiungi nella radice del repo una riga in .gitignore:
- * src/main/java/it/camb/fantamaster/util/ConnectionFactory.java
- *
- * Se il file è già tracciato, rimuovilo dall'index e committa:
- * git rm --cached src/main/java/it/camb/fantamaster/util/ConnectionFactory.java
- * git commit -m "Remove sensitive ConnectionFactory from index"
- *
- * Consigliato: sposta le credenziali in un file di configurazione non tracciato
- * o usa variabili d'ambiente/properties esterni.
- */
-
 package it.camb.fantamaster.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
-//singleton per la gestione delle connessioni al DB
-//all'avvio del programma viene creata una sola connessione
 public class ConnectionFactory {
 
-    private static ConnectionFactory instance;
-    private static Connection connection;
+    private static Connection connection; // L'unica istanza condivisa
     
-    // Parametri di configurazione del DB
-    private static final String URL = "jdbc:mysql://8lpi42.h.filess.io:3306/fantamaster_toolduckmy?useSSL=true&serverTimezone=UTC";
-    private static final String USER = "fantamaster_toolduckmy";
-    private static final String PASSWORD = "05f0518209d0fff5d0d1de499a8725ec14ae5ab0";
+    private static final String PROPERTIES_FILE = "database.properties";
+    private static final String URL = loadProperty("db.url");
+    private static final String USER = loadProperty("db.username");
+    private static final String PASSWORD = loadProperty("db.password");
 
-    public static ConnectionFactory getInstance() {
-        if (instance == null) {
-            instance = new ConnectionFactory();
-        }
-        return instance;
-    }
-
-    // Metodo statico per ottenere una connessione (sempre la stessa)
+    // Metodo statico per ottenere LA connessione (Singleton)
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
+        // Controllo a 3 livelli:
+        // 1. connection == null: Mai aperta prima
+        // 2. connection.isClosed(): Chiusa esplicitamente
+        // 3. !connection.isValid(2): Il server l'ha chiusa per timeout (il check dura max 2 sec)
+        if (connection == null || connection.isClosed() || !connection.isValid(2)) {
+            // Se una di queste è vera, ne apriamo una nuova fresca
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         }
+        // Altrimenti restituiamo quella vecchia che funziona ancora
         return connection;
+    }
+
+    private static String loadProperty(String key) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = ConnectionFactory.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
+            if (inputStream == null) throw new RuntimeException("File config non trovato: " + PROPERTIES_FILE);
+            properties.load(inputStream);
+            return properties.getProperty(key);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore lettura properties", e);
+        }
     }
 }

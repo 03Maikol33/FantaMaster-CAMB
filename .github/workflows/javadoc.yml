@@ -1,0 +1,46 @@
+name: Generazione e Pubblicazione Javadoc
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  publish-javadoc:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write 
+
+    steps:
+      - name: Checkout del codice sorgente
+        uses: actions/checkout@v4
+        
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+          
+      # 1. GENERAZIONE JAVADOC
+      - name: Genera Javadoc
+        run: mvn javadoc:javadoc
+        working-directory: ./Java_Project/fantamaster 
+        
+      # 2. DEBUG: Vediamo dove sono finiti i file!
+      # Questo step stamperà nel log la lista dei file generati
+      - name: Debug - Cerca file index.html
+        run: |
+          echo "=== Contenuto della cartella target ==="
+          ls -R Java_Project/fantamaster/target
+          echo "======================================="
+
+      # 3. PUBBLICAZIONE
+      - name: Pubblica su GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Usiamo il percorso standard, ma il log ci dirà se è giusto
+          publish_dir: ./Java_Project/fantamaster/target/reports/apidocs
+          publish_branch: gh-pages
