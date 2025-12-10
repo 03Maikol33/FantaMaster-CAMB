@@ -32,6 +32,7 @@ CREATE TABLE leghe (
     id_creatore INT NOT NULL,
     iscrizioni_chiuse BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    codice_invito VARCHAR(10) UNIQUE, /* Nuova colonna per il codice invito */
     FOREIGN KEY (id_creatore) REFERENCES utenti(id) ON DELETE CASCADE
 );
 
