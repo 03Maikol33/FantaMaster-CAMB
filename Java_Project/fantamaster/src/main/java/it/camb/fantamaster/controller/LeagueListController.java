@@ -1,15 +1,21 @@
 package it.camb.fantamaster.controller;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.dao.RequestDAO;
 import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
-import it.camb.faOptionalaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import it.camb.fantamaster.dao.RequestDAO;
-import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,11 +25,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class LeagueListController {
-import javafx.scene.control.Alert;
 
-import javafx.scene.control.TextInputDialog;
     @FXML private VBox leagueContainer;
 
     @FXML
