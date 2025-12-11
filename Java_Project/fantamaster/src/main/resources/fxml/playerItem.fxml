@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<HBox fx:controller="it.camb.fantamaster.controller.PlayerItemController"
+      spacing="12" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: white;"
+      stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- Numero e Ruolo Badge -->
+    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 10;">
+        <Circle fx:id="roleBadge" fill="#667eea" radius="20" style="-fx-fill: #667eea;" />
+        <Label fx:id="ruoloLabel" styleClass="bold-text" text="P" />
+        <Label fx:id="numeroLabel" text="1" />
+    </VBox>
+
+    <!-- Info Giocatore -->
+    <VBox spacing="5" HBox.hgrow="ALWAYS">
+        <Label fx:id="nomeLabel" styleClass="modern-title" text="Yann Sommer" />
+        <HBox spacing="15">
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Squadra" />
+                <Label fx:id="squadraLabel" text="Inter" />
+            </VBox>
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Ruolo" />
+                <Label fx:id="ruoloFullLabel" text="Portiere" />
+            </VBox>
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Nazionalità" />
+                <Label fx:id="nazionalitaLabel" text="Svizzera" />
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Prezzo -->
+    <VBox alignment="CENTER_RIGHT" spacing="5" style="-fx-padding: 10;">
+        <Label styleClass="subtitle" text="Prezzo" />
+        <Label fx:id="prezzoLabel" styleClass="bold-text" style="-fx-font-size: 14; -fx-text-fill: #667eea;" text="15€" />
+    </VBox>
+
+</HBox>

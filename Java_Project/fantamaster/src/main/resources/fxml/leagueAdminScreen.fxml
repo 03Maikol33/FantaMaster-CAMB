@@ -77,17 +77,21 @@
                     </graphic>
                 </Button>
 
-                <VBox alignment="CENTER" spacing="5" style="-fx-padding: 0 25;">
-                    <StackPane>
-                        <Circle radius="25" styleClass="navBarCircle"/>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
-                            <image>
-                                <Image url="@/icons/admin-crown.png" />
-                            </image>
-                        </ImageView>
-                    </StackPane>
-                    <Label text="Admin" styleClass="navBarLabel"/>
-                </VBox>
+                <Button onAction="#showListone" style="-fx-background-color: transparent; -fx-padding: 0 25;">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="5">
+                            <StackPane>
+                                <Circle radius="25" styleClass="navBarCircle"/>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/icons/listone-icon.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+                            <Label text="Listone" styleClass="navBarLabel"/>
+                        </VBox>
+                    </graphic>
+                </Button>
 
                 <Button onAction="#showImpostazioniLega" style="-fx-background-color: transparent; -fx-padding: 0 25;">
                     <graphic>
