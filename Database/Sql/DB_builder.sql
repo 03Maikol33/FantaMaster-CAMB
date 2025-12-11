@@ -35,8 +35,18 @@ CREATE TABLE leghe (
     id_creatore INT NOT NULL,
     iscrizioni_chiuse BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD
+<<<<<<< HEAD
+    codice_invito VARCHAR(10) UNIQUE,
+    -- NUOVA COLONNA: Moduli consentiti (CSV)
+    moduli_consentiti VARCHAR(255) DEFAULT '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2',
+=======
+    codice_invito VARCHAR(10) UNIQUE, -- MANTENUTA: Colonna dal tuo script
+>>>>>>> develop
+=======
     codice_invito VARCHAR(10) UNIQUE,
     modalita VARCHAR(30) DEFAULT 'punti_totali', -- Default per evitare errori nel Java
+>>>>>>> develop
     FOREIGN KEY (id_creatore) REFERENCES utenti(id) ON DELETE CASCADE
 );
 

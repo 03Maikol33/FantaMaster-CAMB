@@ -15,9 +15,6 @@ import java.util.List;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.CodeGenerator;
-import it.camb.fantamaster.dao.RulesDAO;
-import it.camb.fantamaster.dao.UserDAO;
-import it.camb.fantamaster.dao.UsersLeaguesDAO;
 
 public class LeagueDAO {
     private final Connection conn;
@@ -27,7 +24,6 @@ public class LeagueDAO {
     }
 
     // Metodo helper per mappare il ResultSet in un oggetto League
-    // Esegue il mapping dei dati della lega e del budget dalla tabella regole collegata
     private League mapResultSetToLeague(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("nome");
@@ -40,7 +36,6 @@ public class LeagueDAO {
         Blob blob = rs.getBlob("icona");
         byte[] image = (blob != null) ? blob.getBytes(1, (int) blob.length()) : null;
         
-        // Leggiamo la stringa grezza dal DB (es. "punti_totali")
         String modalita = rs.getString("modalita"); 
 
         UserDAO userDAO = new UserDAO(this.conn);
@@ -49,23 +44,36 @@ public class LeagueDAO {
         UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(this.conn);
         List<User> participants = ulDAO.getUsersInLeagueId(id); 
 
-        // Creiamo l'oggetto usando il costruttore completo aggiornato
+        // Creiamo l'oggetto usando il costruttore completo
         League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita);
         
         // Settiamo il codice invito letto dal DB
         league.setInviteCode(rs.getString("codice_invito"));
+        // Mappiamo i moduli consentiti
+        league.setAllowedFormations(rs.getString("moduli_consentiti"));
         
         // Mappiamo il budget dalla tabella collegata 'regole'
-        // Se la colonna nel DB è NULL (o la join non trova righe), getInt restituisce 0
         int budget = rs.getInt("budget_iniziale");
         league.setInitialBudget(budget > 0 ? budget : 500); // Fallback a 500 se 0 o null
         
         return league;
     }
 
+    // Metodo per aggiornare le regole (moduli)
+    public boolean updateLeagueRules(int leagueId, String allowedFormations) {
+        String sql = "UPDATE leghe SET moduli_consentiti = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, allowedFormations);
+            stmt.setInt(2, leagueId);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<League> getLeaguesForUser(User user) {
         List<League> leagues = new ArrayList<>();
-        // JOIN con tabella regole per ottenere il budget
         String sql = "SELECT l.*, r.budget_iniziale " +
                      "FROM leghe l " +
                      "JOIN utenti_leghe ul ON l.id = ul.lega_id " +
@@ -87,7 +95,6 @@ public class LeagueDAO {
 
     public List<League> getLeaguesCreatedByUser(User user) {
         List<League> leagues = new ArrayList<>();
-        // JOIN con tabella regole
         String sql = "SELECT l.*, r.budget_iniziale " +
                      "FROM leghe l " +
                      "LEFT JOIN regole r ON l.id = r.lega_id " +
@@ -107,7 +114,6 @@ public class LeagueDAO {
     }
 
     public League getLeagueById(int id) {
-        // JOIN con tabella regole
         String sql = "SELECT l.*, r.budget_iniziale " +
                      "FROM leghe l " +
                      "LEFT JOIN regole r ON l.id = r.lega_id " +
@@ -129,9 +135,7 @@ public class LeagueDAO {
         String code = CodeGenerator.generateCode();
         league.setInviteCode(code);
 
-        // Query per inserire la lega
         String sqlLeague = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at, codice_invito, modalita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        // Query per inserire il creatore come partecipante
         String sqlRelation = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
 
         try {
@@ -152,15 +156,12 @@ public class LeagueDAO {
                 stmt.setTimestamp(6, Timestamp.valueOf(league.getCreatedAt()));
                 stmt.setString(7, league.getInviteCode());
                 
-                // *** FIX PER "DATA TRUNCATED" ***
-                // Convertiamo il valore dell'interfaccia (es. "Punti Totali") nel valore del DB (es. "punti_totali")
                 String modalitaUI = league.getGameMode();
                 String modalitaDB;
                 
                 if (modalitaUI != null && (modalitaUI.equalsIgnoreCase("Scontri Diretti") || modalitaUI.equals("scontri_diretti"))) {
                     modalitaDB = "scontri_diretti";
                 } else {
-                    // Default a "punti_totali" se è null, "Punti Totali", o qualsiasi altra cosa
                     modalitaDB = "punti_totali";
                 }
                 stmt.setString(8, modalitaDB);
@@ -185,8 +186,7 @@ public class LeagueDAO {
                 stmtRel.executeUpdate();
             }
 
-            // 3. Inserimento Regole di Default (USANDO IL NUOVO DAO)
-            // Passiamo la stessa connessione transazionale!
+            // 3. Inserimento Regole di Default
             RulesDAO regoleDAO = new RulesDAO(conn);
             regoleDAO.insertDefaultRules(generatedId);
 
@@ -215,8 +215,6 @@ public class LeagueDAO {
     }
 
     public boolean deleteLeague(int leagueId) {
-        // La cancellazione a cascata del DB (ON DELETE CASCADE) eliminerà automaticamente
-        // le righe corrispondenti in 'regole', 'utenti_leghe' e 'richieste_accesso'.
         String sql = "DELETE FROM leghe WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, leagueId);
@@ -232,7 +230,6 @@ public class LeagueDAO {
     }
 
     public League findLeagueByInviteCode(String code) {
-        // JOIN con tabella regole
         String sql = "SELECT l.*, r.budget_iniziale " +
                      "FROM leghe l " +
                      "LEFT JOIN regole r ON l.id = r.lega_id " +

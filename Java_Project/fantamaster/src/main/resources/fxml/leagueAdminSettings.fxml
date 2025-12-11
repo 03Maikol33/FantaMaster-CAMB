@@ -3,6 +3,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
@@ -34,18 +35,28 @@
                 AnchorPane.rightAnchor="15.0" AnchorPane.bottomAnchor="20.0">
 
         <content>
-            <VBox spacing="20" prefWidth="Infinity" style="-fx-padding: 10 5;">
+            <VBox spacing="20" prefWidth="Infinity" style="-fx-padding: 10 0;">
                 
-                <VBox spacing="15" styleClass="gold-card">
-                    <Label text="💰 Budget &amp; Mercato" styleClass="gold-title"/>
+                <VBox spacing="15" styleClass="modern-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane>
+                            <Circle radius="15" styleClass="primary-button" opacity="0.2"/>
+                            <Label text="📋" style="-fx-font-size: 12;"/>
+                        </StackPane>
+                        <Label text="Formazioni &amp; Moduli" styleClass="modern-title" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+                    </HBox>
+                    <Label text="Seleziona i moduli consentiti:" styleClass="hint-text"/>
+                    <FlowPane fx:id="modulesContainer" hgap="8" vgap="8" />
+                </VBox>
+
+                <VBox spacing="15" styleClass="gold-card"> <Label text="💰 Budget &amp; Mercato" style="-fx-font-weight: bold; -fx-text-fill: #b7791f; -fx-font-size: 16;"/>
                     <VBox spacing="5">
-                        <Label text="Budget Iniziale" styleClass="input-label"/>
+                        <Label text="Budget Iniziale" styleClass="hint-text"/>
                         <TextField fx:id="budgetField" promptText="500" styleClass="modern-textfield"/>
                     </VBox>
                 </VBox>
-
-                <VBox spacing="15" styleClass="bonus-card">
-                    <Label text="✅ Bonus Punteggio" styleClass="bonus-title"/>
+       
+                <VBox spacing="15" styleClass="bonus-card"> <Label text="✅ Bonus Punteggio" style="-fx-font-weight: bold; -fx-text-fill: #2f855a; -fx-font-size: 16;"/>
                     <GridPane vgap="10" hgap="10">
                         <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <Label text="Gol" styleClass="hint-text"/>
@@ -76,8 +87,7 @@
                     </GridPane>
                 </VBox>
 
-                <VBox spacing="15" styleClass="malus-card">
-                    <Label text="❌ Malus Punteggio" styleClass="malus-title"/>
+                <VBox spacing="15" styleClass="malus-card"> <Label text="❌ Malus Punteggio" style="-fx-font-weight: bold; -fx-text-fill: #c53030; -fx-font-size: 16;"/>
                     <GridPane vgap="10" hgap="10">
                         <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <Label text="Gol Subito" styleClass="hint-text"/>
@@ -107,8 +117,14 @@
                 <Button text="SALVA MODIFICHE" maxWidth="Infinity" styleClass="primary-button" 
                         style="-fx-font-size: 16; -fx-padding: 12;" onAction="#handleSaveRules"/>
 
-                <VBox spacing="15" styleClass="orange-card">
-                    <Label text="⚠️ Zona Pericolosa" styleClass="orange-title"/>
+                <VBox spacing="15" styleClass="danger-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane>
+                            <Circle radius="15" fill="#f56565" opacity="0.2"/>
+                            <Label text="⚠️" style="-fx-font-size: 12;"/>
+                        </StackPane>
+                        <Label text="Zona Pericolosa" style="-fx-font-weight: bold; -fx-text-fill: #e53e3e; -fx-font-size: 16;"/>
+                    </HBox>
                     
                     <Label fx:id="closeRegistrationsWarningLabel" text="Attenzione: queste azioni sono irreversibili." wrapText="true" styleClass="warning-text"/>
 

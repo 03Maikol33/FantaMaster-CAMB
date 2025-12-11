@@ -11,6 +11,15 @@ VALUES
 ('alessio', 'alessio@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),  -- ID 3
 ('bassma', 'bassma@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q');   -- ID 4
 
+<<<<<<< HEAD
+-- 2. Inserimento Prime 3 Leghe (ID 1-3)
+-- Aggiornato con la colonna moduli_consentiti
+INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito, moduli_consentiti)
+VALUES
+('Serie A Legends', NULL, 10, 1, FALSE, 'A1B2C3', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Premier Fantasy', NULL, 12, 3, FALSE, 'D4E5F6', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Liga Master', NULL, 8, 3, TRUE, 'G7H8I9', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2');
+=======
 -- 2. Inserimento Altri Utenti "Fake" (per testare le richieste massive)
 -- Continuano da ID 5 in poi (dallo script tuo)
 INSERT INTO utenti (username, email, hash_password)
@@ -23,6 +32,7 @@ VALUES
 ('renilde', 'renilde@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),  -- ID 10
 ('genoveffa', 'genoveffa@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'),-- ID 11
 ('anacleto', 'anacleto@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q'); -- ID 12
+>>>>>>> develop
 
 
 -- 3. Inserimento Tutte le Leghe (1-13)
@@ -61,7 +71,30 @@ INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (3, 2);
 -- Bassma nella Liga (3)
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (4, 3);
 
+<<<<<<< HEAD
+-- 4. Richieste di Accesso Iniziali
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (2, 2, 'in_attesa'); -- Giulia -> Premier
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (1, 3, 'rifiutata'); -- Maikol -> Liga
+INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 1, 'accettata'); -- Luca -> Serie A
+
+-- 5. Inserimento Altre Leghe (ID 4-13)
+-- Aggiornato con la colonna moduli_consentiti
+INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito, moduli_consentiti) VALUES
+('Bundesliga Stars', NULL, 10, 2, FALSE, 'J0K1L2', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Champions Fantasy', NULL, 12, 3, FALSE, 'M3N4O5', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Serie B Challenge', NULL, 8, 4, FALSE, 'P6Q7R8', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Coppa Italia Dream', NULL, 16, 2, FALSE, 'S9T0U1', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Europa League Heroes', NULL, 10, 3, FALSE, 'V2W3X4', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('World Cup Legends', NULL, 20, 1, FALSE, 'Y5Z6A7', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Calcio Vintage', NULL, 6, 4, FALSE, 'B8C9D0', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Super League', NULL, 14, 2, FALSE, 'E1F2G3', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('MLS Fantasy', NULL, 12, 3, FALSE, 'H4I5J6', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Friendly Cup', NULL, 8, 1, FALSE, 'K7L8M9', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2');
+
+-- 6. Iscrizione massiva di Maikol (ID 1) nelle nuove leghe
+=======
 -- Maikol partecipa a quasi tutto (dal tuo script)
+>>>>>>> develop
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 2);  -- Premier
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 3);  -- Liga
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 4);  -- Bundesliga

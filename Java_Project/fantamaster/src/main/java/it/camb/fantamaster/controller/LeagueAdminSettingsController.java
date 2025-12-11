@@ -2,6 +2,10 @@ package it.camb.fantamaster.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.LeagueDAO;
@@ -16,16 +20,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 public class LeagueAdminSettingsController {
     
-    // Elementi UI - Zona Pericolosa
-    @FXML private Button closeRegistrationsButton;
-    @FXML private Label closeRegistrationsWarningLabel;
+    // --- UI Elements ---
+    @FXML private FlowPane modulesContainer;
     
-    // Budget
+    // Budget & Opzioni
     @FXML private TextField budgetField;
+    @FXML private CheckBox modificatoreDifesaCheck;
     
     // Bonus
     @FXML private TextField bonusGolField;
@@ -34,9 +40,6 @@ public class LeagueAdminSettingsController {
     @FXML private TextField bonusImbattibilitaField;
     @FXML private TextField bonusFattoreCampoField;
     
-    // Opzioni
-    @FXML private CheckBox modificatoreDifesaCheck;
-    
     // Malus
     @FXML private TextField malusGolSubitoField;
     @FXML private TextField malusAutogolField;
@@ -44,18 +47,32 @@ public class LeagueAdminSettingsController {
     @FXML private TextField malusEspulsioneField;
     @FXML private TextField malusAmmonizioneField;
 
+    // Zona Pericolosa
+    @FXML private Button closeRegistrationsButton;
+    @FXML private Label closeRegistrationsWarningLabel;
+
+    // Dati
     private League currentLeague;
     private Rules currentRules;
+    private LeagueAdminScreenController parentController;
+    
+    private final List<String> ALL_MODULES = Arrays.asList(
+        "3-4-3", "3-5-2", "4-5-1", "4-4-2", "4-3-3", "5-4-1", "5-3-2"
+    );
 
-    /**
-     * Metodo chiamato dall'esterno per impostare la lega corrente.
-     * Avvia il caricamento dei dati aggiornati dal DB.
-     */
+    // Stili CSS
+    private final String STYLE_UNSELECTED = "-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 6 12; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-cursor: hand;";
+    private final String STYLE_SELECTED = "-fx-background-color: linear-gradient(to bottom, #1e40af, #3b82f6); -fx-border-color: #1e40af; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 6 12; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 5, 0, 0, 2);";
+
     public void setCurrentLeague(League league) {
-        // Usiamo l'ID per scaricare la versione più aggiornata della lega e delle regole
         refreshLeagueData(league.getId());
     }
 
+    public void setParentController(LeagueAdminScreenController parentController) {
+        this.parentController = parentController;
+    }
+
+    @FXML
     private void refreshLeagueData(int leagueId) {
         try {
             Connection conn = ConnectionFactory.getConnection();
@@ -65,8 +82,15 @@ public class LeagueAdminSettingsController {
             this.currentLeague = leagueDAO.getLeagueById(leagueId);
             this.currentRules = rulesDAO.getRulesByLeagueId(leagueId);
             
-            if (this.currentLeague != null && this.currentRules != null) {
+            // Fallback per leghe vecchie senza regole
+            if (this.currentRules == null) {
+                this.currentRules = new Rules();
+                this.currentRules.setLeagueId(leagueId);
+            }
+            
+            if (this.currentLeague != null) {
                 updateUI();
+                loadModules(); 
             } else {
                 showAlert(AlertType.ERROR, "Errore", "Impossibile trovare i dati della lega.");
             }
@@ -76,23 +100,21 @@ public class LeagueAdminSettingsController {
         }
     }
 
-    /**
-     * Aggiorna i campi dell'interfaccia con i valori caricati.
-     */
     private void updateUI() {
         if (currentLeague == null || currentRules == null) return;
-
-        // 1. Budget
+        
+        // 1. Budget & Opzioni
         budgetField.setText(String.valueOf(currentRules.getInitialBudget()));
+        if (modificatoreDifesaCheck != null) {
+            modificatoreDifesaCheck.setSelected(currentRules.isUsaModificatoreDifesa());
+        }
 
-        // 2. Bonus & Opzioni
+        // 2. Bonus
         bonusGolField.setText(String.valueOf(currentRules.getBonusGol()));
         bonusAssistField.setText(String.valueOf(currentRules.getBonusAssist()));
         bonusRigoreParatoField.setText(String.valueOf(currentRules.getBonusRigoreParato()));
         bonusImbattibilitaField.setText(String.valueOf(currentRules.getBonusImbattibilita()));
         bonusFattoreCampoField.setText(String.valueOf(currentRules.getBonusFattoreCampo()));
-        
-        modificatoreDifesaCheck.setSelected(currentRules.isUsaModificatoreDifesa());
 
         // 3. Malus
         malusGolSubitoField.setText(String.valueOf(currentRules.getMalusGolSubito()));
@@ -101,7 +123,7 @@ public class LeagueAdminSettingsController {
         malusEspulsioneField.setText(String.valueOf(currentRules.getMalusEspulsione()));
         malusAmmonizioneField.setText(String.valueOf(currentRules.getMalusAmmonizione()));
 
-        // 4. Gestione Bottone Chiusura Iscrizioni
+        // 4. Bottone Chiusura Iscrizioni
         if (currentLeague.isRegistrationsClosed()) {
             disableCloseButton("Le iscrizioni sono già chiuse.", true);
         } else if (!isParticipantCountEven()) {
@@ -111,17 +133,40 @@ public class LeagueAdminSettingsController {
         }
     }
 
+    private void loadModules() {
+        if (modulesContainer == null) return;
+        modulesContainer.getChildren().clear();
+        
+        String dbModules = currentLeague.getAllowedFormations();
+        List<String> activeModules = (dbModules != null && !dbModules.isEmpty()) 
+            ? Arrays.asList(dbModules.split(",")) 
+            : new ArrayList<>();
+
+        for (String module : ALL_MODULES) {
+            ToggleButton btn = new ToggleButton(module);
+            btn.setStyle(STYLE_UNSELECTED);
+            
+            btn.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                btn.setStyle(newVal ? STYLE_SELECTED : STYLE_UNSELECTED);
+            });
+
+            if (activeModules.contains(module)) {
+                btn.setSelected(true);
+            }
+            modulesContainer.getChildren().add(btn);
+        }
+    }
+
     /**
-     * Gestisce il salvataggio di TUTTE le impostazioni (Budget, Bonus, Malus).
+     * UNICO METODO DI SALVATAGGIO: Salva Moduli + Regole
      */
     @FXML
     private void handleSaveRules() {
         try {
-            // Validazione Budget
+            // --- 1. Validazione & Parsing ---
             int budget = Integer.parseInt(budgetField.getText());
-            if (budget < 250) throw new NumberFormatException("Budget troppo basso");
+            if (budget < 250) throw new NumberFormatException("Il budget deve essere almeno 250.");
 
-            // Validazione & Parsing Bonus/Malus
             double bGol = parseAndValidate(bonusGolField.getText());
             double bAssist = parseAndValidate(bonusAssistField.getText());
             double bRigPar = parseAndValidate(bonusRigoreParatoField.getText());
@@ -134,9 +179,25 @@ public class LeagueAdminSettingsController {
             double mEspul = parseAndValidate(malusEspulsioneField.getText());
             double mAmmo = parseAndValidate(malusAmmonizioneField.getText());
 
-            // Aggiornamento Oggetto Rules
+            // Moduli
+            List<String> selectedModules = modulesContainer.getChildren().stream()
+                    .filter(n -> n instanceof ToggleButton)
+                    .map(n -> (ToggleButton) n)
+                    .filter(ToggleButton::isSelected)
+                    .map(ToggleButton::getText)
+                    .collect(Collectors.toList());
+
+            if (selectedModules.isEmpty()) {
+                showAlert(AlertType.WARNING, "Attenzione", "Seleziona almeno un modulo di gioco.");
+                return;
+            }
+            String csvModules = String.join(",", selectedModules);
+
+            // --- 2. Aggiornamento Oggetti in Memoria ---
             currentRules.setInitialBudget(budget);
-            currentRules.setUsaModificatoreDifesa(modificatoreDifesaCheck.isSelected());
+            if (modificatoreDifesaCheck != null) {
+                currentRules.setUsaModificatoreDifesa(modificatoreDifesaCheck.isSelected());
+            }
             
             currentRules.setBonusGol(bGol);
             currentRules.setBonusAssist(bAssist);
@@ -150,36 +211,43 @@ public class LeagueAdminSettingsController {
             currentRules.setMalusEspulsione(mEspul);
             currentRules.setMalusAmmonizione(mAmmo);
 
-            // Salvataggio DB
+            // --- 3. Salvataggio su DB ---
             Connection conn = ConnectionFactory.getConnection();
             RulesDAO rulesDAO = new RulesDAO(conn);
+            LeagueDAO leagueDAO = new LeagueDAO(conn);
             
-            if (rulesDAO.updateRules(currentLeague.getId(), currentRules)) {
-                showAlert(AlertType.INFORMATION, "Successo", "Impostazioni aggiornate con successo!");
+            // Salviamo Regole e Moduli
+            boolean rulesSaved = rulesDAO.updateRules(currentLeague.getId(), currentRules);
+            boolean modulesSaved = leagueDAO.updateLeagueRules(currentLeague.getId(), csvModules);
+
+            if (rulesSaved && modulesSaved) {
+                currentLeague.setInitialBudget(budget);
+                currentLeague.setAllowedFormations(csvModules);
+                showAlert(AlertType.INFORMATION, "Successo", "Tutte le impostazioni salvate correttamente!");
             } else {
-                showAlert(AlertType.ERROR, "Errore", "Salvataggio fallito.");
+                showAlert(AlertType.ERROR, "Errore", "Errore nel salvataggio dei dati.");
             }
 
         } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Errore Input", "Inserisci solo numeri validi (usa il punto per i decimali, es: 0.5).");
+            showAlert(AlertType.ERROR, "Errore Input", "Inserisci solo numeri validi. " + e.getMessage());
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(AlertType.ERROR, "Errore DB", "Problema di connessione.");
+            showAlert(AlertType.ERROR, "Errore DB", "Problema di connessione al database.");
         }
     }
 
-    /**
-     * Chiude le iscrizioni alla lega (irreversibile).
-     */
+    // --- Metodi Gestione Lega ---
+
+    private boolean isParticipantCountEven() {
+        return currentLeague.getParticipants() != null && currentLeague.getParticipants().size() % 2 == 0;
+    }
+
     @FXML
     public void handleCloseRegistrations() {
-        refreshLeagueData(currentLeague.getId());
-
         if (currentLeague != null && isParticipantCountEven()) {
             try {
                 Connection conn = ConnectionFactory.getConnection();
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
-                
                 if (leagueDAO.closeRegistrations(currentLeague.getId())) {
                     currentLeague.setRegistrationsClosed(true);
                     showAlert(AlertType.INFORMATION, "Successo", "Iscrizioni chiuse con successo.");
@@ -189,14 +257,9 @@ public class LeagueAdminSettingsController {
                 e.printStackTrace();
                 showAlert(AlertType.ERROR, "Errore", "Errore durante la chiusura delle iscrizioni.");
             }
-        } else {
-            showAlert(AlertType.WARNING, "Attenzione", "Impossibile chiudere: il numero di partecipanti è dispari o la lega non esiste.");
         }
     }
 
-    /**
-     * Elimina definitivamente la lega.
-     */
     @FXML
     public void handleDeleteLeague() {
         if (currentLeague != null) {
@@ -204,24 +267,38 @@ public class LeagueAdminSettingsController {
                 Connection conn = ConnectionFactory.getConnection();
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
                 if(leagueDAO.deleteLeague(currentLeague.getId())) {
-                    showAlert(AlertType.INFORMATION, "Successo", "Lega eliminata con successo: " + currentLeague.getName());
-                    
-                    // Chiudi la finestra corrente e torna alla home
+                    showAlert(AlertType.INFORMATION, "Successo", "Lega eliminata.");
                     Stage stage = (Stage) closeRegistrationsButton.getScene().getWindow();
                     stage.close(); 
                     Main.showHome();
-
-                } else {
-                    showAlert(AlertType.ERROR, "Errore", "Errore durante l'eliminazione della lega.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                showAlert(AlertType.ERROR, "Errore", "Eccezione durante l'eliminazione.");
+                showAlert(AlertType.ERROR, "Errore", "Errore eliminazione.");
             }
         }
     }
 
-    // --- Metodi Helper ---
+    // --- Helper UI ---
+
+    @FXML
+    private void disableCloseButton(String message, boolean isInfo) {
+        closeRegistrationsButton.setDisable(true);
+        closeRegistrationsButton.getStyleClass().add("disabled-action-color");
+        closeRegistrationsButton.getStyleClass().removeAll("irreversible-action-color");
+        closeRegistrationsWarningLabel.setText(message);
+        closeRegistrationsWarningLabel.getStyleClass().add("info-action-color");
+    }
+
+    @FXML
+    private void enableCloseButton() {
+        closeRegistrationsButton.setDisable(false);
+        closeRegistrationsButton.getStyleClass().removeAll("disabled-action-color");
+        closeRegistrationsButton.getStyleClass().add("irreversible-action-color");
+        closeRegistrationsWarningLabel.setText("Attenzione: questa azione è irreversibile.");
+        closeRegistrationsWarningLabel.getStyleClass().removeAll("info-action-color");
+        closeRegistrationsWarningLabel.getStyleClass().add("irreversible-action-color");
+    }
 
     private double parseAndValidate(String text) {
         if (text == null || text.trim().isEmpty()) return 0.0;
@@ -230,27 +307,17 @@ public class LeagueAdminSettingsController {
         return val;
     }
 
-    private boolean isParticipantCountEven() {
-        return currentLeague.getParticipants() != null && currentLeague.getParticipants().size() % 2 == 0;
-    }
-
-    private void disableCloseButton(String msg, boolean info) {
-        closeRegistrationsButton.setDisable(true);
-        closeRegistrationsWarningLabel.setText(msg);
-        closeRegistrationsWarningLabel.setStyle("-fx-text-fill: #718096;"); // Grigio
-    }
-    
-    private void enableCloseButton() {
-        closeRegistrationsButton.setDisable(false);
-        closeRegistrationsWarningLabel.setText("Attenzione: azione irreversibile.");
-        closeRegistrationsWarningLabel.setStyle("-fx-text-fill: #e53e3e;"); // Rosso
-    }
-
     private void showAlert(AlertType type, String title, String content) {
         Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
+        alert.setTitle("FantaMaster");
+        alert.setHeaderText(title);
         alert.setContentText(content);
+        try {
+            alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/fxml/css/style.css").toExternalForm()
+            );
+            alert.getDialogPane().getStyleClass().add("dialog-pane");
+        } catch (Exception e) { }
         alert.showAndWait();
     }
 }

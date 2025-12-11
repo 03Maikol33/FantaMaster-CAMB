@@ -2,6 +2,7 @@ package it.camb.fantamaster.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class League {
@@ -14,6 +15,8 @@ public class League {
     private boolean registrationsClosed;
     private LocalDateTime createdAt;
     private String inviteCode;
+    // NUOVO CAMPO
+    private String allowedFormations;
     private int initialBudget;
     private String gameMode; // Nuovo campo per la modalità
 
@@ -58,6 +61,22 @@ public class League {
         this.gameMode = gameMode;
     }
 
+    // --- NUOVI METODI PER I MODULI ---
+    public String getAllowedFormations() {
+        return allowedFormations;
+    }
+
+    public void setAllowedFormations(String allowedFormations) {
+        this.allowedFormations = allowedFormations;
+    }
+
+    public List<String> getAllowedFormationsList() {
+        if (allowedFormations == null || allowedFormations.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(allowedFormations.split(","));
+    }
+    // ----------------------------------
     // --- Getter e Setter ---
 
     public int getId() { return id; }
@@ -111,6 +130,7 @@ public class League {
         return "League{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", allowedFormations='" + allowedFormations + '\'' +
                 ", maxMembers=" + maxMembers +
                 ", mode='" + gameMode + '\'' +
                 '}';
