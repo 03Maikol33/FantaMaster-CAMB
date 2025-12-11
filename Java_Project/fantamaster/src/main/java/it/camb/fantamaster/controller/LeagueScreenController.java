@@ -14,7 +14,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class LeagueAdminScreenController {
+public class LeagueScreenController {
     @FXML private StackPane contentArea;
     private League currentLeague; //tiene il riferimento alla lega attualmente aperta
 
@@ -22,24 +22,7 @@ public class LeagueAdminScreenController {
         this.currentLeague = league;
         System.out.println("Lega corrente impostata in LeagueAdminScreenController: " + league);
     }
-
-    @FXML
-    private void showRichieste() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/requestList.fxml"));
-            Parent view = loader.load();
-
-            // Recupero il controller della schermata richieste
-            RequestListController controller = loader.getController();
-            controller.setCurrentLeague(currentLeague); // passo la lega corrente
-
-            // Mostro la view dentro contentArea
-            contentArea.getChildren().setAll(view);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+/*
     @FXML
     private void showImpostazioniLega() {
         try {
@@ -55,7 +38,7 @@ public class LeagueAdminScreenController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @FXML
     private void goBackToLeagueList() {
@@ -75,31 +58,6 @@ public class LeagueAdminScreenController {
         }
     } 
 
-
-    // Condividi codice lega basss
-    @FXML
-private void handleShareLeague() {
-    if (currentLeague == null || currentLeague.getInviteCode() == null) {
-        System.out.println("Codice non disponibile");
-        return;
-    }
-
-    String code = currentLeague.getInviteCode();
-
-    // Mostra il codice in un popup
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Condividi Lega");
-    alert.setHeaderText("Fai entrare i tuoi amici!");
-    alert.setContentText("Il codice della tua lega è: " + code + "\n\n(Il codice è stato copiato negli appunti)");
-
-    // Copia automatica negli appunti (comodissimo per l'utente)
-    Clipboard clipboard = Clipboard.getSystemClipboard();
-    ClipboardContent content = new ClipboardContent();
-    content.putString(code);
-    clipboard.setContent(content);
-
-    alert.showAndWait();
-} 
 
 
     @FXML

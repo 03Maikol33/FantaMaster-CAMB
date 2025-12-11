@@ -337,6 +337,12 @@ View {
     -fx-fill: linear-gradient(to bottom, #1e40af, #3b82f6);
     /* Applicato: Cerchio dietro le icone nella navigation bar di LeagueAdminScreen.fxml */
 }
+
+.mainGradient {
+    -fx-background-color: linear-gradient(to bottom, #1e40af, #3b82f6);
+    /* Applicato: Sfondo principale dell'app */
+}
+
 .navBarCircleActive {
     -fx-border-color: #fbbf24;
     -fx-border-width: 2;
