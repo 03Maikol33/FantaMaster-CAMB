@@ -24,7 +24,6 @@ public class LeagueDAO {
     }
 
     // Metodo helper per mappare il ResultSet in un oggetto League
-    // AGGIORNATO: Ora gestisce anche il codice invito
     private League mapResultSetToLeague(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("nome");
@@ -36,6 +35,8 @@ public class LeagueDAO {
 
         Blob blob = rs.getBlob("icona");
         byte[] image = (blob != null) ? blob.getBytes(1, (int) blob.length()) : null;
+        
+        String modalita = rs.getString("modalita"); 
 
         UserDAO userDAO = new UserDAO(this.conn);
         User creator = userDAO.findById(rs.getInt("id_creatore"));
@@ -43,24 +44,46 @@ public class LeagueDAO {
         UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(this.conn);
         List<User> participants = ulDAO.getUsersInLeagueId(id); 
 
-        // Creiamo l'oggetto
-        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants);
+        // Creiamo l'oggetto usando il costruttore completo
+        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita);
         
-        // **NOVITÀ**: Settiamo il codice invito letto dal DB
+        // Settiamo il codice invito letto dal DB
         league.setInviteCode(rs.getString("codice_invito"));
+        // Mappiamo i moduli consentiti
+        league.setAllowedFormations(rs.getString("moduli_consentiti"));
+        
+        // Mappiamo il budget dalla tabella collegata 'regole'
+        int budget = rs.getInt("budget_iniziale");
+        league.setInitialBudget(budget > 0 ? budget : 500); // Fallback a 500 se 0 o null
         
         return league;
     }
 
+    // Metodo per aggiornare le regole (moduli)
+    public boolean updateLeagueRules(int leagueId, String allowedFormations) {
+        String sql = "UPDATE leghe SET moduli_consentiti = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, allowedFormations);
+            stmt.setInt(2, leagueId);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<League> getLeaguesForUser(User user) {
         List<League> leagues = new ArrayList<>();
-        String sql = "SELECT l.* FROM leghe l JOIN utenti_leghe ul ON l.id = ul.lega_id WHERE ul.utente_id = ?";
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "JOIN utenti_leghe ul ON l.id = ul.lega_id " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE ul.utente_id = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    // Ora usiamo il metodo helper che include già il codice invito
                     leagues.add(mapResultSetToLeague(rs));
                 }
             }
@@ -72,7 +95,10 @@ public class LeagueDAO {
 
     public List<League> getLeaguesCreatedByUser(User user) {
         List<League> leagues = new ArrayList<>();
-        String sql = "SELECT * FROM leghe WHERE id_creatore = ?";
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE l.id_creatore = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
@@ -88,7 +114,10 @@ public class LeagueDAO {
     }
 
     public League getLeagueById(int id) {
-        String sql = "SELECT * FROM leghe WHERE id = ?";
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE l.id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -103,39 +132,42 @@ public class LeagueDAO {
     }
 
     public boolean insertLeague(League league) {
-        // **NOVITÀ**: Generiamo il codice prima di inserire
         String code = CodeGenerator.generateCode();
         league.setInviteCode(code);
 
-        // **NOVITÀ**: Aggiunto codice_invito alla query
-        String sqlLeague = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at, codice_invito) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlLeague = "INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, created_at, codice_invito, modalita) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String sqlRelation = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
 
         try {
-            conn.setAutoCommit(false); // Inizio transazione
+            conn.setAutoCommit(false); // Inizio Transazione
             int generatedId = -1;
 
+            // 1. Inserimento Lega
             try (PreparedStatement stmt = conn.prepareStatement(sqlLeague, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, league.getName());
-
                 if (league.getImage() != null) {
                     stmt.setBlob(2, new ByteArrayInputStream(league.getImage()));
                 } else {
                     stmt.setNull(2, Types.BLOB);
                 }
-
                 stmt.setInt(3, league.getMaxMembers());
                 stmt.setInt(4, league.getCreator().getId());
                 stmt.setBoolean(5, league.isRegistrationsClosed());
                 stmt.setTimestamp(6, Timestamp.valueOf(league.getCreatedAt()));
-                
-                // **NOVITÀ**: Settiamo il parametro 7 (codice invito)
                 stmt.setString(7, league.getInviteCode());
+                
+                String modalitaUI = league.getGameMode();
+                String modalitaDB;
+                
+                if (modalitaUI != null && (modalitaUI.equalsIgnoreCase("Scontri Diretti") || modalitaUI.equals("scontri_diretti"))) {
+                    modalitaDB = "scontri_diretti";
+                } else {
+                    modalitaDB = "punti_totali";
+                }
+                stmt.setString(8, modalitaDB);
 
                 int affectedRows = stmt.executeUpdate();
-                if (affectedRows == 0) {
-                    throw new SQLException("Creazione lega fallita.");
-                }
+                if (affectedRows == 0) throw new SQLException("Creazione lega fallita.");
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -147,30 +179,26 @@ public class LeagueDAO {
                 }
             }
 
-            // Inseriamo la relazione utente-lega (il creatore è automaticamente iscritto)
+            // 2. Inserimento Relazione Utente-Lega
             try (PreparedStatement stmtRel = conn.prepareStatement(sqlRelation)) {
                 stmtRel.setInt(1, league.getCreator().getId());
                 stmtRel.setInt(2, generatedId);
                 stmtRel.executeUpdate();
             }
 
-            conn.commit(); // Conferma transazione
+            // 3. Inserimento Regole di Default
+            RulesDAO regoleDAO = new RulesDAO(conn);
+            regoleDAO.insertDefaultRules(generatedId);
+
+            conn.commit(); // Conferma tutto
             return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                conn.rollback(); // Annulla tutto in caso di errore
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             return false;
         } finally {
-            try {
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
 
@@ -201,14 +229,15 @@ public class LeagueDAO {
         return deleteLeague(league.getId());
     }
 
-    // Trova lega tramite codice
     public League findLeagueByInviteCode(String code) {
-        String sql = "SELECT * FROM leghe WHERE codice_invito = ?";
+        String sql = "SELECT l.*, r.budget_iniziale " +
+                     "FROM leghe l " +
+                     "LEFT JOIN regole r ON l.id = r.lega_id " +
+                     "WHERE l.codice_invito = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, code);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Riutilizziamo il metodo helper per coerenza
                     return mapResultSetToLeague(rs);
                 }
             }
@@ -218,4 +247,3 @@ public class LeagueDAO {
         return null;
     }
 }
-// Fix conflitti definitivo

@@ -2,8 +2,6 @@ package it.camb.fantamaster.controller;
 
 import java.io.ByteArrayInputStream;
 
-import java.io.ByteArrayInputStream;
-
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
