@@ -11,11 +11,13 @@ import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.dao.RulesDAO;
 import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.model.Rules;
 import it.camb.fantamaster.util.ConnectionFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -24,24 +26,43 @@ import javafx.stage.Stage;
 
 public class LeagueAdminSettingsController {
     
-    // UI Elements
+    // --- UI Elements ---
+    @FXML private FlowPane modulesContainer;
+    
+    // Budget & Opzioni
+    @FXML private TextField budgetField;
+    @FXML private CheckBox modificatoreDifesaCheck;
+    
+    // Bonus
+    @FXML private TextField bonusGolField;
+    @FXML private TextField bonusAssistField;
+    @FXML private TextField bonusRigoreParatoField;
+    @FXML private TextField bonusImbattibilitaField;
+    @FXML private TextField bonusFattoreCampoField;
+    
+    // Malus
+    @FXML private TextField malusGolSubitoField;
+    @FXML private TextField malusAutogolField;
+    @FXML private TextField malusRigoreSbagliatoField;
+    @FXML private TextField malusEspulsioneField;
+    @FXML private TextField malusAmmonizioneField;
+
+    // Zona Pericolosa
     @FXML private Button closeRegistrationsButton;
     @FXML private Label closeRegistrationsWarningLabel;
-    @FXML private TextField budgetField; 
-    @FXML private FlowPane modulesContainer; // Contenitore per i moduli
 
-    // Data
+    // Dati
     private League currentLeague;
+    private Rules currentRules;
     private LeagueAdminScreenController parentController;
     
-    // Lista moduli disponibili
     private final List<String> ALL_MODULES = Arrays.asList(
         "3-4-3", "3-5-2", "4-5-1", "4-4-2", "4-3-3", "5-4-1", "5-3-2"
     );
 
     // Stili CSS
     private final String STYLE_UNSELECTED = "-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 6 12; -fx-text-fill: #64748b; -fx-font-weight: bold; -fx-cursor: hand;";
-    private final String STYLE_SELECTED = "-fx-background-color: linear-gradient(to bottom, #1e40af, #3b82f6); -fx-border-color: #1911b5ff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 6 12; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(128, 90, 213, 0.4), 5, 0, 0, 2);";
+    private final String STYLE_SELECTED = "-fx-background-color: linear-gradient(to bottom, #1e40af, #3b82f6); -fx-border-color: #1e40af; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 6 12; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(30, 64, 175, 0.3), 5, 0, 0, 2);";
 
     public void setCurrentLeague(League league) {
         refreshLeagueData(league.getId());
@@ -56,42 +77,62 @@ public class LeagueAdminSettingsController {
         try {
             Connection conn = ConnectionFactory.getConnection();
             LeagueDAO leagueDAO = new LeagueDAO(conn);
+            RulesDAO rulesDAO = new RulesDAO(conn);
+            
             this.currentLeague = leagueDAO.getLeagueById(leagueId);
+            this.currentRules = rulesDAO.getRulesByLeagueId(leagueId);
+            
+            // Fallback per leghe vecchie senza regole
+            if (this.currentRules == null) {
+                this.currentRules = new Rules();
+                this.currentRules.setLeagueId(leagueId);
+            }
             
             if (this.currentLeague != null) {
                 updateUI();
-                loadModules(); // Carica i moduli dinamicamente
+                loadModules(); 
             } else {
-                showAlert("Errore", "Impossibile trovare la lega nel database.");
+                showAlert(AlertType.ERROR, "Errore", "Impossibile trovare i dati della lega.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Errore Database", "Impossibile aggiornare i dati della lega.");
+            showAlert(AlertType.ERROR, "Errore Database", "Impossibile aggiornare i dati.");
         }
     }
 
-    @FXML
     private void updateUI() {
-        if (currentLeague == null) return;
-
-        // Budget
-        if (budgetField != null) {
-            budgetField.setText(String.valueOf(currentLeague.getInitialBudget()));
+        if (currentLeague == null || currentRules == null) return;
+        
+        // 1. Budget & Opzioni
+        budgetField.setText(String.valueOf(currentRules.getInitialBudget()));
+        if (modificatoreDifesaCheck != null) {
+            modificatoreDifesaCheck.setSelected(currentRules.isUsaModificatoreDifesa());
         }
 
-        // Chiusura Iscrizioni
+        // 2. Bonus
+        bonusGolField.setText(String.valueOf(currentRules.getBonusGol()));
+        bonusAssistField.setText(String.valueOf(currentRules.getBonusAssist()));
+        bonusRigoreParatoField.setText(String.valueOf(currentRules.getBonusRigoreParato()));
+        bonusImbattibilitaField.setText(String.valueOf(currentRules.getBonusImbattibilita()));
+        bonusFattoreCampoField.setText(String.valueOf(currentRules.getBonusFattoreCampo()));
+
+        // 3. Malus
+        malusGolSubitoField.setText(String.valueOf(currentRules.getMalusGolSubito()));
+        malusAutogolField.setText(String.valueOf(currentRules.getMalusAutogol()));
+        malusRigoreSbagliatoField.setText(String.valueOf(currentRules.getMalusRigoreSbagliato()));
+        malusEspulsioneField.setText(String.valueOf(currentRules.getMalusEspulsione()));
+        malusAmmonizioneField.setText(String.valueOf(currentRules.getMalusAmmonizione()));
+
+        // 4. Bottone Chiusura Iscrizioni
         if (currentLeague.isRegistrationsClosed()) {
             disableCloseButton("Le iscrizioni sono già chiuse.", true);
         } else if (!isParticipantCountEven()) {
-            disableCloseButton("Serve numero pari di utenti per chiudere.", true);
+            disableCloseButton("Partecipanti dispari (" + currentLeague.getParticipants().size() + ").", true);
         } else {
             enableCloseButton();
         }
     }
 
-    /**
-     * Crea i pulsanti per i moduli e li aggiunge al FlowPane
-     */
     private void loadModules() {
         if (modulesContainer == null) return;
         modulesContainer.getChildren().clear();
@@ -105,91 +146,100 @@ public class LeagueAdminSettingsController {
             ToggleButton btn = new ToggleButton(module);
             btn.setStyle(STYLE_UNSELECTED);
             
-            // Logica visuale al click
             btn.selectedProperty().addListener((obs, oldVal, newVal) -> {
                 btn.setStyle(newVal ? STYLE_SELECTED : STYLE_UNSELECTED);
             });
 
-            // Imposta stato iniziale
             if (activeModules.contains(module)) {
                 btn.setSelected(true);
             }
-
             modulesContainer.getChildren().add(btn);
         }
     }
 
     /**
-     * Salva i moduli selezionati
+     * UNICO METODO DI SALVATAGGIO: Salva Moduli + Regole
      */
     @FXML
-    private void handleSaveModules() {
-        // Raccogli moduli selezionati
-        List<String> selected = modulesContainer.getChildren().stream()
-                .filter(n -> n instanceof ToggleButton)
-                .map(n -> (ToggleButton) n)
-                .filter(ToggleButton::isSelected)
-                .map(ToggleButton::getText)
-                .collect(Collectors.toList());
-
-        if (selected.isEmpty()) {
-            showAlert("Attenzione", "Seleziona almeno un modulo!");
-            return;
-        }
-
-        String csvModules = String.join(",", selected);
-
+    private void handleSaveRules() {
         try {
-            Connection conn = ConnectionFactory.getConnection();
-            LeagueDAO dao = new LeagueDAO(conn);
-            
-            if (dao.updateLeagueRules(currentLeague.getId(), csvModules)) {
-                currentLeague.setAllowedFormations(csvModules);
-                showAlert("Successo", "Moduli aggiornati correttamente!");
-                // Qui non "chiudiamo" la finestra perché siamo dentro le impostazioni,
-                // ma l'Alert conferma l'azione.
-            } else {
-                showAlert("Errore", "Errore nel salvataggio su DB.");
+            // --- 1. Validazione & Parsing ---
+            int budget = Integer.parseInt(budgetField.getText());
+            if (budget < 250) throw new NumberFormatException("Il budget deve essere almeno 250.");
+
+            double bGol = parseAndValidate(bonusGolField.getText());
+            double bAssist = parseAndValidate(bonusAssistField.getText());
+            double bRigPar = parseAndValidate(bonusRigoreParatoField.getText());
+            double bImbat = parseAndValidate(bonusImbattibilitaField.getText());
+            double bCampo = parseAndValidate(bonusFattoreCampoField.getText());
+
+            double mGolSub = parseAndValidate(malusGolSubitoField.getText());
+            double mAutogol = parseAndValidate(malusAutogolField.getText());
+            double mRigSba = parseAndValidate(malusRigoreSbagliatoField.getText());
+            double mEspul = parseAndValidate(malusEspulsioneField.getText());
+            double mAmmo = parseAndValidate(malusAmmonizioneField.getText());
+
+            // Moduli
+            List<String> selectedModules = modulesContainer.getChildren().stream()
+                    .filter(n -> n instanceof ToggleButton)
+                    .map(n -> (ToggleButton) n)
+                    .filter(ToggleButton::isSelected)
+                    .map(ToggleButton::getText)
+                    .collect(Collectors.toList());
+
+            if (selectedModules.isEmpty()) {
+                showAlert(AlertType.WARNING, "Attenzione", "Seleziona almeno un modulo di gioco.");
+                return;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Errore", "Errore di connessione.");
-        }
-    }
+            String csvModules = String.join(",", selectedModules);
 
-    @FXML
-    private void handleSaveBudget() {
-        String input = budgetField.getText();
-        if (!input.matches("\\d+")) {
-            showAlert("Errore", "Il budget deve essere un numero intero.");
-            return;
-        }
-        int newBudget = Integer.parseInt(input);
-        if (newBudget < 500) {
-            showAlert("Errore", "Il budget deve essere di almeno 500 crediti.");
-            return;
-        }
+            // --- 2. Aggiornamento Oggetti in Memoria ---
+            currentRules.setInitialBudget(budget);
+            if (modificatoreDifesaCheck != null) {
+                currentRules.setUsaModificatoreDifesa(modificatoreDifesaCheck.isSelected());
+            }
+            
+            currentRules.setBonusGol(bGol);
+            currentRules.setBonusAssist(bAssist);
+            currentRules.setBonusRigoreParato(bRigPar);
+            currentRules.setBonusImbattibilita(bImbat);
+            currentRules.setBonusFattoreCampo(bCampo);
+            
+            currentRules.setMalusGolSubito(mGolSub);
+            currentRules.setMalusAutogol(mAutogol);
+            currentRules.setMalusRigoreSbagliato(mRigSba);
+            currentRules.setMalusEspulsione(mEspul);
+            currentRules.setMalusAmmonizione(mAmmo);
 
-        try {
+            // --- 3. Salvataggio su DB ---
             Connection conn = ConnectionFactory.getConnection();
             RulesDAO rulesDAO = new RulesDAO(conn);
-            if (rulesDAO.updateBudget(currentLeague.getId(), newBudget)) {
-                currentLeague.setInitialBudget(newBudget);
-                showAlert("Successo", "Budget aggiornato!");
-                refreshLeagueData(currentLeague.getId());
+            LeagueDAO leagueDAO = new LeagueDAO(conn);
+            
+            // Salviamo Regole e Moduli
+            boolean rulesSaved = rulesDAO.updateRules(currentLeague.getId(), currentRules);
+            boolean modulesSaved = leagueDAO.updateLeagueRules(currentLeague.getId(), csvModules);
+
+            if (rulesSaved && modulesSaved) {
+                currentLeague.setInitialBudget(budget);
+                currentLeague.setAllowedFormations(csvModules);
+                showAlert(AlertType.INFORMATION, "Successo", "Tutte le impostazioni salvate correttamente!");
             } else {
-                showAlert("Errore", "Impossibile aggiornare il budget.");
+                showAlert(AlertType.ERROR, "Errore", "Errore nel salvataggio dei dati.");
             }
+
+        } catch (NumberFormatException e) {
+            showAlert(AlertType.ERROR, "Errore Input", "Inserisci solo numeri validi. " + e.getMessage());
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Errore", "Errore DB.");
+            showAlert(AlertType.ERROR, "Errore DB", "Problema di connessione al database.");
         }
     }
 
     // --- Metodi Gestione Lega ---
 
     private boolean isParticipantCountEven() {
-        return currentLeague.getParticipants().size() % 2 == 0;
+        return currentLeague.getParticipants() != null && currentLeague.getParticipants().size() % 2 == 0;
     }
 
     @FXML
@@ -200,12 +250,12 @@ public class LeagueAdminSettingsController {
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
                 if (leagueDAO.closeRegistrations(currentLeague.getId())) {
                     currentLeague.setRegistrationsClosed(true);
-                    showAlert("Successo", "Iscrizioni chiuse!");
+                    showAlert(AlertType.INFORMATION, "Successo", "Iscrizioni chiuse con successo.");
                     updateUI(); 
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert("Errore", "Errore chiusura iscrizioni.");
+                showAlert(AlertType.ERROR, "Errore", "Errore durante la chiusura delle iscrizioni.");
             }
         }
     }
@@ -217,14 +267,14 @@ public class LeagueAdminSettingsController {
                 Connection conn = ConnectionFactory.getConnection();
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
                 if(leagueDAO.deleteLeague(currentLeague.getId())) {
-                    showAlert("Successo", "Lega eliminata.");
+                    showAlert(AlertType.INFORMATION, "Successo", "Lega eliminata.");
                     Stage stage = (Stage) closeRegistrationsButton.getScene().getWindow();
                     stage.close(); 
                     Main.showHome();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                showAlert("Errore", "Errore eliminazione.");
+                showAlert(AlertType.ERROR, "Errore", "Errore eliminazione.");
             }
         }
     }
@@ -250,12 +300,24 @@ public class LeagueAdminSettingsController {
         closeRegistrationsWarningLabel.getStyleClass().add("irreversible-action-color");
     }
 
-    @FXML
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
+    private double parseAndValidate(String text) {
+        if (text == null || text.trim().isEmpty()) return 0.0;
+        double val = Double.parseDouble(text.replace(",", "."));
+        if (val < 0) throw new NumberFormatException("I valori devono essere positivi");
+        return val;
+    }
+
+    private void showAlert(AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle("FantaMaster");
+        alert.setHeaderText(title);
         alert.setContentText(content);
+        try {
+            alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/fxml/css/style.css").toExternalForm()
+            );
+            alert.getDialogPane().getStyleClass().add("dialog-pane");
+        } catch (Exception e) { }
         alert.showAndWait();
     }
 }

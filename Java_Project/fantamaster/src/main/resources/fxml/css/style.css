@@ -583,4 +583,63 @@ View {
     -fx-fill: rgba(96, 165, 250, 0.2);
     /* Applicato: Cerchi decorativi blu accento */
 }
+/* --- NUOVI STILI PER SETTINGS --- */
+.bonus-card {
+    -fx-background-color: #f0fdf4; /* Verde chiarissimo */
+    -fx-border-color: #22c55e;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-border-width: 1;
+}
+.bonus-title {
+    -fx-text-fill: #15803d;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
 
+.malus-card {
+    -fx-background-color: #fef2f2; /* Rosso chiarissimo */
+    -fx-border-color: #ef4444;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-border-width: 1;
+}
+.malus-title {
+    -fx-text-fill: #b91c1c;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.gold-card {
+    -fx-background-color: #fffbeb; /* Oro chiarissimo */
+    -fx-border-color: #f59e0b;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-border-width: 1;
+}
+.gold-title {
+    -fx-text-fill: #b45309;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.orange-card {
+    -fx-background-color: #fff7ed;
+    -fx-border-color: #f97316;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-border-width: 1;
+}
+.orange-title {
+    -fx-text-fill: #c2410c;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+.input-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+}
