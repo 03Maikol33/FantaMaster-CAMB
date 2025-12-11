@@ -59,6 +59,21 @@ public class LeagueAdminScreenController {
     }
 
     @FXML
+    private void showListone() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/listone.fxml"));
+            Parent view = loader.load();
+
+            // Mostro la view dentro contentArea
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    @FXML
     private void showImpostazioniLega() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueAdminSettings.fxml"));

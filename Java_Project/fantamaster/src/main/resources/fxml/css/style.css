@@ -583,6 +583,74 @@ View {
     -fx-fill: rgba(96, 165, 250, 0.2);
     /* Applicato: Cerchi decorativi blu accento */
 }
+
+/* --- Stile TitledPane (La tendina) --- */
+.filter-pane {
+    -fx-text-fill: #667eea;
+}
+
+.filter-pane > .title {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8;
+    -fx-font-weight: bold;
+}
+
+.filter-pane > .title:hover {
+    -fx-background-color: #f0f4ff; /* Leggero azzurrino al passaggio */
+    -fx-cursor: hand;
+}
+
+.filter-pane > .content {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 1 1 1;
+    -fx-background-radius: 0 0 8 8;
+    -fx-border-radius: 0 0 8 8;
+}
+
+/* --- Input e Combo Box --- */
+.modern-input, .modern-combo {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #d1d1d1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+}
+
+.modern-input:focused, .modern-combo:focused {
+    -fx-background-color: white;
+    -fx-border-color: #667eea;
+    -fx-effect: dropshadow(three-pass-box, rgba(102, 126, 234, 0.2), 5, 0, 0, 0);
+}
+
+/* --- Bottone Secondario (Reset) --- */
+.secondary-button {
+    -fx-background-color: white;
+    -fx-text-fill: #667eea;
+    -fx-border-color: #667eea;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-padding: 5 15;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #667eea;
+    -fx-text-fill: white;
+}
+
+/* --- ScrollPane trasparente --- */
+.modern-scroll {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+}
+.modern-scroll > .viewport {
+    -fx-background-color: transparent;
+}
 /* --- NUOVI STILI PER SETTINGS --- */
 .bonus-card {
     -fx-background-color: #f0fdf4; /* Verde chiarissimo */

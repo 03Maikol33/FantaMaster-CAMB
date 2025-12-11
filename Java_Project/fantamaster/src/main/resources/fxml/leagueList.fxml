@@ -16,7 +16,7 @@
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
 
     <VBox spacing="15" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-        
+
         <HBox alignment="CENTER_LEFT" spacing="15">
             <StackPane>
                 <Circle fill="#667eea" opacity="0.1" radius="20" />

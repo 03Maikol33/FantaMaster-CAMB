@@ -1,0 +1,5002 @@
+[
+  {
+    "id": 1,
+    "nome": "Yann",
+    "cognome": "Sommer",
+    "squadra": "Inter",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 15,
+    "nazionalita": "Svizzera"
+  },
+  {
+    "id": 2,
+    "nome": "Josep",
+    "cognome": "Martinez",
+    "squadra": "Inter",
+    "numero": 13,
+    "ruolo": "P",
+    "prezzo": 1,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 3,
+    "nome": "Alessandro",
+    "cognome": "Bastoni",
+    "squadra": "Inter",
+    "numero": 95,
+    "ruolo": "D",
+    "prezzo": 40,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 4,
+    "nome": "Benjamin",
+    "cognome": "Pavard",
+    "squadra": "Inter",
+    "numero": 28,
+    "ruolo": "D",
+    "prezzo": 32,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 5,
+    "nome": "Federico",
+    "cognome": "Dimarco",
+    "squadra": "Inter",
+    "numero": 32,
+    "ruolo": "D",
+    "prezzo": 45,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 6,
+    "nome": "Stefan",
+    "cognome": "de Vrij",
+    "squadra": "Inter",
+    "numero": 6,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 7,
+    "nome": "Denzel",
+    "cognome": "Dumfries",
+    "squadra": "Inter",
+    "numero": 2,
+    "ruolo": "D",
+    "prezzo": 28,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 8,
+    "nome": "Francesco",
+    "cognome": "Acerbi",
+    "squadra": "Inter",
+    "numero": 15,
+    "ruolo": "D",
+    "prezzo": 18,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 9,
+    "nome": "Yann",
+    "cognome": "Bisseck",
+    "squadra": "Inter",
+    "numero": 31,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Germania"
+  },
+  {
+    "id": 10,
+    "nome": "Matteo",
+    "cognome": "Darmian",
+    "squadra": "Inter",
+    "numero": 36,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 11,
+    "nome": "Nicolò",
+    "cognome": "Barella",
+    "squadra": "Inter",
+    "numero": 23,
+    "ruolo": "C",
+    "prezzo": 55,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 12,
+    "nome": "Hakan",
+    "cognome": "Calhanoglu",
+    "squadra": "Inter",
+    "numero": 20,
+    "ruolo": "C",
+    "prezzo": 60,
+    "nazionalita": "Turchia"
+  },
+  {
+    "id": 13,
+    "nome": "Henrikh",
+    "cognome": "Mkhitaryan",
+    "squadra": "Inter",
+    "numero": 22,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Armenia"
+  },
+  {
+    "id": 14,
+    "nome": "Davide",
+    "cognome": "Frattesi",
+    "squadra": "Inter",
+    "numero": 16,
+    "ruolo": "C",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 15,
+    "nome": "Piotr",
+    "cognome": "Zielinski",
+    "squadra": "Inter",
+    "numero": 7,
+    "ruolo": "C",
+    "prezzo": 20,
+    "nazionalita": "Polonia"
+  },
+  {
+    "id": 16,
+    "nome": "Kristjan",
+    "cognome": "Asllani",
+    "squadra": "Inter",
+    "numero": 21,
+    "ruolo": "C",
+    "prezzo": 8,
+    "nazionalita": "Albania"
+  },
+  {
+    "id": 17,
+    "nome": "Lautaro",
+    "cognome": "Martinez",
+    "squadra": "Inter",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 95,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 18,
+    "nome": "Marcus",
+    "cognome": "Thuram",
+    "squadra": "Inter",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 82,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 19,
+    "nome": "Mehdi",
+    "cognome": "Taremi",
+    "squadra": "Inter",
+    "numero": 99,
+    "ruolo": "A",
+    "prezzo": 40,
+    "nazionalita": "Iran"
+  },
+  {
+    "id": 20,
+    "nome": "Marko",
+    "cognome": "Arnautovic",
+    "squadra": "Inter",
+    "numero": 8,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Austria"
+  },
+  {
+    "id": 21,
+    "nome": "Mike",
+    "cognome": "Maignan",
+    "squadra": "Milan",
+    "numero": 16,
+    "ruolo": "P",
+    "prezzo": 42,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 22,
+    "nome": "Marco",
+    "cognome": "Sportiello",
+    "squadra": "Milan",
+    "numero": 57,
+    "ruolo": "P",
+    "prezzo": 1,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 23,
+    "nome": "Theo",
+    "cognome": "Hernandez",
+    "squadra": "Milan",
+    "numero": 19,
+    "ruolo": "D",
+    "prezzo": 50,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 24,
+    "nome": "Fikayo",
+    "cognome": "Tomori",
+    "squadra": "Milan",
+    "numero": 23,
+    "ruolo": "D",
+    "prezzo": 30,
+    "nazionalita": "Inghilterra"
+  },
+  {
+    "id": 25,
+    "nome": "Strahinja",
+    "cognome": "Pavlovic",
+    "squadra": "Milan",
+    "numero": 31,
+    "ruolo": "D",
+    "prezzo": 22,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 26,
+    "nome": "Emerson",
+    "cognome": "Royal",
+    "squadra": "Milan",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 27,
+    "nome": "Matteo",
+    "cognome": "Gabbia",
+    "squadra": "Milan",
+    "numero": 46,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 28,
+    "nome": "Davide",
+    "cognome": "Calabria",
+    "squadra": "Milan",
+    "numero": 2,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 29,
+    "nome": "Christian",
+    "cognome": "Pulisic",
+    "squadra": "Milan",
+    "numero": 11,
+    "ruolo": "C",
+    "prezzo": 75,
+    "nazionalita": "USA"
+  },
+  {
+    "id": 30,
+    "nome": "Tijjani",
+    "cognome": "Reijnders",
+    "squadra": "Milan",
+    "numero": 14,
+    "ruolo": "C",
+    "prezzo": 38,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 31,
+    "nome": "Youssouf",
+    "cognome": "Fofana",
+    "squadra": "Milan",
+    "numero": 29,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 32,
+    "nome": "Ruben",
+    "cognome": "Loftus-Cheek",
+    "squadra": "Milan",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 30,
+    "nazionalita": "Inghilterra"
+  },
+  {
+    "id": 33,
+    "nome": "Yunus",
+    "cognome": "Musah",
+    "squadra": "Milan",
+    "numero": 80,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "USA"
+  },
+  {
+    "id": 34,
+    "nome": "Samuel",
+    "cognome": "Chukwueze",
+    "squadra": "Milan",
+    "numero": 21,
+    "ruolo": "C",
+    "prezzo": 20,
+    "nazionalita": "Nigeria"
+  },
+  {
+    "id": 35,
+    "nome": "Rafael",
+    "cognome": "Leao",
+    "squadra": "Milan",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 88,
+    "nazionalita": "Portogallo"
+  },
+  {
+    "id": 36,
+    "nome": "Alvaro",
+    "cognome": "Morata",
+    "squadra": "Milan",
+    "numero": 7,
+    "ruolo": "A",
+    "prezzo": 60,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 37,
+    "nome": "Tammy",
+    "cognome": "Abraham",
+    "squadra": "Milan",
+    "numero": 90,
+    "ruolo": "A",
+    "prezzo": 35,
+    "nazionalita": "Inghilterra"
+  },
+  {
+    "id": 38,
+    "nome": "Luka",
+    "cognome": "Jovic",
+    "squadra": "Milan",
+    "numero": 15,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 39,
+    "nome": "Noah",
+    "cognome": "Okafor",
+    "squadra": "Milan",
+    "numero": 17,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Svizzera"
+  },
+  {
+    "id": 40,
+    "nome": "Luka",
+    "cognome": "Modric",
+    "squadra": "Milan",
+    "numero": 44,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Croazia"
+  },
+  {
+    "id": 41,
+    "nome": "Michele",
+    "cognome": "Di Gregorio",
+    "squadra": "Juventus",
+    "numero": 29,
+    "ruolo": "P",
+    "prezzo": 38,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 42,
+    "nome": "Mattia",
+    "cognome": "Perin",
+    "squadra": "Juventus",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 2,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 43,
+    "nome": "Gleison",
+    "cognome": "Bremer",
+    "squadra": "Juventus",
+    "numero": 3,
+    "ruolo": "D",
+    "prezzo": 42,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 44,
+    "nome": "Federico",
+    "cognome": "Gatti",
+    "squadra": "Juventus",
+    "numero": 4,
+    "ruolo": "D",
+    "prezzo": 25,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 45,
+    "nome": "Pierre",
+    "cognome": "Kalulu",
+    "squadra": "Juventus",
+    "numero": 15,
+    "ruolo": "D",
+    "prezzo": 20,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 46,
+    "nome": "Andrea",
+    "cognome": "Cambiaso",
+    "squadra": "Juventus",
+    "numero": 27,
+    "ruolo": "D",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 47,
+    "nome": "Danilo",
+    "cognome": "Da Silva",
+    "squadra": "Juventus",
+    "numero": 6,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 48,
+    "nome": "Juan",
+    "cognome": "Cabal",
+    "squadra": "Juventus",
+    "numero": 32,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Colombia"
+  },
+  {
+    "id": 49,
+    "nome": "Teun",
+    "cognome": "Koopmeiners",
+    "squadra": "Juventus",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 65,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 50,
+    "nome": "Douglas",
+    "cognome": "Luiz",
+    "squadra": "Juventus",
+    "numero": 26,
+    "ruolo": "C",
+    "prezzo": 40,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 51,
+    "nome": "Khephren",
+    "cognome": "Thuram",
+    "squadra": "Juventus",
+    "numero": 19,
+    "ruolo": "C",
+    "prezzo": 28,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 52,
+    "nome": "Manuel",
+    "cognome": "Locatelli",
+    "squadra": "Juventus",
+    "numero": 5,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 53,
+    "nome": "Nicolò",
+    "cognome": "Fagioli",
+    "squadra": "Juventus",
+    "numero": 21,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 54,
+    "nome": "Timothy",
+    "cognome": "Weah",
+    "squadra": "Juventus",
+    "numero": 22,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "USA"
+  },
+  {
+    "id": 55,
+    "nome": "Dusan",
+    "cognome": "Vlahovic",
+    "squadra": "Juventus",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 90,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 56,
+    "nome": "Kenan",
+    "cognome": "Yildiz",
+    "squadra": "Juventus",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 55,
+    "nazionalita": "Turchia"
+  },
+  {
+    "id": 57,
+    "nome": "Francisco",
+    "cognome": "Conceicao",
+    "squadra": "Juventus",
+    "numero": 7,
+    "ruolo": "A",
+    "prezzo": 35,
+    "nazionalita": "Portogallo"
+  },
+  {
+    "id": 58,
+    "nome": "Nico",
+    "cognome": "Gonzalez",
+    "squadra": "Juventus",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 45,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 59,
+    "nome": "Arkadiusz",
+    "cognome": "Milik",
+    "squadra": "Juventus",
+    "numero": 14,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Polonia"
+  },
+  {
+    "id": 60,
+    "nome": "Alex",
+    "cognome": "Meret",
+    "squadra": "Napoli",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 61,
+    "nome": "Elia",
+    "cognome": "Caprile",
+    "squadra": "Napoli",
+    "numero": 25,
+    "ruolo": "P",
+    "prezzo": 5,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 62,
+    "nome": "Alessandro",
+    "cognome": "Buongiorno",
+    "squadra": "Napoli",
+    "numero": 4,
+    "ruolo": "D",
+    "prezzo": 40,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 63,
+    "nome": "Giovanni",
+    "cognome": "Di Lorenzo",
+    "squadra": "Napoli",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 38,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 64,
+    "nome": "Amir",
+    "cognome": "Rrahmani",
+    "squadra": "Napoli",
+    "numero": 13,
+    "ruolo": "D",
+    "prezzo": 25,
+    "nazionalita": "Kosovo"
+  },
+  {
+    "id": 65,
+    "nome": "Mathias",
+    "cognome": "Olivera",
+    "squadra": "Napoli",
+    "numero": 17,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Uruguay"
+  },
+  {
+    "id": 66,
+    "nome": "Leonardo",
+    "cognome": "Spinazzola",
+    "squadra": "Napoli",
+    "numero": 37,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 67,
+    "nome": "Rafa",
+    "cognome": "Marin",
+    "squadra": "Napoli",
+    "numero": 3,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 68,
+    "nome": "Scott",
+    "cognome": "McTominay",
+    "squadra": "Napoli",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 45,
+    "nazionalita": "Scozia"
+  },
+  {
+    "id": 69,
+    "nome": "Frank",
+    "cognome": "Anguissa",
+    "squadra": "Napoli",
+    "numero": 99,
+    "ruolo": "C",
+    "prezzo": 28,
+    "nazionalita": "Camerun"
+  },
+  {
+    "id": 70,
+    "nome": "Stanislav",
+    "cognome": "Lobotka",
+    "squadra": "Napoli",
+    "numero": 68,
+    "ruolo": "C",
+    "prezzo": 22,
+    "nazionalita": "Slovacchia"
+  },
+  {
+    "id": 71,
+    "nome": "Billy",
+    "cognome": "Gilmour",
+    "squadra": "Napoli",
+    "numero": 6,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Scozia"
+  },
+  {
+    "id": 72,
+    "nome": "Khvicha",
+    "cognome": "Kvaratskhelia",
+    "squadra": "Napoli",
+    "numero": 77,
+    "ruolo": "A",
+    "prezzo": 85,
+    "nazionalita": "Georgia"
+  },
+  {
+    "id": 73,
+    "nome": "Romelu",
+    "cognome": "Lukaku",
+    "squadra": "Napoli",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 80,
+    "nazionalita": "Belgio"
+  },
+  {
+    "id": 74,
+    "nome": "David",
+    "cognome": "Neres",
+    "squadra": "Napoli",
+    "numero": 7,
+    "ruolo": "A",
+    "prezzo": 40,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 75,
+    "nome": "Matteo",
+    "cognome": "Politano",
+    "squadra": "Napoli",
+    "numero": 21,
+    "ruolo": "A",
+    "prezzo": 25,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 76,
+    "nome": "Giovanni",
+    "cognome": "Simeone",
+    "squadra": "Napoli",
+    "numero": 18,
+    "ruolo": "A",
+    "prezzo": 12,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 77,
+    "nome": "Giacomo",
+    "cognome": "Raspadori",
+    "squadra": "Napoli",
+    "numero": 81,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 78,
+    "nome": "Mile",
+    "cognome": "Svilar",
+    "squadra": "Roma",
+    "numero": 99,
+    "ruolo": "P",
+    "prezzo": 30,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 79,
+    "nome": "Mathew",
+    "cognome": "Ryan",
+    "squadra": "Roma",
+    "numero": 98,
+    "ruolo": "P",
+    "prezzo": 1,
+    "nazionalita": "Australia"
+  },
+  {
+    "id": 80,
+    "nome": "Gianluca",
+    "cognome": "Mancini",
+    "squadra": "Roma",
+    "numero": 23,
+    "ruolo": "D",
+    "prezzo": 28,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 81,
+    "nome": "Evan",
+    "cognome": "Ndicka",
+    "squadra": "Roma",
+    "numero": 5,
+    "ruolo": "D",
+    "prezzo": 22,
+    "nazionalita": "Costa d'Avorio"
+  },
+  {
+    "id": 82,
+    "nome": "Mats",
+    "cognome": "Hummels",
+    "squadra": "Roma",
+    "numero": 15,
+    "ruolo": "D",
+    "prezzo": 18,
+    "nazionalita": "Germania"
+  },
+  {
+    "id": 83,
+    "nome": "Mario",
+    "cognome": "Hermoso",
+    "squadra": "Roma",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 84,
+    "nome": "Angelino",
+    "cognome": "Tasende",
+    "squadra": "Roma",
+    "numero": 3,
+    "ruolo": "D",
+    "prezzo": 20,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 85,
+    "nome": "Zeki",
+    "cognome": "Celik",
+    "squadra": "Roma",
+    "numero": 19,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Turchia"
+  },
+  {
+    "id": 86,
+    "nome": "Lorenzo",
+    "cognome": "Pellegrini",
+    "squadra": "Roma",
+    "numero": 7,
+    "ruolo": "C",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 87,
+    "nome": "Paulo",
+    "cognome": "Dybala",
+    "squadra": "Roma",
+    "numero": 21,
+    "ruolo": "A",
+    "prezzo": 70,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 88,
+    "nome": "Manu",
+    "cognome": "Koné",
+    "squadra": "Roma",
+    "numero": 17,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 89,
+    "nome": "Bryan",
+    "cognome": "Cristante",
+    "squadra": "Roma",
+    "numero": 4,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 90,
+    "nome": "Leandro",
+    "cognome": "Paredes",
+    "squadra": "Roma",
+    "numero": 16,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 91,
+    "nome": "Tommaso",
+    "cognome": "Baldanzi",
+    "squadra": "Roma",
+    "numero": 35,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 92,
+    "nome": "Artem",
+    "cognome": "Dovbyk",
+    "squadra": "Roma",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 75,
+    "nazionalita": "Ucraina"
+  },
+  {
+    "id": 93,
+    "nome": "Matias",
+    "cognome": "Soulé",
+    "squadra": "Roma",
+    "numero": 18,
+    "ruolo": "A",
+    "prezzo": 40,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 94,
+    "nome": "Stephan",
+    "cognome": "El Shaarawy",
+    "squadra": "Roma",
+    "numero": 92,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 95,
+    "nome": "Alexis",
+    "cognome": "Saelemaekers",
+    "squadra": "Roma",
+    "numero": 56,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Belgio"
+  },
+  {
+    "id": 96,
+    "nome": "Marco",
+    "cognome": "Carnesecchi",
+    "squadra": "Atalanta",
+    "numero": 29,
+    "ruolo": "P",
+    "prezzo": 30,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 97,
+    "nome": "Rui",
+    "cognome": "Patricio",
+    "squadra": "Atalanta",
+    "numero": 28,
+    "ruolo": "P",
+    "prezzo": 1,
+    "nazionalita": "Portogallo"
+  },
+  {
+    "id": 98,
+    "nome": "Isak",
+    "cognome": "Hien",
+    "squadra": "Atalanta",
+    "numero": 4,
+    "ruolo": "D",
+    "prezzo": 25,
+    "nazionalita": "Svezia"
+  },
+  {
+    "id": 99,
+    "nome": "Sead",
+    "cognome": "Kolasinac",
+    "squadra": "Atalanta",
+    "numero": 23,
+    "ruolo": "D",
+    "prezzo": 20,
+    "nazionalita": "Bosnia"
+  },
+  {
+    "id": 100,
+    "nome": "Giorgio",
+    "cognome": "Scalvini",
+    "squadra": "Atalanta",
+    "numero": 42,
+    "ruolo": "D",
+    "prezzo": 22,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 101,
+    "nome": "Berat",
+    "cognome": "Djimsiti",
+    "squadra": "Atalanta",
+    "numero": 19,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Albania"
+  },
+  {
+    "id": 102,
+    "nome": "Raoul",
+    "cognome": "Bellanova",
+    "squadra": "Atalanta",
+    "numero": 16,
+    "ruolo": "D",
+    "prezzo": 30,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 103,
+    "nome": "Davide",
+    "cognome": "Zappacosta",
+    "squadra": "Atalanta",
+    "numero": 77,
+    "ruolo": "D",
+    "prezzo": 18,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 104,
+    "nome": "Matteo",
+    "cognome": "Ruggeri",
+    "squadra": "Atalanta",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 20,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 105,
+    "nome": "Ederson",
+    "cognome": "Dos Santos",
+    "squadra": "Atalanta",
+    "numero": 13,
+    "ruolo": "C",
+    "prezzo": 45,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 106,
+    "nome": "Marten",
+    "cognome": "De Roon",
+    "squadra": "Atalanta",
+    "numero": 15,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 107,
+    "nome": "Mario",
+    "cognome": "Pasalic",
+    "squadra": "Atalanta",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 35,
+    "nazionalita": "Croazia"
+  },
+  {
+    "id": 108,
+    "nome": "Lazar",
+    "cognome": "Samardzic",
+    "squadra": "Atalanta",
+    "numero": 24,
+    "ruolo": "C",
+    "prezzo": 30,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 109,
+    "nome": "Charles",
+    "cognome": "De Ketelaere",
+    "squadra": "Atalanta",
+    "numero": 17,
+    "ruolo": "A",
+    "prezzo": 50,
+    "nazionalita": "Belgio"
+  },
+  {
+    "id": 110,
+    "nome": "Ademola",
+    "cognome": "Lookman",
+    "squadra": "Atalanta",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 80,
+    "nazionalita": "Nigeria"
+  },
+  {
+    "id": 111,
+    "nome": "Mateo",
+    "cognome": "Retegui",
+    "squadra": "Atalanta",
+    "numero": 32,
+    "ruolo": "A",
+    "prezzo": 70,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 112,
+    "nome": "Gianluca",
+    "cognome": "Scamacca",
+    "squadra": "Atalanta",
+    "numero": 90,
+    "ruolo": "A",
+    "prezzo": 50,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 113,
+    "nome": "Nicolò",
+    "cognome": "Zaniolo",
+    "squadra": "Atalanta",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 114,
+    "nome": "Ivan",
+    "cognome": "Provedel",
+    "squadra": "Lazio",
+    "numero": 94,
+    "ruolo": "P",
+    "prezzo": 28,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 115,
+    "nome": "Christos",
+    "cognome": "Mandas",
+    "squadra": "Lazio",
+    "numero": 35,
+    "ruolo": "P",
+    "prezzo": 2,
+    "nazionalita": "Grecia"
+  },
+  {
+    "id": 116,
+    "nome": "Alessio",
+    "cognome": "Romagnoli",
+    "squadra": "Lazio",
+    "numero": 13,
+    "ruolo": "D",
+    "prezzo": 20,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 117,
+    "nome": "Mario",
+    "cognome": "Gila",
+    "squadra": "Lazio",
+    "numero": 34,
+    "ruolo": "D",
+    "prezzo": 18,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 118,
+    "nome": "Nuno",
+    "cognome": "Tavares",
+    "squadra": "Lazio",
+    "numero": 30,
+    "ruolo": "D",
+    "prezzo": 35,
+    "nazionalita": "Portogallo"
+  },
+  {
+    "id": 119,
+    "nome": "Adam",
+    "cognome": "Marusic",
+    "squadra": "Lazio",
+    "numero": 77,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Montenegro"
+  },
+  {
+    "id": 120,
+    "nome": "Manuel",
+    "cognome": "Lazzari",
+    "squadra": "Lazio",
+    "numero": 29,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 121,
+    "nome": "Luca",
+    "cognome": "Pellegrini",
+    "squadra": "Lazio",
+    "numero": 3,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 122,
+    "nome": "Mattia",
+    "cognome": "Zaccagni",
+    "squadra": "Lazio",
+    "numero": 10,
+    "ruolo": "C",
+    "prezzo": 60,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 123,
+    "nome": "Matteo",
+    "cognome": "Guendouzi",
+    "squadra": "Lazio",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 124,
+    "nome": "Nicolo",
+    "cognome": "Rovella",
+    "squadra": "Lazio",
+    "numero": 6,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 125,
+    "nome": "Gaetano",
+    "cognome": "Castrovilli",
+    "squadra": "Lazio",
+    "numero": 22,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 126,
+    "nome": "Gustav",
+    "cognome": "Isaksen",
+    "squadra": "Lazio",
+    "numero": 18,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Danimarca"
+  },
+  {
+    "id": 127,
+    "nome": "Boulaye",
+    "cognome": "Dia",
+    "squadra": "Lazio",
+    "numero": 19,
+    "ruolo": "A",
+    "prezzo": 45,
+    "nazionalita": "Senegal"
+  },
+  {
+    "id": 128,
+    "nome": "Valentin",
+    "cognome": "Castellanos",
+    "squadra": "Lazio",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 50,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 129,
+    "nome": "Tijjani",
+    "cognome": "Noslin",
+    "squadra": "Lazio",
+    "numero": 14,
+    "ruolo": "A",
+    "prezzo": 25,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 130,
+    "nome": "Pedro",
+    "cognome": "Rodriguez",
+    "squadra": "Lazio",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 131,
+    "nome": "David",
+    "cognome": "De Gea",
+    "squadra": "Fiorentina",
+    "numero": 43,
+    "ruolo": "P",
+    "prezzo": 35,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 132,
+    "nome": "Pietro",
+    "cognome": "Terracciano",
+    "squadra": "Fiorentina",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 1,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 133,
+    "nome": "Lucas",
+    "cognome": "Martinez Quarta",
+    "squadra": "Fiorentina",
+    "numero": 28,
+    "ruolo": "D",
+    "prezzo": 25,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 134,
+    "nome": "Luca",
+    "cognome": "Ranieri",
+    "squadra": "Fiorentina",
+    "numero": 16,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 135,
+    "nome": "Marin",
+    "cognome": "Pongracic",
+    "squadra": "Fiorentina",
+    "numero": 5,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Croazia"
+  },
+  {
+    "id": 136,
+    "nome": "Dodo",
+    "cognome": "Ribeiro",
+    "squadra": "Fiorentina",
+    "numero": 2,
+    "ruolo": "D",
+    "prezzo": 22,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 137,
+    "nome": "Robin",
+    "cognome": "Gosens",
+    "squadra": "Fiorentina",
+    "numero": 21,
+    "ruolo": "D",
+    "prezzo": 35,
+    "nazionalita": "Germania"
+  },
+  {
+    "id": 138,
+    "nome": "Cristiano",
+    "cognome": "Biraghi",
+    "squadra": "Fiorentina",
+    "numero": 3,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 139,
+    "nome": "Edoardo",
+    "cognome": "Bove",
+    "squadra": "Fiorentina",
+    "numero": 4,
+    "ruolo": "C",
+    "prezzo": 20,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 140,
+    "nome": "Danilo",
+    "cognome": "Cataldi",
+    "squadra": "Fiorentina",
+    "numero": 32,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 141,
+    "nome": "Yacine",
+    "cognome": "Adli",
+    "squadra": "Fiorentina",
+    "numero": 29,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 142,
+    "nome": "Andrea",
+    "cognome": "Colpani",
+    "squadra": "Fiorentina",
+    "numero": 23,
+    "ruolo": "C",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 143,
+    "nome": "Albert",
+    "cognome": "Gudmundsson",
+    "squadra": "Fiorentina",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 65,
+    "nazionalita": "Islanda"
+  },
+  {
+    "id": 144,
+    "nome": "Moise",
+    "cognome": "Kean",
+    "squadra": "Fiorentina",
+    "numero": 20,
+    "ruolo": "A",
+    "prezzo": 55,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 145,
+    "nome": "Lucas",
+    "cognome": "Beltran",
+    "squadra": "Fiorentina",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 146,
+    "nome": "Christian",
+    "cognome": "Kouamé",
+    "squadra": "Fiorentina",
+    "numero": 99,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Costa d'Avorio"
+  },
+  {
+    "id": 147,
+    "nome": "Riccardo",
+    "cognome": "Sottil",
+    "squadra": "Fiorentina",
+    "numero": 7,
+    "ruolo": "A",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 148,
+    "nome": "Lukasz",
+    "cognome": "Skorupski",
+    "squadra": "Bologna",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 25,
+    "nazionalita": "Polonia"
+  },
+  {
+    "id": 149,
+    "nome": "Sam",
+    "cognome": "Beukema",
+    "squadra": "Bologna",
+    "numero": 31,
+    "ruolo": "D",
+    "prezzo": 20,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 150,
+    "nome": "Jhon",
+    "cognome": "Lucumi",
+    "squadra": "Bologna",
+    "numero": 26,
+    "ruolo": "D",
+    "prezzo": 18,
+    "nazionalita": "Colombia"
+  },
+  {
+    "id": 151,
+    "nome": "Stefan",
+    "cognome": "Posch",
+    "squadra": "Bologna",
+    "numero": 3,
+    "ruolo": "D",
+    "prezzo": 22,
+    "nazionalita": "Austria"
+  },
+  {
+    "id": 152,
+    "nome": "Charalampos",
+    "cognome": "Lykogiannis",
+    "squadra": "Bologna",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Grecia"
+  },
+  {
+    "id": 153,
+    "nome": "Juan",
+    "cognome": "Miranda",
+    "squadra": "Bologna",
+    "numero": 33,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 154,
+    "nome": "Remo",
+    "cognome": "Freuler",
+    "squadra": "Bologna",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Svizzera"
+  },
+  {
+    "id": 155,
+    "nome": "Michel",
+    "cognome": "Aebischer",
+    "squadra": "Bologna",
+    "numero": 20,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Svizzera"
+  },
+  {
+    "id": 156,
+    "nome": "Lewis",
+    "cognome": "Ferguson",
+    "squadra": "Bologna",
+    "numero": 19,
+    "ruolo": "C",
+    "prezzo": 45,
+    "nazionalita": "Scozia"
+  },
+  {
+    "id": 157,
+    "nome": "Giovanni",
+    "cognome": "Fabbian",
+    "squadra": "Bologna",
+    "numero": 80,
+    "ruolo": "C",
+    "prezzo": 30,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 158,
+    "nome": "Riccardo",
+    "cognome": "Orsolini",
+    "squadra": "Bologna",
+    "numero": 7,
+    "ruolo": "C",
+    "prezzo": 60,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 159,
+    "nome": "Dan",
+    "cognome": "Ndoye",
+    "squadra": "Bologna",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 25,
+    "nazionalita": "Svizzera"
+  },
+  {
+    "id": 160,
+    "nome": "Santiago",
+    "cognome": "Castro",
+    "squadra": "Bologna",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 35,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 161,
+    "nome": "Thijs",
+    "cognome": "Dallinga",
+    "squadra": "Bologna",
+    "numero": 24,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Olanda"
+  },
+  {
+    "id": 162,
+    "nome": "Vanja",
+    "cognome": "Milinkovic-Savic",
+    "squadra": "Torino",
+    "numero": 32,
+    "ruolo": "P",
+    "prezzo": 20,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 163,
+    "nome": "Saul",
+    "cognome": "Coco",
+    "squadra": "Torino",
+    "numero": 23,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Guinea Eq."
+  },
+  {
+    "id": 164,
+    "nome": "Guillermo",
+    "cognome": "Maripan",
+    "squadra": "Torino",
+    "numero": 13,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Cile"
+  },
+  {
+    "id": 165,
+    "nome": "Adam",
+    "cognome": "Masina",
+    "squadra": "Torino",
+    "numero": 5,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Marocco"
+  },
+  {
+    "id": 166,
+    "nome": "Valentino",
+    "cognome": "Lazaro",
+    "squadra": "Torino",
+    "numero": 20,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Austria"
+  },
+  {
+    "id": 167,
+    "nome": "Borna",
+    "cognome": "Sosa",
+    "squadra": "Torino",
+    "numero": 24,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Croazia"
+  },
+  {
+    "id": 168,
+    "nome": "Ivan",
+    "cognome": "Ilic",
+    "squadra": "Torino",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 22,
+    "nazionalita": "Serbia"
+  },
+  {
+    "id": 169,
+    "nome": "Samuele",
+    "cognome": "Ricci",
+    "squadra": "Torino",
+    "numero": 28,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 170,
+    "nome": "Nikola",
+    "cognome": "Vlasic",
+    "squadra": "Torino",
+    "numero": 10,
+    "ruolo": "C",
+    "prezzo": 28,
+    "nazionalita": "Croazia"
+  },
+  {
+    "id": 171,
+    "nome": "Antonio",
+    "cognome": "Sanabria",
+    "squadra": "Torino",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 30,
+    "nazionalita": "Paraguay"
+  },
+  {
+    "id": 172,
+    "nome": "Che",
+    "cognome": "Adams",
+    "squadra": "Torino",
+    "numero": 18,
+    "ruolo": "A",
+    "prezzo": 40,
+    "nazionalita": "Scozia"
+  },
+  {
+    "id": 173,
+    "nome": "Duvan",
+    "cognome": "Zapata",
+    "squadra": "Torino",
+    "numero": 91,
+    "ruolo": "A",
+    "prezzo": 55,
+    "nazionalita": "Colombia"
+  },
+  {
+    "id": 174,
+    "nome": "Emil",
+    "cognome": "Audero",
+    "squadra": "Como",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 175,
+    "nome": "Pepe",
+    "cognome": "Reina",
+    "squadra": "Como",
+    "numero": 25,
+    "ruolo": "P",
+    "prezzo": 1,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 176,
+    "nome": "Alberto",
+    "cognome": "Dossena",
+    "squadra": "Como",
+    "numero": 4,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 177,
+    "nome": "Raphael",
+    "cognome": "Varane",
+    "squadra": "Como",
+    "numero": 19,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 178,
+    "nome": "Alberto",
+    "cognome": "Moreno",
+    "squadra": "Como",
+    "numero": 18,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 179,
+    "nome": "Sergi",
+    "cognome": "Roberto",
+    "squadra": "Como",
+    "numero": 20,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 180,
+    "nome": "Maximo",
+    "cognome": "Perrone",
+    "squadra": "Como",
+    "numero": 32,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 181,
+    "nome": "Nico",
+    "cognome": "Paz",
+    "squadra": "Como",
+    "numero": 79,
+    "ruolo": "C",
+    "prezzo": 35,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 182,
+    "nome": "Gabriel",
+    "cognome": "Strefezza",
+    "squadra": "Como",
+    "numero": 7,
+    "ruolo": "C",
+    "prezzo": 30,
+    "nazionalita": "Brasile"
+  },
+  {
+    "id": 183,
+    "nome": "Patrick",
+    "cognome": "Cutrone",
+    "squadra": "Como",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 184,
+    "nome": "Andrea",
+    "cognome": "Belotti",
+    "squadra": "Como",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 25,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 185,
+    "nome": "Alieu",
+    "cognome": "Fadera",
+    "squadra": "Como",
+    "numero": 16,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Gambia"
+  },
+  {
+    "id": 186,
+    "nome": "Pierluigi",
+    "cognome": "Gollini",
+    "squadra": "Genoa",
+    "numero": 95,
+    "ruolo": "P",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 187,
+    "nome": "Johan",
+    "cognome": "Vasquez",
+    "squadra": "Genoa",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Messico"
+  },
+  {
+    "id": 188,
+    "nome": "Morten",
+    "cognome": "Frendrup",
+    "squadra": "Genoa",
+    "numero": 32,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Danimarca"
+  },
+  {
+    "id": 189,
+    "nome": "Andrea",
+    "cognome": "Pinamonti",
+    "squadra": "Genoa",
+    "numero": 19,
+    "ruolo": "A",
+    "prezzo": 35,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 190,
+    "nome": "Zion",
+    "cognome": "Suzuki",
+    "squadra": "Parma",
+    "numero": 31,
+    "ruolo": "P",
+    "prezzo": 12,
+    "nazionalita": "Giappone"
+  },
+  {
+    "id": 191,
+    "nome": "Dennis",
+    "cognome": "Man",
+    "squadra": "Parma",
+    "numero": 98,
+    "ruolo": "A",
+    "prezzo": 40,
+    "nazionalita": "Romania"
+  },
+  {
+    "id": 192,
+    "nome": "Adrian",
+    "cognome": "Bernabe",
+    "squadra": "Parma",
+    "numero": 10,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Spagna"
+  },
+  {
+    "id": 193,
+    "nome": "Ange",
+    "cognome": "Bonny",
+    "squadra": "Parma",
+    "numero": 13,
+    "ruolo": "A",
+    "prezzo": 30,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 194,
+    "nome": "Maduka",
+    "cognome": "Okoye",
+    "squadra": "Udinese",
+    "numero": 40,
+    "ruolo": "P",
+    "prezzo": 15,
+    "nazionalita": "Nigeria"
+  },
+  {
+    "id": 195,
+    "nome": "Jaka",
+    "cognome": "Bijol",
+    "squadra": "Udinese",
+    "numero": 29,
+    "ruolo": "D",
+    "prezzo": 18,
+    "nazionalita": "Slovenia"
+  },
+  {
+    "id": 196,
+    "nome": "Florian",
+    "cognome": "Thauvin",
+    "squadra": "Udinese",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 35,
+    "nazionalita": "Francia"
+  },
+  {
+    "id": 197,
+    "nome": "Lorenzo",
+    "cognome": "Lucca",
+    "squadra": "Udinese",
+    "numero": 17,
+    "ruolo": "A",
+    "prezzo": 30,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 198,
+    "nome": "Marco",
+    "cognome": "Silvestri",
+    "squadra": "Cremonese",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 10,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 199,
+    "nome": "Luka",
+    "cognome": "Lochoshvili",
+    "squadra": "Cremonese",
+    "numero": 44,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Georgia"
+  },
+  {
+    "id": 200,
+    "nome": "Franco",
+    "cognome": "Vazquez",
+    "squadra": "Cremonese",
+    "numero": 20,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Argentina"
+  },
+  {
+    "id": 201,
+    "nome": "Manuel",
+    "cognome": "De Luca",
+    "squadra": "Cremonese",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 202,
+    "nome": "Adrian",
+    "cognome": "Semper",
+    "squadra": "Pisa",
+    "numero": 47,
+    "ruolo": "P",
+    "prezzo": 8,
+    "nazionalita": "Croazia"
+  },
+  {
+    "id": 203,
+    "nome": "Simone",
+    "cognome": "Canestrelli",
+    "squadra": "Pisa",
+    "numero": 5,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 204,
+    "nome": "Marius",
+    "cognome": "Marin",
+    "squadra": "Pisa",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Romania"
+  },
+  {
+    "id": 205,
+    "nome": "Nicholas",
+    "cognome": "Bonfanti",
+    "squadra": "Pisa",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 206,
+    "nome": "Wladimiro",
+    "cognome": "Falcone",
+    "squadra": "Lecce",
+    "numero": 30,
+    "ruolo": "P",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 207,
+    "nome": "Federico",
+    "cognome": "Baschirotto",
+    "squadra": "Lecce",
+    "numero": 6,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 208,
+    "nome": "Ylber",
+    "cognome": "Ramadani",
+    "squadra": "Lecce",
+    "numero": 20,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Albania"
+  },
+  {
+    "id": 209,
+    "nome": "Nikola",
+    "cognome": "Krstovic",
+    "squadra": "Lecce",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 25,
+    "nazionalita": "Montenegro"
+  },
+  {
+    "id": 210,
+    "nome": "Lorenzo",
+    "cognome": "Montipò",
+    "squadra": "Verona",
+    "numero": 1,
+    "ruolo": "P",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 211,
+    "nome": "Giangiacomo",
+    "cognome": "Magnani",
+    "squadra": "Verona",
+    "numero": 23,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 212,
+    "nome": "Suat",
+    "cognome": "Serdar",
+    "squadra": "Verona",
+    "numero": 25,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Germania"
+  },
+  {
+    "id": 213,
+    "nome": "Casper",
+    "cognome": "Tengstedt",
+    "squadra": "Verona",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Danimarca"
+  },
+  {
+    "id": 214,
+    "nome": "Simone",
+    "cognome": "Scuffet",
+    "squadra": "Cagliari",
+    "numero": 22,
+    "ruolo": "P",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 215,
+    "nome": "Sebastiano",
+    "cognome": "Luperto",
+    "squadra": "Cagliari",
+    "numero": 6,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 216,
+    "nome": "Razvan",
+    "cognome": "Marin",
+    "squadra": "Cagliari",
+    "numero": 18,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Romania"
+  },
+  {
+    "id": 217,
+    "nome": "Roberto",
+    "cognome": "Piccoli",
+    "squadra": "Cagliari",
+    "numero": 91,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 218,
+    "nome": "Stefano",
+    "cognome": "Turati",
+    "squadra": "Monza",
+    "numero": 30,
+    "ruolo": "P",
+    "prezzo": 15,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 219,
+    "nome": "Armando",
+    "cognome": "Izzo",
+    "squadra": "Monza",
+    "numero": 4,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 220,
+    "nome": "Matteo",
+    "cognome": "Pessina",
+    "squadra": "Monza",
+    "numero": 32,
+    "ruolo": "C",
+    "prezzo": 20,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 221,
+    "nome": "Daniel",
+    "cognome": "Maldini",
+    "squadra": "Monza",
+    "numero": 27,
+    "ruolo": "C",
+    "prezzo": 25,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 222,
+    "nome": "Dany",
+    "cognome": "Mota",
+    "squadra": "Monza",
+    "numero": 47,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Portogallo"
+  },
+  {
+    "id": 223,
+    "nome": "Devis",
+    "cognome": "Vasquez",
+    "squadra": "Empoli",
+    "numero": 23,
+    "ruolo": "P",
+    "prezzo": 12,
+    "nazionalita": "Colombia"
+  },
+  {
+    "id": 224,
+    "nome": "Ardian",
+    "cognome": "Ismajli",
+    "squadra": "Empoli",
+    "numero": 34,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Albania"
+  },
+  {
+    "id": 225,
+    "nome": "Jacopo",
+    "cognome": "Fazzini",
+    "squadra": "Empoli",
+    "numero": 10,
+    "ruolo": "C",
+    "prezzo": 18,
+    "nazionalita": "Italia"
+  },
+  {
+    "id": 226,
+    "nome": "Lorenzo",
+    "cognome": "Colombo",
+    "squadra": "Empoli",
+    "numero": 29,
+    "ruolo": "A",
+    "prezzo": 20,
+    "nazionalita": "Italia"
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Ferrari",
+    "squadra": "Fiorentina",
+    "numero": 75,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 227
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Marino",
+    "squadra": "Lazio",
+    "numero": 28,
+    "ruolo": "C",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 228
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Greco",
+    "squadra": "Cremonese",
+    "numero": 37,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 229
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Rizzo",
+    "squadra": "Inter",
+    "numero": 8,
+    "ruolo": "A",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 230
+  },
+  {
+    "nome": "Simone",
+    "cognome": "De Luca",
+    "squadra": "Parma",
+    "numero": 76,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 231
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Marino",
+    "squadra": "Parma",
+    "numero": 61,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 232
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Gallo",
+    "squadra": "Pisa",
+    "numero": 26,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 233
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Esposito",
+    "squadra": "Venezia",
+    "numero": 25,
+    "ruolo": "A",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 234
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Ricci",
+    "squadra": "Juventus",
+    "numero": 89,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 235
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Ricci",
+    "squadra": "Cremonese",
+    "numero": 72,
+    "ruolo": "D",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 236
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rossi",
+    "squadra": "Sassuolo",
+    "numero": 88,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 237
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Bianchi",
+    "squadra": "Cremonese",
+    "numero": 36,
+    "ruolo": "A",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 238
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Bruno",
+    "squadra": "Spezia",
+    "numero": 49,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 239
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Gallo",
+    "squadra": "Parma",
+    "numero": 50,
+    "ruolo": "C",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 240
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "De Luca",
+    "squadra": "Cagliari",
+    "numero": 49,
+    "ruolo": "C",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 241
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Moretti",
+    "squadra": "Atalanta",
+    "numero": 71,
+    "ruolo": "A",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 242
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Moretti",
+    "squadra": "Salernitana",
+    "numero": 89,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 243
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Esposito",
+    "squadra": "Juventus",
+    "numero": 14,
+    "ruolo": "C",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 244
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rizzo",
+    "squadra": "Pisa",
+    "numero": 59,
+    "ruolo": "C",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 245
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Colombo",
+    "squadra": "Atalanta",
+    "numero": 68,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 246
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Romano",
+    "squadra": "Juventus",
+    "numero": 52,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 247
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Giordano",
+    "squadra": "Genoa",
+    "numero": 92,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 248
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Bianchi",
+    "squadra": "Brescia",
+    "numero": 63,
+    "ruolo": "D",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 249
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Conti",
+    "squadra": "Bologna",
+    "numero": 30,
+    "ruolo": "A",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 250
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Bruno",
+    "squadra": "Bologna",
+    "numero": 49,
+    "ruolo": "D",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 251
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Colombo",
+    "squadra": "Lecce",
+    "numero": 52,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 252
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Giordano",
+    "squadra": "Napoli",
+    "numero": 94,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 253
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Greco",
+    "squadra": "Sassuolo",
+    "numero": 39,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 254
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Romano",
+    "squadra": "Lecce",
+    "numero": 37,
+    "ruolo": "C",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 255
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Mancini",
+    "squadra": "Torino",
+    "numero": 57,
+    "ruolo": "A",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 256
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Ferrari",
+    "squadra": "Cremonese",
+    "numero": 44,
+    "ruolo": "C",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 257
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Giordano",
+    "squadra": "Salernitana",
+    "numero": 55,
+    "ruolo": "A",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 258
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Bruno",
+    "squadra": "Monza",
+    "numero": 23,
+    "ruolo": "A",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 259
+  },
+  {
+    "nome": "Marco",
+    "cognome": "De Luca",
+    "squadra": "Lazio",
+    "numero": 2,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 260
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Mancini",
+    "squadra": "Pisa",
+    "numero": 3,
+    "ruolo": "A",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 261
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rizzo",
+    "squadra": "Verona",
+    "numero": 52,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 262
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "De Luca",
+    "squadra": "Fiorentina",
+    "numero": 33,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 263
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Ricci",
+    "squadra": "Empoli",
+    "numero": 89,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 264
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "De Luca",
+    "squadra": "Fiorentina",
+    "numero": 17,
+    "ruolo": "A",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 265
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Giordano",
+    "squadra": "Bologna",
+    "numero": 69,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 266
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Moretti",
+    "squadra": "Brescia",
+    "numero": 72,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 267
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Gallo",
+    "squadra": "Lazio",
+    "numero": 79,
+    "ruolo": "A",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 268
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Esposito",
+    "squadra": "Como",
+    "numero": 10,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 269
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Esposito",
+    "squadra": "Venezia",
+    "numero": 93,
+    "ruolo": "A",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 270
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Rizzo",
+    "squadra": "Juventus",
+    "numero": 91,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 271
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Greco",
+    "squadra": "Sassuolo",
+    "numero": 49,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 272
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Bruno",
+    "squadra": "Sassuolo",
+    "numero": 66,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 273
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Gallo",
+    "squadra": "Roma",
+    "numero": 19,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 274
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Romano",
+    "squadra": "Roma",
+    "numero": 63,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 275
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Ferrari",
+    "squadra": "Venezia",
+    "numero": 86,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 276
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Costa",
+    "squadra": "Pisa",
+    "numero": 24,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 277
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Ferrari",
+    "squadra": "Como",
+    "numero": 93,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 278
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Rizzo",
+    "squadra": "Lazio",
+    "numero": 22,
+    "ruolo": "A",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 279
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Barbieri",
+    "squadra": "Sassuolo",
+    "numero": 22,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 280
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Romano",
+    "squadra": "Torino",
+    "numero": 25,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 281
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Giordano",
+    "squadra": "Napoli",
+    "numero": 28,
+    "ruolo": "C",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 282
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Ferrari",
+    "squadra": "Inter",
+    "numero": 45,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 283
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rossi",
+    "squadra": "Napoli",
+    "numero": 70,
+    "ruolo": "C",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 284
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Bruno",
+    "squadra": "Inter",
+    "numero": 52,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 285
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Costa",
+    "squadra": "Genoa",
+    "numero": 15,
+    "ruolo": "D",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 286
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Rizzo",
+    "squadra": "Lazio",
+    "numero": 82,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 287
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Ricci",
+    "squadra": "Pisa",
+    "numero": 86,
+    "ruolo": "A",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 288
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "De Luca",
+    "squadra": "Como",
+    "numero": 7,
+    "ruolo": "D",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 289
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Moretti",
+    "squadra": "Spezia",
+    "numero": 90,
+    "ruolo": "A",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 290
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Esposito",
+    "squadra": "Genoa",
+    "numero": 39,
+    "ruolo": "A",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 291
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Gallo",
+    "squadra": "Brescia",
+    "numero": 87,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 292
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Colombo",
+    "squadra": "Empoli",
+    "numero": 59,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 293
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Ricci",
+    "squadra": "Juventus",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 294
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Moretti",
+    "squadra": "Pisa",
+    "numero": 90,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 295
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Gallo",
+    "squadra": "Como",
+    "numero": 39,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 296
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Lombardi",
+    "squadra": "Roma",
+    "numero": 38,
+    "ruolo": "C",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 297
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Costa",
+    "squadra": "Verona",
+    "numero": 48,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 298
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Barbieri",
+    "squadra": "Sampdoria",
+    "numero": 48,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 299
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Ferrari",
+    "squadra": "Pisa",
+    "numero": 83,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 300
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Ferrari",
+    "squadra": "Juventus",
+    "numero": 28,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 301
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Ferrari",
+    "squadra": "Brescia",
+    "numero": 24,
+    "ruolo": "A",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 302
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Barbieri",
+    "squadra": "Parma",
+    "numero": 95,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 303
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Colombo",
+    "squadra": "Inter",
+    "numero": 68,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 304
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Marino",
+    "squadra": "Torino",
+    "numero": 9,
+    "ruolo": "A",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 305
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Marino",
+    "squadra": "Atalanta",
+    "numero": 95,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 306
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Bruno",
+    "squadra": "Sassuolo",
+    "numero": 33,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 307
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Bianchi",
+    "squadra": "Lecce",
+    "numero": 56,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 308
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Conti",
+    "squadra": "Lazio",
+    "numero": 45,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 309
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Giordano",
+    "squadra": "Monza",
+    "numero": 5,
+    "ruolo": "C",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 310
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Ferrari",
+    "squadra": "Empoli",
+    "numero": 57,
+    "ruolo": "D",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 311
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Marino",
+    "squadra": "Inter",
+    "numero": 94,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 312
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Giordano",
+    "squadra": "Juventus",
+    "numero": 69,
+    "ruolo": "C",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 313
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Barbieri",
+    "squadra": "Bologna",
+    "numero": 92,
+    "ruolo": "A",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 314
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Colombo",
+    "squadra": "Roma",
+    "numero": 2,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 315
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rossi",
+    "squadra": "Sampdoria",
+    "numero": 79,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 316
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Costa",
+    "squadra": "Cagliari",
+    "numero": 26,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 317
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Colombo",
+    "squadra": "Lecce",
+    "numero": 38,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 318
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Romano",
+    "squadra": "Pisa",
+    "numero": 95,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 319
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Mancini",
+    "squadra": "Inter",
+    "numero": 39,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 320
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Rizzo",
+    "squadra": "Lecce",
+    "numero": 7,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 321
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Costa",
+    "squadra": "Cremonese",
+    "numero": 42,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 322
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Ferrari",
+    "squadra": "Torino",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 323
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Conti",
+    "squadra": "Sampdoria",
+    "numero": 58,
+    "ruolo": "C",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 324
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Conti",
+    "squadra": "Como",
+    "numero": 53,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 325
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Lombardi",
+    "squadra": "Lazio",
+    "numero": 96,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 326
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Ferrari",
+    "squadra": "Atalanta",
+    "numero": 2,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 327
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Moretti",
+    "squadra": "Torino",
+    "numero": 30,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 328
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Costa",
+    "squadra": "Empoli",
+    "numero": 36,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 329
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Bianchi",
+    "squadra": "Venezia",
+    "numero": 26,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 330
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Giordano",
+    "squadra": "Salernitana",
+    "numero": 88,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 331
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Bianchi",
+    "squadra": "Juventus",
+    "numero": 82,
+    "ruolo": "C",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 332
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Lombardi",
+    "squadra": "Venezia",
+    "numero": 96,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 333
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Gallo",
+    "squadra": "Parma",
+    "numero": 10,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 334
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Barbieri",
+    "squadra": "Sampdoria",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 335
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Giordano",
+    "squadra": "Sassuolo",
+    "numero": 33,
+    "ruolo": "C",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 336
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Lombardi",
+    "squadra": "Genoa",
+    "numero": 68,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 337
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Greco",
+    "squadra": "Milan",
+    "numero": 60,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 338
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Costa",
+    "squadra": "Venezia",
+    "numero": 7,
+    "ruolo": "A",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 339
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Rizzo",
+    "squadra": "Brescia",
+    "numero": 40,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 340
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Giordano",
+    "squadra": "Genoa",
+    "numero": 98,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 341
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Barbieri",
+    "squadra": "Atalanta",
+    "numero": 91,
+    "ruolo": "C",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 342
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Marino",
+    "squadra": "Spezia",
+    "numero": 24,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 343
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rizzo",
+    "squadra": "Como",
+    "numero": 53,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 344
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Costa",
+    "squadra": "Venezia",
+    "numero": 83,
+    "ruolo": "C",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 345
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Greco",
+    "squadra": "Bologna",
+    "numero": 33,
+    "ruolo": "A",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 346
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Lombardi",
+    "squadra": "Spezia",
+    "numero": 49,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 347
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Conti",
+    "squadra": "Genoa",
+    "numero": 48,
+    "ruolo": "D",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 348
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Romano",
+    "squadra": "Lazio",
+    "numero": 16,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 349
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Barbieri",
+    "squadra": "Bologna",
+    "numero": 19,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 350
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Rossi",
+    "squadra": "Venezia",
+    "numero": 18,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 351
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Rizzo",
+    "squadra": "Inter",
+    "numero": 5,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 352
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Colombo",
+    "squadra": "Roma",
+    "numero": 56,
+    "ruolo": "C",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 353
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Romano",
+    "squadra": "Sassuolo",
+    "numero": 31,
+    "ruolo": "A",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 354
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Lombardi",
+    "squadra": "Monza",
+    "numero": 45,
+    "ruolo": "C",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 355
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Bianchi",
+    "squadra": "Torino",
+    "numero": 99,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 356
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Bruno",
+    "squadra": "Salernitana",
+    "numero": 81,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 357
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Rizzo",
+    "squadra": "Roma",
+    "numero": 84,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 358
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Colombo",
+    "squadra": "Brescia",
+    "numero": 54,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 359
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Colombo",
+    "squadra": "Genoa",
+    "numero": 34,
+    "ruolo": "C",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 360
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Rossi",
+    "squadra": "Cagliari",
+    "numero": 18,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 361
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Esposito",
+    "squadra": "Spezia",
+    "numero": 26,
+    "ruolo": "A",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 362
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Bianchi",
+    "squadra": "Brescia",
+    "numero": 86,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 363
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Costa",
+    "squadra": "Como",
+    "numero": 17,
+    "ruolo": "A",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 364
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Costa",
+    "squadra": "Lazio",
+    "numero": 37,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 365
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Ricci",
+    "squadra": "Bologna",
+    "numero": 24,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 366
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Marino",
+    "squadra": "Fiorentina",
+    "numero": 16,
+    "ruolo": "C",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 367
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Rizzo",
+    "squadra": "Sampdoria",
+    "numero": 61,
+    "ruolo": "C",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 368
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Esposito",
+    "squadra": "Torino",
+    "numero": 74,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 369
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Moretti",
+    "squadra": "Roma",
+    "numero": 85,
+    "ruolo": "A",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 370
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Ferrari",
+    "squadra": "Brescia",
+    "numero": 20,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 371
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Esposito",
+    "squadra": "Pisa",
+    "numero": 73,
+    "ruolo": "D",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 372
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Lombardi",
+    "squadra": "Parma",
+    "numero": 70,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 373
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Costa",
+    "squadra": "Udinese",
+    "numero": 70,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 374
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Greco",
+    "squadra": "Pisa",
+    "numero": 40,
+    "ruolo": "C",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 375
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Colombo",
+    "squadra": "Bologna",
+    "numero": 51,
+    "ruolo": "C",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 376
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Romano",
+    "squadra": "Juventus",
+    "numero": 31,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 377
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rossi",
+    "squadra": "Lazio",
+    "numero": 47,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 378
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Giordano",
+    "squadra": "Cagliari",
+    "numero": 38,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 379
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Barbieri",
+    "squadra": "Empoli",
+    "numero": 49,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 380
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Gallo",
+    "squadra": "Pisa",
+    "numero": 62,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 381
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Lombardi",
+    "squadra": "Milan",
+    "numero": 74,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 382
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "De Luca",
+    "squadra": "Pisa",
+    "numero": 14,
+    "ruolo": "D",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 383
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Costa",
+    "squadra": "Sassuolo",
+    "numero": 40,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 384
+  },
+  {
+    "nome": "Simone",
+    "cognome": "De Luca",
+    "squadra": "Empoli",
+    "numero": 41,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 385
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Greco",
+    "squadra": "Parma",
+    "numero": 88,
+    "ruolo": "D",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 386
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Gallo",
+    "squadra": "Inter",
+    "numero": 35,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 387
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Esposito",
+    "squadra": "Atalanta",
+    "numero": 70,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 388
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Lombardi",
+    "squadra": "Lecce",
+    "numero": 21,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 389
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Romano",
+    "squadra": "Inter",
+    "numero": 85,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 390
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Colombo",
+    "squadra": "Brescia",
+    "numero": 60,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 391
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Mancini",
+    "squadra": "Verona",
+    "numero": 84,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 392
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Ferrari",
+    "squadra": "Sassuolo",
+    "numero": 24,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 393
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Mancini",
+    "squadra": "Milan",
+    "numero": 8,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 394
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Romano",
+    "squadra": "Udinese",
+    "numero": 12,
+    "ruolo": "D",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 395
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Ricci",
+    "squadra": "Cagliari",
+    "numero": 83,
+    "ruolo": "D",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 396
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Costa",
+    "squadra": "Sassuolo",
+    "numero": 7,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 397
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Costa",
+    "squadra": "Milan",
+    "numero": 73,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 398
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Costa",
+    "squadra": "Milan",
+    "numero": 54,
+    "ruolo": "A",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 399
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Giordano",
+    "squadra": "Sampdoria",
+    "numero": 48,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 400
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Colombo",
+    "squadra": "Napoli",
+    "numero": 55,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 401
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Romano",
+    "squadra": "Cremonese",
+    "numero": 1,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 402
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Esposito",
+    "squadra": "Verona",
+    "numero": 97,
+    "ruolo": "C",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 403
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Bianchi",
+    "squadra": "Spezia",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 404
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Esposito",
+    "squadra": "Cagliari",
+    "numero": 58,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 405
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Romano",
+    "squadra": "Venezia",
+    "numero": 79,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 406
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Mancini",
+    "squadra": "Cremonese",
+    "numero": 55,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 407
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Gallo",
+    "squadra": "Monza",
+    "numero": 42,
+    "ruolo": "A",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 408
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Lombardi",
+    "squadra": "Como",
+    "numero": 13,
+    "ruolo": "C",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 409
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Bruno",
+    "squadra": "Inter",
+    "numero": 11,
+    "ruolo": "C",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 410
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Conti",
+    "squadra": "Venezia",
+    "numero": 81,
+    "ruolo": "D",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 411
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Bruno",
+    "squadra": "Cremonese",
+    "numero": 91,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 412
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Rossi",
+    "squadra": "Verona",
+    "numero": 71,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 413
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Romano",
+    "squadra": "Sassuolo",
+    "numero": 61,
+    "ruolo": "A",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 414
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Giordano",
+    "squadra": "Sassuolo",
+    "numero": 93,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 415
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Bianchi",
+    "squadra": "Parma",
+    "numero": 56,
+    "ruolo": "A",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 416
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Barbieri",
+    "squadra": "Genoa",
+    "numero": 71,
+    "ruolo": "D",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 417
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Moretti",
+    "squadra": "Monza",
+    "numero": 32,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 418
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Mancini",
+    "squadra": "Spezia",
+    "numero": 16,
+    "ruolo": "A",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 419
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Romano",
+    "squadra": "Empoli",
+    "numero": 43,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 420
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Romano",
+    "squadra": "Milan",
+    "numero": 78,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 421
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Barbieri",
+    "squadra": "Juventus",
+    "numero": 87,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 422
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Rizzo",
+    "squadra": "Salernitana",
+    "numero": 4,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 423
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Gallo",
+    "squadra": "Parma",
+    "numero": 39,
+    "ruolo": "D",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 424
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Lombardi",
+    "squadra": "Empoli",
+    "numero": 15,
+    "ruolo": "C",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 425
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "De Luca",
+    "squadra": "Torino",
+    "numero": 48,
+    "ruolo": "C",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 426
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Barbieri",
+    "squadra": "Parma",
+    "numero": 24,
+    "ruolo": "C",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 427
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Greco",
+    "squadra": "Parma",
+    "numero": 8,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 428
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Gallo",
+    "squadra": "Inter",
+    "numero": 86,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 429
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Romano",
+    "squadra": "Sassuolo",
+    "numero": 80,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 430
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Rizzo",
+    "squadra": "Spezia",
+    "numero": 84,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 431
+  },
+  {
+    "nome": "Francesco",
+    "cognome": "Giordano",
+    "squadra": "Empoli",
+    "numero": 92,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 432
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Greco",
+    "squadra": "Lazio",
+    "numero": 59,
+    "ruolo": "D",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 433
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Ferrari",
+    "squadra": "Napoli",
+    "numero": 86,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 434
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Romano",
+    "squadra": "Sassuolo",
+    "numero": 84,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 435
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Barbieri",
+    "squadra": "Napoli",
+    "numero": 61,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 436
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Ricci",
+    "squadra": "Spezia",
+    "numero": 90,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 437
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "De Luca",
+    "squadra": "Empoli",
+    "numero": 60,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 438
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Lombardi",
+    "squadra": "Cagliari",
+    "numero": 10,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 439
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Marino",
+    "squadra": "Udinese",
+    "numero": 10,
+    "ruolo": "D",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 440
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Romano",
+    "squadra": "Monza",
+    "numero": 94,
+    "ruolo": "D",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 441
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Mancini",
+    "squadra": "Lecce",
+    "numero": 15,
+    "ruolo": "A",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 442
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Bruno",
+    "squadra": "Empoli",
+    "numero": 80,
+    "ruolo": "A",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 443
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Ferrari",
+    "squadra": "Lazio",
+    "numero": 57,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 444
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Bruno",
+    "squadra": "Bologna",
+    "numero": 28,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 445
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Rossi",
+    "squadra": "Bologna",
+    "numero": 8,
+    "ruolo": "D",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 446
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Costa",
+    "squadra": "Parma",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 447
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Greco",
+    "squadra": "Juventus",
+    "numero": 76,
+    "ruolo": "C",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 448
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Giordano",
+    "squadra": "Pisa",
+    "numero": 82,
+    "ruolo": "C",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 449
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Bruno",
+    "squadra": "Parma",
+    "numero": 2,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 450
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Rizzo",
+    "squadra": "Pisa",
+    "numero": 83,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 451
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Greco",
+    "squadra": "Cremonese",
+    "numero": 31,
+    "ruolo": "D",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 452
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Marino",
+    "squadra": "Inter",
+    "numero": 9,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 453
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Mancini",
+    "squadra": "Como",
+    "numero": 53,
+    "ruolo": "A",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 454
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Gallo",
+    "squadra": "Monza",
+    "numero": 2,
+    "ruolo": "A",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 455
+  },
+  {
+    "nome": "Giovanni",
+    "cognome": "Bruno",
+    "squadra": "Como",
+    "numero": 74,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 456
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Conti",
+    "squadra": "Cagliari",
+    "numero": 74,
+    "ruolo": "A",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 457
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Conti",
+    "squadra": "Monza",
+    "numero": 47,
+    "ruolo": "D",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 458
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Barbieri",
+    "squadra": "Juventus",
+    "numero": 65,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 459
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Giordano",
+    "squadra": "Pisa",
+    "numero": 63,
+    "ruolo": "D",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 460
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Marino",
+    "squadra": "Salernitana",
+    "numero": 74,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 461
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Esposito",
+    "squadra": "Parma",
+    "numero": 6,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 462
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Marino",
+    "squadra": "Napoli",
+    "numero": 24,
+    "ruolo": "D",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 463
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Ferrari",
+    "squadra": "Cremonese",
+    "numero": 4,
+    "ruolo": "C",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 464
+  },
+  {
+    "nome": "Davide",
+    "cognome": "Mancini",
+    "squadra": "Cagliari",
+    "numero": 66,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 465
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Mancini",
+    "squadra": "Cagliari",
+    "numero": 12,
+    "ruolo": "D",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 466
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Conti",
+    "squadra": "Milan",
+    "numero": 79,
+    "ruolo": "D",
+    "prezzo": 6,
+    "nazionalita": "Italia",
+    "id": 467
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Rossi",
+    "squadra": "Bologna",
+    "numero": 64,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 468
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Lombardi",
+    "squadra": "Empoli",
+    "numero": 89,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 469
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Mancini",
+    "squadra": "Sassuolo",
+    "numero": 70,
+    "ruolo": "D",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 470
+  },
+  {
+    "nome": "Antonio",
+    "cognome": "Rossi",
+    "squadra": "Lecce",
+    "numero": 39,
+    "ruolo": "A",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 471
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Ricci",
+    "squadra": "Lazio",
+    "numero": 59,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 472
+  },
+  {
+    "nome": "Simone",
+    "cognome": "De Luca",
+    "squadra": "Sampdoria",
+    "numero": 11,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 473
+  },
+  {
+    "nome": "Luca",
+    "cognome": "Rizzo",
+    "squadra": "Pisa",
+    "numero": 45,
+    "ruolo": "C",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 474
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Conti",
+    "squadra": "Udinese",
+    "numero": 25,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 475
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Moretti",
+    "squadra": "Juventus",
+    "numero": 57,
+    "ruolo": "A",
+    "prezzo": 13,
+    "nazionalita": "Italia",
+    "id": 476
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Bianchi",
+    "squadra": "Bologna",
+    "numero": 22,
+    "ruolo": "C",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 477
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Bruno",
+    "squadra": "Roma",
+    "numero": 61,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 478
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Conti",
+    "squadra": "Lecce",
+    "numero": 34,
+    "ruolo": "A",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 479
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Rizzo",
+    "squadra": "Sassuolo",
+    "numero": 76,
+    "ruolo": "D",
+    "prezzo": 2,
+    "nazionalita": "Italia",
+    "id": 480
+  },
+  {
+    "nome": "Federico",
+    "cognome": "Ferrari",
+    "squadra": "Roma",
+    "numero": 90,
+    "ruolo": "C",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 481
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "Giordano",
+    "squadra": "Napoli",
+    "numero": 90,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 482
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Colombo",
+    "squadra": "Salernitana",
+    "numero": 76,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 483
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Rossi",
+    "squadra": "Roma",
+    "numero": 22,
+    "ruolo": "D",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 484
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "Bruno",
+    "squadra": "Juventus",
+    "numero": 30,
+    "ruolo": "C",
+    "prezzo": 11,
+    "nazionalita": "Italia",
+    "id": 485
+  },
+  {
+    "nome": "Stefano",
+    "cognome": "De Luca",
+    "squadra": "Monza",
+    "numero": 14,
+    "ruolo": "D",
+    "prezzo": 3,
+    "nazionalita": "Italia",
+    "id": 486
+  },
+  {
+    "nome": "Simone",
+    "cognome": "Giordano",
+    "squadra": "Spezia",
+    "numero": 52,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 487
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Bruno",
+    "squadra": "Torino",
+    "numero": 83,
+    "ruolo": "A",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 488
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Lombardi",
+    "squadra": "Napoli",
+    "numero": 75,
+    "ruolo": "D",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 489
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Moretti",
+    "squadra": "Milan",
+    "numero": 57,
+    "ruolo": "D",
+    "prezzo": 15,
+    "nazionalita": "Italia",
+    "id": 490
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Rossi",
+    "squadra": "Verona",
+    "numero": 12,
+    "ruolo": "C",
+    "prezzo": 5,
+    "nazionalita": "Italia",
+    "id": 491
+  },
+  {
+    "nome": "Andrea",
+    "cognome": "Rizzo",
+    "squadra": "Verona",
+    "numero": 12,
+    "ruolo": "A",
+    "prezzo": 8,
+    "nazionalita": "Italia",
+    "id": 492
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Rossi",
+    "squadra": "Venezia",
+    "numero": 61,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 493
+  },
+  {
+    "nome": "Marco",
+    "cognome": "Conti",
+    "squadra": "Como",
+    "numero": 26,
+    "ruolo": "C",
+    "prezzo": 9,
+    "nazionalita": "Italia",
+    "id": 494
+  },
+  {
+    "nome": "Lorenzo",
+    "cognome": "Barbieri",
+    "squadra": "Brescia",
+    "numero": 43,
+    "ruolo": "D",
+    "prezzo": 14,
+    "nazionalita": "Italia",
+    "id": 495
+  },
+  {
+    "nome": "Alessandro",
+    "cognome": "Barbieri",
+    "squadra": "Verona",
+    "numero": 61,
+    "ruolo": "A",
+    "prezzo": 4,
+    "nazionalita": "Italia",
+    "id": 496
+  },
+  {
+    "nome": "Luigi",
+    "cognome": "De Luca",
+    "squadra": "Bologna",
+    "numero": 89,
+    "ruolo": "C",
+    "prezzo": 12,
+    "nazionalita": "Italia",
+    "id": 497
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "Lombardi",
+    "squadra": "Roma",
+    "numero": 12,
+    "ruolo": "C",
+    "prezzo": 10,
+    "nazionalita": "Italia",
+    "id": 498
+  },
+  {
+    "nome": "Giuseppe",
+    "cognome": "De Luca",
+    "squadra": "Como",
+    "numero": 97,
+    "ruolo": "D",
+    "prezzo": 7,
+    "nazionalita": "Italia",
+    "id": 499
+  },
+  {
+    "nome": "Matteo",
+    "cognome": "Rossi",
+    "squadra": "Verona",
+    "numero": 24,
+    "ruolo": "A",
+    "prezzo": 1,
+    "nazionalita": "Italia",
+    "id": 500
+  }
+]
