@@ -26,7 +26,7 @@
                 <Label styleClass="modern-title" text="Le tue Leghe" />
                 <Label styleClass="subtitle" text="Gestisci le tue leghe" />
             </VBox>
-        </HBox> <Button fx:id="createLeagueButton" maxWidth="Infinity" onAction="#openCreateLeague" prefHeight="50.0" styleClass="floating-action-button" text="+ Crea Nuova Lega" />
+        </HBox>
 
         <HBox spacing="10" alignment="CENTER">
             <Button fx:id="createLeagueButton" text="+ Crea" styleClass="floating-action-button"
