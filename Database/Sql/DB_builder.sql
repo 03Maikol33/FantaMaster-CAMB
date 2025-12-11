@@ -32,7 +32,9 @@ CREATE TABLE leghe (
     id_creatore INT NOT NULL,
     iscrizioni_chiuse BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    codice_invito VARCHAR(10) UNIQUE, /* Nuova colonna per il codice invito */
+    codice_invito VARCHAR(10) UNIQUE,
+    -- NUOVA COLONNA: Moduli consentiti (CSV)
+    moduli_consentiti VARCHAR(255) DEFAULT '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2',
     FOREIGN KEY (id_creatore) REFERENCES utenti(id) ON DELETE CASCADE
 );
 

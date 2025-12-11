@@ -11,11 +11,12 @@ VALUES
 ('marta', 'marta@example.com', '$2a$12$PeT2j./oA8l0k3Euwu5wUuAL4IWrZy8iT2qsTyQwWAF2qo7KkK62q');
 
 -- 2. Inserimento Prime 3 Leghe (ID 1-3)
-INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito)
+-- Aggiornato con la colonna moduli_consentiti
+INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito, moduli_consentiti)
 VALUES
-('Serie A Legends', NULL, 10, 1, FALSE, 'A1B2C3'),
-('Premier Fantasy', NULL, 12, 3, FALSE, 'D4E5F6'),
-('Liga Master', NULL, 8, 3, TRUE, 'G7H8I9');
+('Serie A Legends', NULL, 10, 1, FALSE, 'A1B2C3', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Premier Fantasy', NULL, 12, 3, FALSE, 'D4E5F6', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Liga Master', NULL, 8, 3, TRUE, 'G7H8I9', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2');
 
 -- 3. Associazioni Utenti-Leghe Iniziali
 -- Maikol e Giulia nella Serie A Legends (Lega 1)
@@ -32,17 +33,18 @@ INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (1, 3, 'rifiuta
 INSERT INTO richieste_accesso (utente_id, lega_id, stato) VALUES (3, 1, 'accettata'); -- Luca -> Serie A
 
 -- 5. Inserimento Altre Leghe (ID 4-13)
-INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito) VALUES
-('Bundesliga Stars', NULL, 10, 2, FALSE, 'J0K1L2'),
-('Champions Fantasy', NULL, 12, 3, FALSE, 'M3N4O5'),
-('Serie B Challenge', NULL, 8, 4, FALSE, 'P6Q7R8'),
-('Coppa Italia Dream', NULL, 16, 2, FALSE, 'S9T0U1'),
-('Europa League Heroes', NULL, 10, 3, FALSE, 'V2W3X4'),
-('World Cup Legends', NULL, 20, 1, FALSE, 'Y5Z6A7'),
-('Calcio Vintage', NULL, 6, 4, FALSE, 'B8C9D0'),
-('Super League', NULL, 14, 2, FALSE, 'E1F2G3'),
-('MLS Fantasy', NULL, 12, 3, FALSE, 'H4I5J6'),
-('Friendly Cup', NULL, 8, 1, FALSE, 'K7L8M9');
+-- Aggiornato con la colonna moduli_consentiti
+INSERT INTO leghe (nome, icona, max_membri, id_creatore, iscrizioni_chiuse, codice_invito, moduli_consentiti) VALUES
+('Bundesliga Stars', NULL, 10, 2, FALSE, 'J0K1L2', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Champions Fantasy', NULL, 12, 3, FALSE, 'M3N4O5', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Serie B Challenge', NULL, 8, 4, FALSE, 'P6Q7R8', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Coppa Italia Dream', NULL, 16, 2, FALSE, 'S9T0U1', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Europa League Heroes', NULL, 10, 3, FALSE, 'V2W3X4', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('World Cup Legends', NULL, 20, 1, FALSE, 'Y5Z6A7', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Calcio Vintage', NULL, 6, 4, FALSE, 'B8C9D0', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Super League', NULL, 14, 2, FALSE, 'E1F2G3', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('MLS Fantasy', NULL, 12, 3, FALSE, 'H4I5J6', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2'),
+('Friendly Cup', NULL, 8, 1, FALSE, 'K7L8M9', '3-4-3,3-5-2,4-5-1,4-4-2,4-3-3,5-4-1,5-3-2');
 
 -- 6. Iscrizione massiva di Maikol (ID 1) nelle nuove leghe
 INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (1, 2);  -- Premier

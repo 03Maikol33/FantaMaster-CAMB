@@ -96,5 +96,22 @@ private void handleShareLeague() {
 
     alert.showAndWait();
 } 
+
+
+    //regolamento lega
+    @FXML
+    private void showRegolamento() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueRules.fxml"));
+            Parent view = loader.load();
+
+            LeagueRulesController controller = loader.getController();
+            controller.setCurrentLeague(currentLeague); 
+
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 // Fix conflitti definitivo
