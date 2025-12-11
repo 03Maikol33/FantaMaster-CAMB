@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="600.0" prefWidth="335.0" style="-fx-background-color: transparent;" stylesheets="@css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.LeagueRulesController">
+
+    <VBox spacing="15" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <StackPane>
+                <Circle fill="#805ad5" opacity="0.1" radius="20" />
+                <Label style="-fx-font-size: 16;" text="📋" />
+            </StackPane>
+            <VBox spacing="2">
+                <Label styleClass="modern-title" text="Regolamento" />
+                <Label styleClass="subtitle" text="Definisci le regole di gioco" />
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="modern-scroll" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="100.0">
+        <content>
+            <VBox spacing="20">
+                
+                <VBox spacing="10" styleClass="modern-card">
+                    <Label style="-fx-font-weight: bold; -fx-text-fill: #1e3a8a;" text="Moduli Consentiti" />
+                    <Label styleClass="hint-text" text="Seleziona i moduli utilizzabili dai fantallenatori." wrapText="true" />
+                    
+                    <FlowPane fx:id="modulesContainer" hgap="10" vgap="10" />
+                    
+                    <Label fx:id="errorLabel" styleClass="error-text" text="Seleziona almeno un modulo!" visible="false" />
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <Button fx:id="saveButton" maxWidth="Infinity" onAction="#handleSaveRules" prefHeight="45.0" styleClass="primary-button" text="SALVA REGOLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+
+</AnchorPane>

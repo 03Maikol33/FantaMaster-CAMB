@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane fx:controller="it.camb.fantamaster.controller.ListoneController"
+            prefHeight="600.0" prefWidth="350.0"
+            style="-fx-background-color: #f4f4f9;"
+            stylesheets="@css/style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+    <VBox spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+        
+        <HBox alignment="CENTER_LEFT" spacing="15" minHeight="50">
+            <StackPane>
+                <Circle fill="#667eea" opacity="0.1" radius="20" />
+                <Label style="-fx-font-size: 16;" text="🏆" />
+            </StackPane>
+            <VBox spacing="2" alignment="CENTER_LEFT">
+                <Label styleClass="modern-title" text="Listone Giocatori" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #333;" />
+                <Label styleClass="subtitle" text="Consulta tutti i giocatori" style="-fx-font-size: 12; -fx-text-fill: #888;" />
+            </VBox>
+        </HBox>
+
+        <TitledPane animated="true" expanded="false" text="Filtri Ricerca" styleClass="filter-pane">
+            <content>
+                <GridPane hgap="10" vgap="12" style="-fx-padding: 10;">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" percentWidth="40" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="60" />
+                    </columnConstraints>
+                    
+                    <Label text="Ruolo:" style="-fx-text-fill: #555; -fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="roleCombo" maxWidth="Infinity" styleClass="modern-combo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Prezzo Min:" style="-fx-text-fill: #555;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="minPriceField" promptText="€ min" styleClass="modern-input" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Prezzo Max:" style="-fx-text-fill: #555;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="maxPriceField" promptText="€ max" styleClass="modern-input" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Button fx:id="resetFilterButton" text="Pulisci Filtri" maxWidth="Infinity" styleClass="secondary-button" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                </GridPane>
+            </content>
+        </TitledPane>
+
+        <ScrollPane fx:id="listoneScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="modern-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <content>
+                <VBox fx:id="playerContainer" spacing="8" style="-fx-padding: 5; -fx-background-color: transparent;" />
+            </content>
+        </ScrollPane>
+
+    </VBox>
+
+</AnchorPane>

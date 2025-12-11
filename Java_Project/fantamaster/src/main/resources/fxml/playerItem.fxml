@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<HBox fx:controller="it.camb.fantamaster.controller.PlayerItemController"
+      spacing="12" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: white;"
+      stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- Colonna sinistra: Badge e numero -->
+    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 10;">
+        <Circle fx:id="roleBadge" fill="#667eea" radius="20" style="-fx-fill: #667eea;" />
+        <Label fx:id="ruoloLabel" styleClass="bold-text" text="P" />
+        <Label fx:id="numeroLabel" text="1" />
+    </VBox>
+
+    <!-- Colonna centrale: Tutte le informazioni in verticale -->
+    <VBox spacing="8" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+        <!-- Nome del calciatore -->
+        <Label fx:id="nomeLabel" styleClass="modern-title" text="Yann Sommer" />
+        
+        <!-- Informazioni organizzate in verticale -->
+        <VBox spacing="12">
+            <!-- Squadra -->
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Squadra" style="-fx-font-size: 10px;"/>
+                <Label fx:id="squadraLabel" text="Inter" style="-fx-font-size: 14px; -fx-text-fill: #000000ff;" />
+            </VBox>
+            
+            <!-- Ruolo completo -->
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Ruolo" style="-fx-font-size: 10px;"/>
+                <Label fx:id="ruoloFullLabel" text="Portiere" style="-fx-font-size: 14px; -fx-text-fill: #000000ff;" />
+            </VBox>
+            
+            <!-- Nazionalità -->
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Nazionalità" style="-fx-font-size: 10px;"/>
+                <Label fx:id="nazionalitaLabel" text="Svizzera" style="-fx-font-size: 14px; -fx-text-fill: #000000ff;" />
+            </VBox>
+            
+            <!-- Prezzo (spostato qui) -->
+            <VBox spacing="2">
+                <Label styleClass="subtitle" text="Prezzo" style="-fx-font-size: 10px;"/>
+                <Label fx:id="prezzoLabel" styleClass="bold-text" style="-fx-font-size: 14; -fx-text-fill: #667eea;" text="15€" />
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Colonna destra vuota (mantenuta per struttura, ma senza contenuto) -->
+    <VBox alignment="CENTER_RIGHT" style="-fx-padding: 10;" />
+
+</HBox>

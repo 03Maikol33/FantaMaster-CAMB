@@ -3,13 +3,15 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
 
 <AnchorPane fx:controller="it.camb.fantamaster.controller.LeagueAdminSettingsController"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
@@ -29,12 +31,92 @@
 
     <ScrollPane fx:id="leagueAdminSettingsScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                 styleClass="modern-scroll" 
-                AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="20.0"
-                AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+                AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="15.0"
+                AnchorPane.rightAnchor="15.0" AnchorPane.bottomAnchor="20.0">
 
         <content>
-            <VBox spacing="15" prefWidth="Infinity" style="-fx-padding: 10 0;">
+            <VBox spacing="20" prefWidth="Infinity" style="-fx-padding: 10 0;">
                 
+                <VBox spacing="15" styleClass="modern-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane>
+                            <Circle radius="15" styleClass="primary-button" opacity="0.2"/>
+                            <Label text="📋" style="-fx-font-size: 12;"/>
+                        </StackPane>
+                        <Label text="Formazioni &amp; Moduli" styleClass="modern-title" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+                    </HBox>
+                    <Label text="Seleziona i moduli consentiti:" styleClass="hint-text"/>
+                    <FlowPane fx:id="modulesContainer" hgap="8" vgap="8" />
+                </VBox>
+
+                <VBox spacing="15" styleClass="gold-card"> <Label text="💰 Budget &amp; Mercato" style="-fx-font-weight: bold; -fx-text-fill: #b7791f; -fx-font-size: 16;"/>
+                    <VBox spacing="5">
+                        <Label text="Budget Iniziale" styleClass="hint-text"/>
+                        <TextField fx:id="budgetField" promptText="500" styleClass="modern-textfield"/>
+                    </VBox>
+                </VBox>
+       
+                <VBox spacing="15" styleClass="bonus-card"> <Label text="✅ Bonus Punteggio" style="-fx-font-weight: bold; -fx-text-fill: #2f855a; -fx-font-size: 16;"/>
+                    <GridPane vgap="10" hgap="10">
+                        <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Gol" styleClass="hint-text"/>
+                            <TextField fx:id="bonusGolField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                        <VBox spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Assist" styleClass="hint-text"/>
+                            <TextField fx:id="bonusAssistField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                        
+                        <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Rigore Parato" styleClass="hint-text"/>
+                            <TextField fx:id="bonusRigoreParatoField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                        <VBox spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Imbattibilità" styleClass="hint-text"/>
+                            <TextField fx:id="bonusImbattibilitaField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+
+                        <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Fattore Campo" styleClass="hint-text"/>
+                            <TextField fx:id="bonusFattoreCampoField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                         <VBox spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label text="Mod. Difesa" styleClass="hint-text"/>
+                            <CheckBox fx:id="modificatoreDifesaCheck" text="Attivo" style="-fx-text-fill: #15803d; -fx-font-weight: bold;"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <VBox spacing="15" styleClass="malus-card"> <Label text="❌ Malus Punteggio" style="-fx-font-weight: bold; -fx-text-fill: #c53030; -fx-font-size: 16;"/>
+                    <GridPane vgap="10" hgap="10">
+                        <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Gol Subito" styleClass="hint-text"/>
+                            <TextField fx:id="malusGolSubitoField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                        <VBox spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Autogol" styleClass="hint-text"/>
+                            <TextField fx:id="malusAutogolField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                        
+                        <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Rigore Sbag." styleClass="hint-text"/>
+                            <TextField fx:id="malusRigoreSbagliatoField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                        <VBox spacing="2" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Espulsione" styleClass="hint-text"/>
+                            <TextField fx:id="malusEspulsioneField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+
+                        <VBox spacing="2" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Ammonizione" styleClass="hint-text"/>
+                            <TextField fx:id="malusAmmonizioneField" prefWidth="80" styleClass="modern-textfield"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <Button text="SALVA MODIFICHE" maxWidth="Infinity" styleClass="primary-button" 
+                        style="-fx-font-size: 16; -fx-padding: 12;" onAction="#handleSaveRules"/>
+
                 <VBox spacing="15" styleClass="danger-card">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <StackPane>
@@ -44,14 +126,13 @@
                         <Label text="Zona Pericolosa" style="-fx-font-weight: bold; -fx-text-fill: #e53e3e; -fx-font-size: 16;"/>
                     </HBox>
                     
-                    <Label text="Attenzione: queste azioni sono irreversibili." 
-                           wrapText="true" fx:id="closeRegistrationsWarningLabel" styleClass="warning-text"/>
+                    <Label fx:id="closeRegistrationsWarningLabel" text="Attenzione: queste azioni sono irreversibili." wrapText="true" styleClass="warning-text"/>
 
                     <Button text="🔒 Chiudi Iscrizioni" maxWidth="Infinity" fx:id="closeRegistrationsButton"
                             styleClass="danger-button" onAction="#handleCloseRegistrations" />
                     
                     <Button text="❌ Elimina Lega" maxWidth="Infinity" styleClass="danger-button"
-                            onAction="#handleDeleteLeague" />
+                            style="-fx-background-color: #991b1b;" onAction="#handleDeleteLeague" />
                 </VBox>
 
             </VBox>
