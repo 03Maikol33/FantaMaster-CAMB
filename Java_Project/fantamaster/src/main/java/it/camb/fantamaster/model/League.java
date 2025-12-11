@@ -15,32 +15,50 @@ public class League {
     private boolean registrationsClosed;
     private LocalDateTime createdAt;
     private String inviteCode;
-    
     // NUOVO CAMPO
     private String allowedFormations;
+    private int initialBudget;
+    private String gameMode; // Nuovo campo per la modalità
 
-    // Costruttore creazione
-    public League(String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt) {
+    // Costruttore vuoto
+    public League() {}
+
+    
+    // Nota: include 'String gameMode'
+    // Costruttore per la CREAZIONE
+    public League(String name, byte[] image, int maxMembers, User creator, String gameMode, LocalDateTime createdAt) {
         this.name = name;
         this.image = image;
         this.maxMembers = maxMembers;
         this.creator = creator;
+        
+        // CORREZIONE: Controllo di sicurezza. Se gameMode è null o vuoto, metti il default.
+        if (gameMode == null || gameMode.trim().isEmpty()) {
+            this.gameMode = "punti_totali";
+        } else {
+            this.gameMode = gameMode;
+        }
+
         this.createdAt = createdAt;
         this.registrationsClosed = false;
         this.participants = new ArrayList<>();
-        this.participants.add(creator);
+        this.participants.add(creator); // Aggiungi il creatore come primo partecipante
+        this.initialBudget = 500;
     }
 
-    // Costruttore completo
-    public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt, boolean registrationsClosed, List<User> participants) {
+    // Costruttore COMPLETO (usato da LeagueDAO per leggere dal DB)
+    // Nota: include 'String gameMode' alla fine
+    public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt, boolean closed, List<User> participants, String gameMode) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.maxMembers = maxMembers;
         this.creator = creator;
         this.createdAt = createdAt;
-        this.registrationsClosed = registrationsClosed;
+        this.registrationsClosed = closed;
         this.participants = (participants != null) ? participants : new ArrayList<>();
+        this.initialBudget = 500;
+        this.gameMode = gameMode;
     }
 
     // --- NUOVI METODI PER I MODULI ---
@@ -59,34 +77,53 @@ public class League {
         return Arrays.asList(allowedFormations.split(","));
     }
     // ----------------------------------
+    // --- Getter e Setter ---
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public byte[] getImage() { return image; }
+    public void setImage(byte[] image) { this.image = image; }
+
+    public int getMaxMembers() { return maxMembers; }
+    public void setMaxMembers(int maxMembers) { this.maxMembers = maxMembers; }
+
+    public User getCreator() { return creator; }
+    public void setCreator(User creator) { this.creator = creator; }
+
+    public List<User> getParticipants() { return participants; }
+    public void setParticipants(List<User> participants) { this.participants = participants; }
+
+    public boolean isRegistrationsClosed() { return registrationsClosed; }
+    public void setRegistrationsClosed(boolean registrationsClosed) { this.registrationsClosed = registrationsClosed; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getInviteCode() { return inviteCode; }
+    public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
+
+    public String getGameMode() { return gameMode; }
+    public void setGameMode(String gameMode) { this.gameMode = gameMode; }
 
     public void addParticipant(User user) {
+        if (participants == null) participants = new ArrayList<>();
         if (participants.size() < maxMembers) {
             participants.add(user);
         } else {
-            throw new IllegalStateException("League is full");
+            throw new IllegalStateException("Lega piena");
         }
     }
 
-    // Getter e Setter standard
-    public List<User> getParticipants() { return participants; }
-    public void setParticipants(List<User> participants) { this.participants = participants; }
-    public boolean isRegistrationsClosed() { return registrationsClosed; }
-    public void setRegistrationsClosed(boolean registrationsClosed) { this.registrationsClosed = registrationsClosed; }
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public byte[] getImage() { return image; }
-    public void setImage(byte[] image) { this.image = image; }
-    public int getMaxMembers() { return maxMembers; }
-    public void setMaxMembers(int maxMembers) { this.maxMembers = maxMembers; }
-    public User getCreator() { return creator; }
-    public void setCreator(User creator) { this.creator = creator; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public String getInviteCode() { return inviteCode; }
-    public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
+    public int getInitialBudget() {
+        return initialBudget;
+    }
+    public void setInitialBudget(int initialBudget) {
+        this.initialBudget = initialBudget;
+    }
 
     @Override
     public String toString() {
@@ -94,6 +131,8 @@ public class League {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", allowedFormations='" + allowedFormations + '\'' +
+                ", maxMembers=" + maxMembers +
+                ", mode='" + gameMode + '\'' +
                 '}';
     }
 }

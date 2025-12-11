@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import it.camb.fantamaster.controller.LeagueAdminScreenController;
+import it.camb.fantamaster.controller.LeagueScreenController;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
 
@@ -125,7 +126,7 @@ public class Main extends Application {
         Parent root = loader.load();
         // Nota: Assumo che tu usi lo stesso controller o un altro simile.
         // Se è LeagueScreenController, cambia il cast qui sotto.
-        LeagueAdminScreenController controller = loader.getController();
+        LeagueScreenController controller = loader.getController();
         controller.setCurrentLeague(league);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
