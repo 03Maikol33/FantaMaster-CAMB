@@ -64,7 +64,7 @@
             
             <HBox alignment="CENTER" spacing="5" style="-fx-background-color: white; -fx-padding: 15 0;">
                 
-                <Button onAction="#showRichieste" style="-fx-background-color: transparent; -fx-padding: 0 15;">
+                <Button fx:id="richiesteButton" onAction="#showRichieste" style="-fx-background-color: transparent; -fx-padding: 0 15;">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
                             <StackPane>

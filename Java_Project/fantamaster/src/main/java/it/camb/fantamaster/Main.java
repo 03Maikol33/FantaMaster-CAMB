@@ -21,6 +21,9 @@ import it.camb.fantamaster.util.ConnectionFactory;
 public class Main extends Application {
     private static Stage primaryStage;
 
+    public static Stage getPrimaryStage() {return primaryStage;}
+    public static void setPrimaryStage(Stage stage) {primaryStage = stage;}
+
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
