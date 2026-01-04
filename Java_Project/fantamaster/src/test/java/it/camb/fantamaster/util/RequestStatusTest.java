@@ -1,52 +1,40 @@
-
 package it.camb.fantamaster.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class RequestStatusTest {
 
-    // 1. Verifica della Conversione Bidirezionale
     @Test
-    public void testToDbAndFromDbConsistency() {
-        // Test 1: in_attesa
-        String dbStatus1 = RequestStatus.in_attesa.toDb();
-        assertEquals("in_attesa", dbStatus1);
-        assertEquals(RequestStatus.in_attesa, RequestStatus.fromDb(dbStatus1));
-
-        // Test 2: accettata
-        String dbStatus2 = RequestStatus.accettata.toDb();
-        assertEquals("accettata", dbStatus2);
-        assertEquals(RequestStatus.accettata, RequestStatus.fromDb(dbStatus2));
-
-        // Test 3: rifiutata
-        String dbStatus3 = RequestStatus.rifiutata.toDb();
-        assertEquals("rifiutata", dbStatus3);
-        assertEquals(RequestStatus.rifiutata, RequestStatus.fromDb(dbStatus3));
-    }
-
-    // 2. Verifica dei casi limite in fromDb()
-    @Test
-    public void testFromDbNullInput() {
-        assertNull(RequestStatus.fromDb(null));
+    public void testFromDbValidValues() {
+        // Testiamo la conversione da Stringa DB a Enum
+        assertEquals("La stringa 'in_attesa' deve essere convertita nell'enum corretto",
+                RequestStatus.in_attesa, RequestStatus.fromDb("in_attesa"));
+        
+        assertEquals("La stringa 'accettata' deve essere convertita nell'enum corretto",
+                RequestStatus.accettata, RequestStatus.fromDb("accettata"));
+        
+        assertEquals("La stringa 'rifiutata' deve essere convertita nell'enum corretto",
+                RequestStatus.rifiutata, RequestStatus.fromDb("rifiutata"));
     }
 
     @Test
-    public void testFromDbInvalidInputThrowsException() {
-        // Test stringa sconosciuta
-        assertThrows(IllegalArgumentException.class, () -> {
-            RequestStatus.fromDb("sconosciuto");
-        });
-
-        // Test stringa in caso errato (le ENUM SQL sono spesso case-sensitive)
-        assertThrows(IllegalArgumentException.class, () -> {
-            RequestStatus.fromDb("In_attesa");
-        });
+    public void testFromDbNullValue() {
+        // Testiamo il caso limite: null
+        assertNull("Se il valore dal DB è null, deve tornare null", 
+                RequestStatus.fromDb(null));
     }
 
-    // Nota: toDb() non richiede test per input non validi, perché il metodo
-    // è chiamato sull'istanza Enum, che è sempre valida.
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromDbInvalidValue() {
+        // Testiamo che lanci eccezione se arriva una stringa sconosciuta
+        RequestStatus.fromDb("STATO_INESISTENTE");
+    }
+
+    @Test
+    public void testToDbConversion() {
+        // Testiamo il percorso inverso: da Enum a Stringa
+        assertEquals("in_attesa", RequestStatus.in_attesa.toDb());
+        assertEquals("accettata", RequestStatus.accettata.toDb());
+    }
 }

@@ -11,6 +11,9 @@ target/
 # Ignora file di configurazione DB
 database.properties
 
+# Ignora note
+note.txt
+
 # Ignora file temporanei IDE
 *.log
 *.tmp

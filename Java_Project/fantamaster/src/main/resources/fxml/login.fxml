@@ -52,7 +52,7 @@
          <Label fx:id="errorLabel" text="" styleClass="error-text" visible="false" wrapText="true"/>
 
          <Button mnemonicParsing="false" styleClass="primary-button" maxWidth="240.0" prefHeight="45.0"
-                 text="ACCEDI" onAction="#handleLogin"/>
+                 text="ACCEDI" fx:id="loginButton" onAction="#handleLogin"/>
 
          <VBox alignment="CENTER" spacing="8" style="-fx-padding: 15 0 0 0;">
             <Label text="Non hai ancora un account?" styleClass="hint-text"/>

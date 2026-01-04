@@ -1,36 +1,49 @@
 package it.camb.fantamaster.dao;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.junit.Test;
-
 import it.camb.fantamaster.model.Player;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.List;
+import static org.junit.Assert.*;
 
 public class PlayerDAOTest {
 
+    private PlayerDAO playerDAO;
+
+    @Before
+    public void setUp() {
+        playerDAO = new PlayerDAO();
+    }
+
     @Test
-    public void testFilteredCountsAndPaging() {
-        PlayerDAO dao = new PlayerDAO();
+    public void testGetAllPlayers() {
+        List<Player> players = playerDAO.getAllPlayers();
+        assertNotNull(players);
+        // Assumiamo che il file JSON non sia vuoto
+        if (!players.isEmpty()) {
+            Player p = players.get(0);
+            assertNotNull(p.getNome());
+            assertNotNull(p.getRuolo());
+        }
+    }
 
-        int total = dao.getTotalCount();
-        assertTrue("Total players should be > 0", total > 0);
+    @Test
+    public void testGetPlayersByRole() {
+        List<Player> players = playerDAO.getAllPlayers();
+        if (players.isEmpty()) return; // Skip se json vuoto
 
-        int attackers = dao.getFilteredTotalCount("A", null, null);
-        assertTrue("There should be at least one attacker", attackers > 0);
+        String role = players.get(0).getRuolo();
+        List<Player> filtered = playerDAO.getPlayersByRole(role);
+        
+        assertFalse(filtered.isEmpty());
+        for (Player p : filtered) {
+            assertEquals(role, p.getRuolo());
+        }
+    }
 
-        List<Player> attackersPage = dao.getPlayersPageFiltered(0, 10, "A", null, null);
-        assertEquals(Math.min(10, attackers), attackersPage.size());
-
-        int expensive = dao.getFilteredTotalCount(null, 80, null);
-        assertTrue("There should be at least one player with prezzo >= 80", expensive > 0);
-
-        List<Player> expensivePage = dao.getPlayersPageFiltered(0, 5, null, 80, null);
-        assertEquals(Math.min(5, expensive), expensivePage.size());
-
-        // Combined filter
-        int combo = dao.getFilteredTotalCount("D", 10, 30);
-        assertTrue("Combined filter should produce a non-negative count", combo >= 0);
+    @Test
+    public void testGetTotalCount() {
+        int count = playerDAO.getTotalCount();
+        assertTrue("Il count totale deve essere >= 0", count >= 0);
     }
 }

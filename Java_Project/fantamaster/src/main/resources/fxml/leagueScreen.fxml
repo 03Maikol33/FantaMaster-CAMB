@@ -75,7 +75,7 @@
                     </graphic>
                 </Button>
 
-                <Button style="-fx-background-color: transparent; -fx-padding: 0 25;">
+                <Button fx:id="impostazioniButton" style="-fx-background-color: transparent; -fx-padding: 0 25;">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
                             <StackPane>
