@@ -29,7 +29,8 @@ public class LeagueDAO {
         String name = rs.getString("nome");
         int maxMembers = rs.getInt("max_membri");
         boolean closed = rs.getBoolean("iscrizioni_chiuse");
-        
+        boolean astaAperta = rs.getBoolean("asta_aperta");
+
         Timestamp ts = rs.getTimestamp("created_at");
         java.time.LocalDateTime createdAt = (ts != null) ? ts.toLocalDateTime() : null;
 
@@ -45,7 +46,7 @@ public class LeagueDAO {
         List<User> participants = ulDAO.getUsersInLeagueId(id); 
 
         // Creiamo l'oggetto usando il costruttore completo
-        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita);
+        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita, astaAperta);
         
         // Settiamo il codice invito letto dal DB
         league.setInviteCode(rs.getString("codice_invito"));
@@ -245,5 +246,40 @@ public class LeagueDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Aggiorna lo stato del turno d'asta.
+     * @param leagueId ID della lega
+     * @param userId ID dell'utente a cui tocca chiamare (può essere NULL)
+     * @param giocatoreId ID del giocatore chiamato (può essere NULL se fase di chiamata)
+     */
+    public boolean updateTurnoAsta(int leagueId, Integer userId, Integer giocatoreId) {
+        String sql = "UPDATE leghe SET turno_asta_utente_id = ?, giocatore_chiamato_id = ? WHERE id = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            // Gestione Nullable per l'Utente
+            if (userId != null) {
+                stmt.setInt(1, userId);
+            } else {
+                stmt.setNull(1, Types.INTEGER);
+            }
+
+            // Gestione Nullable per il Giocatore
+            if (giocatoreId != null) {
+                stmt.setInt(2, giocatoreId);
+            } else {
+                stmt.setNull(2, Types.INTEGER);
+            }
+
+            stmt.setInt(3, leagueId);
+            
+            return stmt.executeUpdate() == 1;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

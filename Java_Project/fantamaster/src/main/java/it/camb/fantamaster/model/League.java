@@ -13,6 +13,7 @@ public class League {
     private User creator;
     private List<User> participants;
     private boolean registrationsClosed;
+    private boolean astaAperta;
     private LocalDateTime createdAt;
     private String inviteCode;
     // NUOVO CAMPO
@@ -48,7 +49,7 @@ public class League {
 
     // Costruttore COMPLETO (usato da LeagueDAO per leggere dal DB)
     // Nota: include 'String gameMode' alla fine
-    public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt, boolean closed, List<User> participants, String gameMode) {
+    public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt, boolean closed, List<User> participants, String gameMode, boolean astaAperta) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -56,6 +57,7 @@ public class League {
         this.creator = creator;
         this.createdAt = createdAt;
         this.registrationsClosed = closed;
+        this.astaAperta = astaAperta;
         this.participants = (participants != null) ? participants : new ArrayList<>();
         this.initialBudget = 500;
         this.gameMode = gameMode;
@@ -64,6 +66,11 @@ public class League {
     // --- NUOVI METODI PER I MODULI ---
     public String getAllowedFormations() {
         return allowedFormations;
+    }
+
+    public boolean isAuctionOpen() {
+        // Supponiamo che l'asta sia aperta se le registrazioni non sono chiuse
+        return astaAperta;
     }
 
     public void setAllowedFormations(String allowedFormations) {

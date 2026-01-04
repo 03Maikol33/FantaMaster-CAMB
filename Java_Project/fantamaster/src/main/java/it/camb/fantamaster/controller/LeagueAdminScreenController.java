@@ -59,6 +59,22 @@ public class LeagueAdminScreenController {
     }
 
     @FXML
+    private void openAuction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fantallenatoreAuctionList.fxml"));
+            Parent view = loader.load();
+
+            FantallenatoreAuctionListController controller = loader.getController();
+            controller.initData(currentLeague); 
+
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Errore caricamento Asta", e.getMessage());
+        }
+    }
+
+    @FXML
     private void showListone() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/listone.fxml"));

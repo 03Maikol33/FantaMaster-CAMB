@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<HBox fx:id="itemContainer" alignment="CENTER_LEFT" spacing="12" 
+      style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);" 
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="it.camb.fantamaster.controller.FantallenatoreListItemController">
+    
+    <padding>
+        <Insets bottom="8" left="10" right="10" top="8" />
+    </padding>
+
+    <StackPane>
+        <Circle fx:id="avatarCircle" fill="#e2e8f0" radius="20.0" stroke="WHITE" strokeWidth="2.0" />
+        <Circle fx:id="statusIndicator" fill="#e2e8f0" radius="5.0" stroke="WHITE" strokeWidth="1.5" StackPane.alignment="BOTTOM_RIGHT" />
+    </StackPane>
+    
+    <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+        <Label fx:id="usernameLabel" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #2d3748;" text="Username" />
+    </VBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="8">
+        <Label fx:id="slotsLabel" style="-fx-font-size: 11; -fx-text-fill: #718096; -fx-background-color: #edf2f7; -fx-padding: 4 8; -fx-background-radius: 10;" text="23/25" />
+        <Button fx:id="assignTurnButton" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16; -fx-padding: 0;" text="👉" visible="false" />
+    </HBox>
+
+</HBox>
