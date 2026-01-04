@@ -16,10 +16,13 @@ public class League {
     private boolean astaAperta;
     private LocalDateTime createdAt;
     private String inviteCode;
-    // NUOVO CAMPO
     private String allowedFormations;
     private int initialBudget;
-    private String gameMode; // Nuovo campo per la modalità
+    private String gameMode;
+
+    //asta
+    private Integer turnoAstaUtenteId;   // ID dell'utente a cui tocca (può essere null)
+    private Integer giocatoreChiamatoId;
 
     // Costruttore vuoto
     public League() {}
@@ -61,6 +64,22 @@ public class League {
         this.participants = (participants != null) ? participants : new ArrayList<>();
         this.initialBudget = 500;
         this.gameMode = gameMode;
+    }
+
+    public Integer getTurnoAstaUtenteId() {
+        return turnoAstaUtenteId;
+    }
+
+    public void setTurnoAstaUtenteId(Integer turnoAstaUtenteId) {
+        this.turnoAstaUtenteId = turnoAstaUtenteId;
+    }
+
+    public Integer getGiocatoreChiamatoId() {
+        return giocatoreChiamatoId;
+    }
+
+    public void setGiocatoreChiamatoId(Integer giocatoreChiamatoId) {
+        this.giocatoreChiamatoId = giocatoreChiamatoId;
     }
 
     // --- NUOVI METODI PER I MODULI ---

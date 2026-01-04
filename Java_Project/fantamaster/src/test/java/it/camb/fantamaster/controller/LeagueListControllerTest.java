@@ -1,6 +1,6 @@
 package it.camb.fantamaster.controller;
 
-import it.camb.fantamaster.Main; // Importa Main
+import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.dao.UserDAO;
 import it.camb.fantamaster.dao.UsersLeaguesDAO;
@@ -14,7 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import javafx.scene.Node; // Import Node
+import javafx.scene.Node; 
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
@@ -37,7 +37,6 @@ public class LeagueListControllerTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // 1. INIEZIONE STAGE (Usa il setter che abbiamo creato)
         Main.setPrimaryStage(stage);
 
         setupDatabase();
@@ -56,7 +55,10 @@ public class LeagueListControllerTest extends ApplicationTest {
         connection = ConnectionFactory.getConnection();
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), budget_iniziale INT DEFAULT 500)");
+            
+            // Fix: Tabella leghe aggiornata
+            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), asta_aperta BOOLEAN DEFAULT FALSE, turno_asta_utente_id INT DEFAULT NULL, giocatore_chiamato_id INT DEFAULT NULL, budget_iniziale INT DEFAULT 500)");
+            
             stmt.execute("CREATE TABLE IF NOT EXISTS utenti_leghe (utente_id INT, lega_id INT, PRIMARY KEY(utente_id, lega_id))");
             stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
             stmt.execute("CREATE TABLE IF NOT EXISTS richieste_accesso (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT, stato VARCHAR(50), data_richiesta TIMESTAMP)");
@@ -68,15 +70,12 @@ public class LeagueListControllerTest extends ApplicationTest {
         LeagueDAO leagueDAO = new LeagueDAO(connection);
         UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(connection);
 
-        // Creo ME (ID autogenerato sarà 1)
         me = new User(); me.setUsername("Me"); me.setEmail("me@test.com"); me.setHashPassword("x");
         userDAO.insert(me);
 
-        // Creo OTHER (ID autogenerato sarà 2)
         otherUser = new User(); otherUser.setUsername("Other"); otherUser.setEmail("other@test.com"); otherUser.setHashPassword("x");
         userDAO.insert(otherUser);
 
-        // Lega Admin (Creatore = ME)
         League myLeague = new League();
         myLeague.setName("Lega Admin");
         myLeague.setMaxMembers(10);
@@ -85,7 +84,6 @@ public class LeagueListControllerTest extends ApplicationTest {
         myLeague.setParticipants(new ArrayList<>());
         leagueDAO.insertLeague(myLeague);
 
-        // Lega Partecipante (Creatore = OTHER)
         League otherLeague = new League();
         otherLeague.setName("Lega Partecipante");
         otherLeague.setMaxMembers(10);
@@ -114,16 +112,9 @@ public class LeagueListControllerTest extends ApplicationTest {
 
     @Test
     public void testAdminLeagueInteraction() {
-        // Verifica esistenza e visibilità
         verifyThat("Lega Admin", isVisible());
-        
-        // Verifica BADGE (HBox)
         verifyThat("#adminBadgeContainer", isVisible());
-
-        // Clicco
         clickOn("Lega Admin");
-
-        // Verifica navigazione a Admin Screen (bottone Richieste)
         verifyThat("#richiesteButton", isVisible()); 
     }
 
@@ -131,20 +122,13 @@ public class LeagueListControllerTest extends ApplicationTest {
     public void testParticipantLeagueInteraction() {
         verifyThat("Lega Partecipante", isVisible());
 
-        // FIX ASSERTION ERROR:
-        // lookup(...) trova TUTTI i nodi con quell'ID, anche quelli con visible=false.
-        // Dobbiamo contare solo quelli effettivamente visibili a schermo.
         long visibleBadges = lookup("#adminBadgeContainer").queryAll().stream()
                 .filter(Node::isVisible)
                 .count();
         
-        // Deve essercene 1 solo (quello della Lega Admin), l'altro deve essere nascosto
         assertEquals("Dovrebbe esserci esattamente 1 badge admin visibile", 1, visibleBadges);
 
-        // Clicco
         clickOn("Lega Partecipante");
-
-        // Verifica navigazione a Screen Normale (bottone Impostazioni)
         verifyThat("#impostazioniButton", isVisible());
     }
 }

@@ -97,6 +97,17 @@ public class FantallenatoreAuctionListController {
     private void handleAssignTurn(User targetUser) {
         if (!isAdmin) return;
 
+
+        //alert di conferma
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Conferma Assegnazione");
+        confirm.setHeaderText("Assegnare il turno?");
+        confirm.setContentText("Vuoi dare la parola a " + targetUser.getUsername() + "?");
+
+        if (confirm.showAndWait().orElse(null) != javafx.scene.control.ButtonType.OK) {
+            return; // Se preme Annulla, esce
+        }
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             LeagueDAO leagueDAO = new LeagueDAO(conn);
             

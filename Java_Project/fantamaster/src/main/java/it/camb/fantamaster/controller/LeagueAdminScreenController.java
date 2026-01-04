@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
@@ -14,12 +15,19 @@ public class LeagueAdminScreenController {
 
     @FXML 
     private StackPane contentArea;
+    @FXML
+    private Button auctionButton;
     
     private League currentLeague;
 
     public void setCurrentLeague(League league) {
         this.currentLeague = league;
         System.out.println("Lega corrente impostata: " + (league != null ? league.getName() : "Null"));
+        if(league.isAuctionOpen()) {
+            auctionButton.setDisable(false);
+        } else {
+            auctionButton.setDisable(true);
+        }
     }
 
     // --- METODI DI NAVIGAZIONE ---

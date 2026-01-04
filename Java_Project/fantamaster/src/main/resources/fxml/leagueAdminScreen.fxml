@@ -96,7 +96,7 @@
                     </graphic>
                 </Button>
 
-                <Button onAction="#openAuction" style="-fx-background-color: transparent; -fx-padding: 0 15;">
+                <Button fx:id="auctionButton" onAction="#openAuction" style="-fx-background-color: transparent; -fx-padding: 0 15;">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
                             <StackPane>

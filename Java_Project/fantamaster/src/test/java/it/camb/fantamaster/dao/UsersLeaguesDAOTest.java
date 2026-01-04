@@ -28,7 +28,8 @@ public class UsersLeaguesDAOTest {
         connection = ConnectionFactory.getConnection();
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255))");
+            // CORRETTO: Aggiunto 'asta_aperta BOOLEAN'
+            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), asta_aperta BOOLEAN DEFAULT FALSE)");
             stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
             stmt.execute("CREATE TABLE IF NOT EXISTS utenti_leghe (utente_id INT, lega_id INT, PRIMARY KEY(utente_id, lega_id))");
         }
@@ -42,7 +43,8 @@ public class UsersLeaguesDAOTest {
         User creator = new User(); creator.setUsername("C"); creator.setEmail("c@t.com"); creator.setHashPassword("x");
         userDAO.insert(creator);
         
-        league = new League(0, "L", null, 10, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali");
+        // CORRETTO: Aggiunto 'false' finale
+        league = new League(0, "L", null, 10, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", false);
         leagueDAO.insertLeague(league);
     }
 

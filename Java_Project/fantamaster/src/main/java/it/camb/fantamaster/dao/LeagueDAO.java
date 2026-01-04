@@ -57,6 +57,17 @@ public class LeagueDAO {
         int budget = rs.getInt("budget_iniziale");
         league.setInitialBudget(budget > 0 ? budget : 500); // Fallback a 500 se 0 o null
         
+        int turnoId = rs.getInt("turno_asta_utente_id");
+        if (!rs.wasNull()) {
+            league.setTurnoAstaUtenteId(turnoId);
+        }
+
+        int giocatoreId = rs.getInt("giocatore_chiamato_id");
+        if (!rs.wasNull()) {
+            league.setGiocatoreChiamatoId(giocatoreId);
+        }
+
+
         return league;
     }
 
