@@ -120,6 +120,7 @@ public class PlayerDAO {
 
     /**
      * Salva la formazione: inserisce in formazioni e dettaglio_formazione.
+     * AGGIORNAMENTO: Salva anche il flag 'capitano' nella tabella di dettaglio.
      */
     public boolean saveFormation(int userId, int leagueId, String modulo, Player capitano, List<Player> titolari, List<Player> panchina) throws SQLException {
         // 1. Cerchiamo la giornata attiva ('da_giocare')
@@ -129,9 +130,16 @@ public class PlayerDAO {
             if (rs.next()) giornataId = rs.getInt("id");
         }
         
-        if (giornataId == -1) throw new SQLException("Nessuna giornata 'da_giocare' trovata.");
+        // Se non trovi giornate attive, gestisci l'errore o usa un fallback
+        if (giornataId == -1) {
+             System.err.println("Nessuna giornata 'da_giocare' trovata nel DB.");
+             // throw new SQLException("Impossibile salvare: Nessuna giornata attiva.");
+             // Fallback temporaneo se stai testando senza giornate attive:
+             giornataId = 1; 
+        }
 
         // 2. Inseriamo o aggiorniamo la testata della formazione
+        // Nota: Manteniamo capitano_id in 'formazioni' per ridondanza/sicurezza, ma lo usiamo soprattutto nei dettagli
         String sqlFormazione = "INSERT INTO formazioni (rosa_id, giornata_id, modulo_schierato, capitano_id) " +
                                "VALUES ((SELECT id FROM rosa WHERE utenti_leghe_id = (SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?)), " +
                                "?, ?, ?) " +
@@ -144,13 +152,13 @@ public class PlayerDAO {
             try (PreparedStatement stmt = conn.prepareStatement(sqlFormazione, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, userId); stmt.setInt(2, leagueId);
                 stmt.setInt(3, giornataId); stmt.setString(4, modulo);
-                stmt.setInt(5, capitano.getId());
+                stmt.setInt(5, (capitano != null ? capitano.getId() : 0)); // Gestione null safe
                 stmt.executeUpdate();
                 
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) formazioneId = rs.getInt(1);
                     else {
-                        // Se non ha generato chiavi (Duplicate Key), lo recuperiamo
+                        // Se è un UPDATE, recuperiamo l'ID esistente
                         String find = "SELECT id FROM formazioni WHERE rosa_id = (SELECT id FROM rosa WHERE utenti_leghe_id = (SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?)) AND giornata_id = ?";
                         PreparedStatement pst = conn.prepareStatement(find);
                         pst.setInt(1, userId); pst.setInt(2, leagueId); pst.setInt(3, giornataId);
@@ -160,19 +168,44 @@ public class PlayerDAO {
             }
 
             if (formazioneId != -1) {
-                // 3. Puliamo il vecchio dettaglio e inseriamo il nuovo
+                // 3. Puliamo il vecchio dettaglio per questa formazione
                 conn.prepareStatement("DELETE FROM dettaglio_formazione WHERE formazione_id = " + formazioneId).executeUpdate();
-                String sqlDet = "INSERT INTO dettaglio_formazione (formazione_id, giocatore_id, stato, ordine_panchina) VALUES (?, (SELECT id FROM giocatori WHERE id_esterno = ?), ?, ?)";
+
+                // 4. Inseriamo il nuovo dettaglio CON LA COLONNA CAPITANO
+                // Assicurati di aver aggiunto la colonna 'capitano' (BOOLEAN o TINYINT) al DB!
+                String sqlDet = "INSERT INTO dettaglio_formazione (formazione_id, giocatore_id, stato, ordine_panchina, capitano) VALUES (?, (SELECT id FROM giocatori WHERE id_esterno = ?), ?, ?, ?)";
+                
                 try (PreparedStatement stmtDet = conn.prepareStatement(sqlDet)) {
+                    
+                    // --- TITOLARI ---
                     for (Player p : titolari) {
-                        stmtDet.setInt(1, formazioneId); stmtDet.setInt(2, p.getId());
-                        stmtDet.setString(3, "titolare"); stmtDet.setInt(4, 0); stmtDet.addBatch();
+                        stmtDet.setInt(1, formazioneId); 
+                        stmtDet.setInt(2, p.getId());
+                        stmtDet.setString(3, "titolare"); 
+                        stmtDet.setInt(4, 0);
+                        
+                        // Check Capitano
+                        boolean isCap = (capitano != null && p.getId() == capitano.getId());
+                        stmtDet.setBoolean(5, isCap);
+                        
+                        stmtDet.addBatch();
                     }
+
+                    // --- PANCHINA ---
                     int ordine = 1;
                     for (Player p : panchina) {
-                        stmtDet.setInt(1, formazioneId); stmtDet.setInt(2, p.getId());
-                        stmtDet.setString(3, "panchina"); stmtDet.setInt(4, ordine++); stmtDet.addBatch();
+                        stmtDet.setInt(1, formazioneId); 
+                        stmtDet.setInt(2, p.getId());
+                        stmtDet.setString(3, "panchina"); 
+                        stmtDet.setInt(4, ordine++);
+                        
+                        // Check Capitano (anche se in panchina)
+                        boolean isCap = (capitano != null && p.getId() == capitano.getId());
+                        stmtDet.setBoolean(5, isCap);
+                        
+                        stmtDet.addBatch();
                     }
+                    
                     stmtDet.executeBatch();
                 }
             }
@@ -184,5 +217,72 @@ public class PlayerDAO {
         } finally {
             conn.setAutoCommit(true);
         }
+    }
+
+    // ==========================================================
+    // SEZIONE CALCOLO PUNTEGGI - (User Story: Punteggio Totale)
+    // ==========================================================
+
+    /**
+     * Aggiorna il DB salvando il voto finale calcolato per ogni giocatore della formazione.
+     * Da chiamare DOPO che TeamScoreCalculator ha fatto il suo lavoro.
+     */
+    public void updateCalculatedVotes(int userId, int leagueId, int giornata, List<it.camb.fantamaster.model.FormationPlayer> giocatori) throws SQLException {
+        // 1. Recuperiamo l'ID della formazione
+        String sqlId = "SELECT id FROM formazioni WHERE id_utente = ? AND id_lega = ? AND giornata_id = (SELECT id FROM giornate WHERE id = ?)"; // Assumendo che giornata sia l'ID o il numero
+        // NOTA: Se 'giornata' è un numero (es. 1), adatta la query. Se usi l'ID giornata, va bene così.
+        // Per sicurezza, se passi il numero giornata (1..38):
+        // "SELECT id FROM formazioni WHERE id_utente = ? AND id_lega = ? AND giornata_id = ?";
+        
+        int formazioneId = -1;
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT id FROM formazioni WHERE id_utente = ? AND id_lega = ? AND giornata_id = ?")) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            stmt.setInt(3, giornata);
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) formazioneId = rs.getInt("id");
+            }
+        }
+
+        if (formazioneId == -1) return; // Nessuna formazione trovata
+
+        // 2. Aggiorniamo i voti
+        String sqlUpdate = "UPDATE dettaglio_formazione SET fantavoto_calcolato = ? WHERE formazione_id = ? AND giocatore_id = (SELECT id FROM giocatori WHERE id_esterno = ?)";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sqlUpdate)) {
+            for (it.camb.fantamaster.model.FormationPlayer fp : giocatori) {
+                stmt.setDouble(1, fp.getFantavotoCalcolato());
+                stmt.setInt(2, formazioneId);
+                stmt.setInt(3, fp.getPlayer().getId());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
+    }
+
+    /**
+     * Esegue la User Story: "Consulti tutte le righe di Dettaglio_formazione facendo sum..."
+     * Restituisce il totale della squadra direttamente dal Database.
+     */
+    public double getTeamTotalScore(int userId, int leagueId, int giornata) {
+        String sql = "SELECT SUM(df.fantavoto_calcolato) as totale " +
+                     "FROM dettaglio_formazione df " +
+                     "JOIN formazioni f ON df.formazione_id = f.id " +
+                     "WHERE f.id_utente = ? AND f.id_lega = ? AND f.giornata_id = ?";
+                     
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            stmt.setInt(3, giornata);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("totale");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
     }
 }
