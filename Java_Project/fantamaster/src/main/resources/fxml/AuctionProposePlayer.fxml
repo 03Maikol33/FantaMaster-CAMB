@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox alignment="TOP_CENTER" spacing="15" style="-fx-padding: 20;" 
+      stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="it.camb.fantamaster.controller.AuctionProposePlayerController">
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <StackPane>
+            <Circle fill="#48bb78" opacity="0.1" radius="20" />
+            <Label style="-fx-font-size: 18;" text="📣" />
+        </StackPane>
+        <VBox>
+            <Label styleClass="modern-title" text="Tocca a te!" />
+            <Label styleClass="hint-text" text="Scegli chi chiamare (ruoli con slot liberi)" />
+        </VBox>
+    </HBox>
+
+    <TableView fx:id="playerTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
+    <columns>
+        <TableColumn fx:id="colIndex" prefWidth="40.0" text="N." />
+        
+        <TableColumn fx:id="colRuolo" prefWidth="40.0" text="R" />
+        <TableColumn fx:id="colNome" prefWidth="160.0" text="Giocatore" />
+        <TableColumn fx:id="colSquadra" prefWidth="100.0" text="Squadra" />
+    </columns>
+</TableView>
+
+    <Button fx:id="btnChiama" maxWidth="Infinity" onAction="#handleChiamata" 
+            styleClass="primary-button" text="AVVIA ASTA PER IL GIOCATORE" />
+            
+</VBox>

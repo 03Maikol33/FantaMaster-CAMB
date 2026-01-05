@@ -69,11 +69,11 @@ public class LeagueAdminScreenController {
     @FXML
     private void openAuction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fantallenatoreAuctionList.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
             Parent view = loader.load();
-
-            FantallenatoreAuctionListController controller = loader.getController();
-            controller.initData(currentLeague); 
+            
+            AuctionMainContainerController controller = loader.getController();
+            controller.initData(currentLeague.getId()); 
 
             contentArea.getChildren().setAll(view);
         } catch (Exception e) {

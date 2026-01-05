@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" style="-fx-padding: 40;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <ProgressIndicator prefHeight="60.0" prefWidth="60.0" />
+   <Label styleClass="modern-title" style="-fx-font-size: 18; -fx-text-alignment: center;" text="In attesa dell'Amministratore..." wrapText="true" />
+   <Label styleClass="hint-text" style="-fx-text-alignment: center;" text="L'admin sta selezionando il fantallenatore che dovrà chiamare il prossimo giocatore." wrapText="true" />
+</VBox>

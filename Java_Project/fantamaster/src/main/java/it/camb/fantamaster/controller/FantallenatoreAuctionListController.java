@@ -50,6 +50,7 @@ public class FantallenatoreAuctionListController {
         loadFantallenatori();
     }
 
+
     public void loadFantallenatori() {
         fantallenatoriContainer.getChildren().clear();
 

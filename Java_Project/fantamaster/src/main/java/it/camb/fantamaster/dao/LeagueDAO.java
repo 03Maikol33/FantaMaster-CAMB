@@ -23,6 +23,57 @@ public class LeagueDAO {
         this.conn = conn;
     }
 
+    // Modifica mapResultSetToLeague in it.camb.fantamaster.dao.LeagueDAO
+
+    private League mapResultSetToLeague(ResultSet rs) throws SQLException {
+        // 1. LEGGI TUTTI I DATI "SEMPLICI" IMMEDIATAMENTE
+        // Estraiamo tutto dal ResultSet prima di chiamare altri DAO
+        int id = rs.getInt("id");
+        String name = rs.getString("nome");
+        int maxMembers = rs.getInt("max_membri");
+        boolean closed = rs.getBoolean("iscrizioni_chiuse");
+        boolean astaAperta = rs.getBoolean("asta_aperta");
+        boolean mercatoAperto = rs.getBoolean("mercato_aperto");
+        int idCreatore = rs.getInt("id_creatore");
+        String inviteCode = rs.getString("codice_invito");
+        String moduli = rs.getString("moduli_consentiti");
+        String modalita = rs.getString("modalita");
+        int budgetIniziale = rs.getInt("budget_iniziale");
+        
+        // Gestione null per i turni asta
+        Integer turnoId = rs.getInt("turno_asta_utente_id");
+        if (rs.wasNull()) turnoId = null;
+        
+        Integer giocatoreId = rs.getInt("giocatore_chiamato_id");
+        if (rs.wasNull()) giocatoreId = null;
+
+        Timestamp ts = rs.getTimestamp("created_at");
+        java.time.LocalDateTime createdAt = (ts != null) ? ts.toLocalDateTime() : null;
+
+        Blob blob = rs.getBlob("icona");
+        byte[] image = (blob != null) ? blob.getBytes(1, (int) blob.length()) : null;
+
+        // 2. ORA CHE ABBIAMO SALVATO I DATI IN VARIABILI LOCALI, POSSIAMO USARE GLI ALTRI DAO
+        // Questo evita il conflitto con il ResultSet principale (rs)
+        UserDAO userDAO = new UserDAO(this.conn);
+        User creator = userDAO.findById(idCreatore);
+
+        UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(this.conn);
+        List<User> participants = ulDAO.getUsersInLeagueId(id); 
+
+        // 3. COSTRUIAMO L'OGGETTO LEAGUE
+        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita, astaAperta);
+        
+        league.setInviteCode(inviteCode);
+        league.setAllowedFormations(moduli);
+        league.setInitialBudget(budgetIniziale > 0 ? budgetIniziale : 500);
+        league.setMercatoAperto(mercatoAperto);
+        league.setTurnoAstaUtenteId(turnoId);
+        league.setGiocatoreChiamatoId(giocatoreId);
+
+        return league;
+    }
+/* 
     // Metodo helper per mappare il ResultSet in un oggetto League
     private League mapResultSetToLeague(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
@@ -72,7 +123,7 @@ public class LeagueDAO {
 
 
         return league;
-    }
+    }*/
 
     public boolean isMercatoAperto(int leagueId) {
         String sql = "SELECT mercato_aperto FROM leghe WHERE id = ?";
@@ -156,6 +207,66 @@ public class LeagueDAO {
     }
 
     public League getLeagueById(int id) {
+        String sql = "SELECT l.*, r.budget_iniziale FROM leghe l " +
+                    "LEFT JOIN regole r ON l.id = r.lega_id WHERE l.id = ?";
+        
+        League league = null;
+        int idCreatore = -1;
+
+        // STEP 1: Eseguiamo la query sulla lega e salviamo i dati in variabili locali
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    idCreatore = rs.getInt("id_creatore");
+                    
+                    // Creiamo l'oggetto con i dati "primitivi"
+                    league = new League();
+                    league.setId(rs.getInt("id"));
+                    league.setName(rs.getString("nome"));
+                    league.setMaxMembers(rs.getInt("max_membri"));
+                    league.setRegistrationsClosed(rs.getBoolean("iscrizioni_chiuse"));
+                    league.setAstaAperta(rs.getBoolean("asta_aperta"));
+                    league.setMercatoAperto(rs.getBoolean("mercato_aperto"));
+                    league.setInviteCode(rs.getString("codice_invito"));
+                    league.setAllowedFormations(rs.getString("moduli_consentiti"));
+                    league.setGameMode(rs.getString("modalita"));
+                    
+                    int budget = rs.getInt("budget_iniziale");
+                    league.setInitialBudget(budget > 0 ? budget : 500);
+
+                    Integer tId = rs.getInt("turno_asta_utente_id");
+                    league.setTurnoAstaUtenteId(rs.wasNull() ? null : tId);
+                    
+                    Integer gId = rs.getInt("giocatore_chiamato_id");
+                    league.setGiocatoreChiamatoId(rs.wasNull() ? null : gId);
+
+                    Timestamp ts = rs.getTimestamp("created_at");
+                    if (ts != null) league.setCreatedAt(ts.toLocalDateTime());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // STEP 2: Ora che il ResultSet della lega è CHIUSO, usiamo gli altri DAO
+        // Usando la stessa 'conn' ma con nuovi statement
+        if (league != null) {
+            try {
+                if (idCreatore != -1) {
+                    league.setCreator(new UserDAO(this.conn).findById(idCreatore));
+                }
+                // Qui chiamiamo UsersLeaguesDAO in tutta sicurezza
+                league.setParticipants(new UsersLeaguesDAO(this.conn).getUsersInLeagueId(id));
+            } catch (Exception e) {
+                System.err.println("Errore caricamento dettagli: " + e.getMessage());
+            }
+        }
+
+        return league;
+    }
+/* 
+    public League getLeagueById(int id) {
         String sql = "SELECT l.*, r.budget_iniziale " +
                      "FROM leghe l " +
                      "LEFT JOIN regole r ON l.id = r.lega_id " +
@@ -171,7 +282,7 @@ public class LeagueDAO {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     public boolean insertLeague(League league) {
         String code = CodeGenerator.generateCode();
