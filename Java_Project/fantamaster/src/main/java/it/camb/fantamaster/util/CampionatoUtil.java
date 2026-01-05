@@ -1,11 +1,16 @@
 package it.camb.fantamaster.util;
 
-import com.google.gson.Gson;
-import it.camb.fantamaster.model.campionato.*;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+
+import it.camb.fantamaster.model.campionato.CampionatoWrapper;
+import it.camb.fantamaster.model.campionato.EventoData;
+import it.camb.fantamaster.model.campionato.GiornataData;
+import it.camb.fantamaster.model.campionato.MatchData;
 
 public class CampionatoUtil {
 
@@ -18,11 +23,18 @@ public class CampionatoUtil {
         try (InputStreamReader reader = new InputStreamReader(
                 CampionatoUtil.class.getResourceAsStream(path), StandardCharsets.UTF_8)) {
             campionato = new Gson().fromJson(reader, CampionatoWrapper.class);
-            System.out.println("✅ Campionato caricato: " + campionato.campionato.size() + " giornate trovate.");
+            System.out.println("✅ Campionato caricato: " + (campionato != null ? campionato.campionato.size() : 0) + " giornate trovate.");
         } catch (Exception e) {
             System.err.println("❌ Errore caricamento campionato.json");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Restituisce la lista di tutte le giornate caricate.
+     */
+    public static List<GiornataData> getGiornate() {
+        return (campionato != null) ? campionato.campionato : new ArrayList<>();
     }
 
     /**
@@ -54,6 +66,6 @@ public class CampionatoUtil {
      * Metodo 2: Restituisce tutte le azioni (eventi) di una specifica partita
      */
     public static List<EventoData> getActionsForMatch(MatchData match) {
-        return match != null ? match.eventi : new ArrayList<>();
+        return (match != null) ? match.eventi : new ArrayList<>();
     }
 }
