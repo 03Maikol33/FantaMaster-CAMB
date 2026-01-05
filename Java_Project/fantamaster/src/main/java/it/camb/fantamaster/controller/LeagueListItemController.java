@@ -89,7 +89,6 @@ public class LeagueListItemController {
     @FXML
     private void handleQuickFormation() {
         try {
-            // Apre la formazione in una finestra pop-up per non modificare LeagueAdminScreenController
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/formation.fxml"));
             Parent root = loader.load();
             
@@ -99,6 +98,26 @@ public class LeagueListItemController {
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setTitle("Schiera Formazione - " + league.getName());
+            popupStage.setScene(new Scene(root));
+            popupStage.show();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleShowResults() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/simulated_matchdays.fxml"));
+            Parent root = loader.load();
+            
+            SimulatedMatchdaysController controller = loader.getController();
+            controller.setLeague(league);
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setTitle("Risultati Giornate - " + league.getName());
             popupStage.setScene(new Scene(root));
             popupStage.show();
             

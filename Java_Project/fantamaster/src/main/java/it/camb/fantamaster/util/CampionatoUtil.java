@@ -1,11 +1,16 @@
 package it.camb.fantamaster.util;
 
-import com.google.gson.Gson;
-import it.camb.fantamaster.model.campionato.*;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+
+import it.camb.fantamaster.model.campionato.CampionatoWrapper;
+import it.camb.fantamaster.model.campionato.EventoData;
+import it.camb.fantamaster.model.campionato.GiornataData;
+import it.camb.fantamaster.model.campionato.MatchData;
 
 public class CampionatoUtil {
 
@@ -18,15 +23,24 @@ public class CampionatoUtil {
         try (InputStreamReader reader = new InputStreamReader(
                 CampionatoUtil.class.getResourceAsStream(path), StandardCharsets.UTF_8)) {
             campionato = new Gson().fromJson(reader, CampionatoWrapper.class);
-            System.out.println("✅ Campionato caricato: " + campionato.campionato.size() + " giornate trovate.");
+            if (campionato != null) {
+                System.out.println("✅ Campionato caricato: " + campionato.campionato.size() + " giornate trovate.");
+            }
         } catch (Exception e) {
-            System.err.println("❌ Errore caricamento campionato.json");
+            System.err.println("❌ Errore caricamento campionato.json: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     /**
-     * Metodo 1: Restituisce TUTTE le partite del campionato (di tutte le giornate)
+     * Restituisce la lista di tutte le giornate caricate.
+     */
+    public static List<GiornataData> getGiornate() {
+        return (campionato != null) ? campionato.campionato : new ArrayList<>();
+    }
+
+    /**
+     * Restituisce TUTTE le partite del campionato (di tutte le giornate)
      */
     public static List<MatchData> getAllMatches() {
         List<MatchData> allMatches = new ArrayList<>();
@@ -39,7 +53,7 @@ public class CampionatoUtil {
     }
 
     /**
-     * Metodo Helper: Restituisce le partite di una specifica giornata
+     * Restituisce le partite di una specifica giornata
      */
     public static List<MatchData> getMatchesByDay(int giornata) {
         if (campionato != null) {
@@ -51,9 +65,9 @@ public class CampionatoUtil {
     }
 
     /**
-     * Metodo 2: Restituisce tutte le azioni (eventi) di una specifica partita
+     * Restituisce tutte le azioni (eventi) di una specifica partita
      */
     public static List<EventoData> getActionsForMatch(MatchData match) {
-        return match != null ? match.eventi : new ArrayList<>();
+        return (match != null) ? match.eventi : new ArrayList<>();
     }
 }

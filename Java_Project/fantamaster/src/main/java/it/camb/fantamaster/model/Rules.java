@@ -31,7 +31,7 @@ public class Rules {
         this.bonusAssist = 1.0;
         this.bonusImbattibilita = 1.0;
         this.bonusRigoreParato = 3.0;
-        this.bonusFattoreCampo = 1.0;
+        this.bonusFattoreCampo = 2.0;
         
         this.malusGolSubito = 1.0;
         this.malusAmmonizione = 0.5;

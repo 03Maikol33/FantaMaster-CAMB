@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import it.camb.fantamaster.model.Rosa;
 
 public class RosaDAO {
@@ -57,4 +59,35 @@ public class RosaDAO {
         }
         return 0;
     }
+/**
+     * Conta i giocatori già acquistati dalla rosa, divisi per ruolo.
+     * Restituisce una Mappa es: {"P": 2, "D": 5, "C": 8, "A": 1}
+     */
+    public Map<String, Integer> getRuoliCount(int rosaId) throws SQLException {
+        Map<String, Integer> counts = new HashMap<>();
+        counts.put("P", 0);
+        counts.put("D", 0);
+        counts.put("C", 0);
+        counts.put("A", 0);
+
+        String sql = "SELECT g.ruolo, COUNT(*) as totale " +
+                     "FROM giocatori_rose gr " +
+                     "JOIN giocatori g ON gr.giocatore_id = g.id " +
+                     "WHERE gr.rosa_id = ? " +
+                     "GROUP BY g.ruolo";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, rosaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String ruolo = rs.getString("ruolo");
+                    int totale = rs.getInt("totale");
+                    // Assicuriamoci che il ruolo sia maiuscolo e pulito
+                    if (ruolo != null) counts.put(ruolo.toUpperCase(), totale);
+                }
+            }
+        }
+        return counts;
+    }
+
 }
