@@ -1,0 +1,100 @@
+{
+  "campionato": [
+    {
+      "giornata": 1,
+      "partite": [
+        {
+          "casa": "Inter",
+          "trasferta": "Milan",
+          "risultato_casa": 2,
+          "risultato_trasferta": 1,
+          "fattore_campo_attivo": true,
+          "eventi": [
+            { "id_giocatore": 17, "nome": "Lautaro Martinez", "squadra": "Inter", "azione": "goal" },
+            { "id_giocatore": 17, "nome": "Lautaro Martinez", "squadra": "Inter", "azione": "goal" },
+            { "id_giocatore": 11, "nome": "Nicolò Barella", "squadra": "Inter", "azione": "assist" },
+            { "id_giocatore": 35, "nome": "Rafael Leao", "squadra": "Milan", "azione": "goal" },
+            { "id_giocatore": 1, "nome": "Yann Sommer", "squadra": "Inter", "azione": "goal_subito" },
+            { "id_giocatore": 21, "nome": "Mike Maignan", "squadra": "Milan", "azione": "goal_subito" },
+            { "id_giocatore": 21, "nome": "Mike Maignan", "squadra": "Milan", "azione": "goal_subito" },
+            { "id_giocatore": 24, "nome": "Fikayo Tomori", "squadra": "Milan", "azione": "ammonizione" }
+          ]
+        },
+        {
+          "casa": "Juventus",
+          "trasferta": "Napoli",
+          "risultato_casa": 0,
+          "risultato_trasferta": 0,
+          "fattore_campo_attivo": true,
+          "eventi": [
+            { "id_giocatore": 41, "nome": "Michele Di Gregorio", "squadra": "Juventus", "azione": "imbattibilita" },
+            { "id_giocatore": 60, "nome": "Alex Meret", "squadra": "Napoli", "azione": "imbattibilita" },
+            { "id_giocatore": 55, "nome": "Dusan Vlahovic", "squadra": "Juventus", "azione": "ammonizione" },
+            { "id_giocatore": 73, "nome": "Romelu Lukaku", "squadra": "Napoli", "azione": "ammonizione" }
+          ]
+        }
+      ]
+    },
+    {
+      "giornata": 2,
+      "partite": [
+        {
+          "casa": "Roma",
+          "trasferta": "Atalanta",
+          "risultato_casa": 1,
+          "risultato_trasferta": 2,
+          "fattore_campo_attivo": true,
+          "eventi": [
+            { "id_giocatore": 87, "nome": "Paulo Dybala", "squadra": "Roma", "azione": "rigore_sbagliato" },
+            { "id_giocatore": 96, "nome": "Marco Carnesecchi", "squadra": "Atalanta", "azione": "rigore_parato" },
+            { "id_giocatore": 110, "nome": "Ademola Lookman", "squadra": "Atalanta", "azione": "goal" },
+            { "id_giocatore": 110, "nome": "Ademola Lookman", "squadra": "Atalanta", "azione": "goal" },
+            { "id_giocatore": 92, "nome": "Artem Dovbyk", "squadra": "Roma", "azione": "goal" },
+            { "id_giocatore": 80, "nome": "Gianluca Mancini", "squadra": "Roma", "azione": "espulsione" },
+            { "id_giocatore": 78, "nome": "Mile Svilar", "squadra": "Roma", "azione": "goal_subito" },
+            { "id_giocatore": 78, "nome": "Mile Svilar", "squadra": "Roma", "azione": "goal_subito" }
+          ]
+        },
+        {
+          "casa": "Fiorentina",
+          "trasferta": "Lazio",
+          "risultato_casa": 1,
+          "risultato_trasferta": 1,
+          "fattore_campo_attivo": true,
+          "eventi": [
+            { "id_giocatore": 144, "nome": "Moise Kean", "squadra": "Fiorentina", "azione": "goal" },
+            { "id_giocatore": 127, "nome": "Boulaye Dia", "squadra": "Lazio", "azione": "goal" },
+            { "id_giocatore": 135, "nome": "Marin Pongracic", "squadra": "Fiorentina", "azione": "autogoal" },
+            { "id_giocatore": 131, "nome": "David De Gea", "squadra": "Fiorentina", "azione": "goal_subito" },
+            { "id_giocatore": 114, "nome": "Ivan Provedel", "squadra": "Lazio", "azione": "goal_subito" }
+          ]
+        }
+      ]
+    },
+    {
+      "giornata": 3,
+      "partite": [
+        {
+          "casa": "Parma",
+          "trasferta": "Udinese",
+          "risultato_casa": 2,
+          "risultato_trasferta": 3,
+          "fattore_campo_attivo": true,
+          "eventi": [
+            { "id_giocatore": 191, "nome": "Dennis Man", "squadra": "Parma", "azione": "goal" },
+            { "id_giocatore": 193, "nome": "Ange Bonny", "squadra": "Parma", "azione": "goal" },
+            { "id_giocatore": 197, "nome": "Lorenzo Lucca", "squadra": "Udinese", "azione": "goal" },
+            { "id_giocatore": 196, "nome": "Florian Thauvin", "squadra": "Udinese", "azione": "goal" },
+            { "id_giocatore": 196, "nome": "Florian Thauvin", "squadra": "Udinese", "azione": "goal" },
+            { "id_giocatore": 190, "nome": "Zion Suzuki", "squadra": "Parma", "azione": "goal_subito" },
+            { "id_giocatore": 190, "nome": "Zion Suzuki", "squadra": "Parma", "azione": "goal_subito" },
+            { "id_giocatore": 190, "nome": "Zion Suzuki", "squadra": "Parma", "azione": "goal_subito" },
+            { "id_giocatore": 194, "nome": "Maduka Okoye", "squadra": "Udinese", "azione": "goal_subito" },
+            { "id_giocatore": 194, "nome": "Maduka Okoye", "squadra": "Udinese", "azione": "goal_subito" },
+            { "id_giocatore": 192, "nome": "Adrian Bernabe", "squadra": "Parma", "azione": "ammonizione" }
+          ]
+        }
+      ]
+    }
+  ]
+}
