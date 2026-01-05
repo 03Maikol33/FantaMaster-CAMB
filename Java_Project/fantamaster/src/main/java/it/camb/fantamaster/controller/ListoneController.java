@@ -1,9 +1,11 @@
 package it.camb.fantamaster.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.UnaryOperator;
 
 import it.camb.fantamaster.dao.PlayerDAO;
 import it.camb.fantamaster.model.Player;
@@ -18,7 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import java.util.function.UnaryOperator;
 import javafx.scene.layout.VBox;
 
 public class ListoneController {
@@ -28,7 +29,7 @@ public class ListoneController {
     @FXML private TextField maxPriceField;
     @FXML private Button resetFilterButton;
 
-    private final PlayerDAO playerDAO = new PlayerDAO();
+    private PlayerDAO playerDAO;
     private final int pageSize = 100; // elementi per pagina (aumentato)
     private int offset = 0;
     public VBox getPlayerContainer() {
@@ -137,6 +138,12 @@ public class ListoneController {
 
     @FXML
     public void initialize() {
+        try {
+        // Inizializza il DAO con la connessione SQL
+        this.playerDAO = new PlayerDAO(it.camb.fantamaster.util.ConnectionFactory.getConnection());
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
         // populate role combo with distinct roles (including empty = All)
         CompletableFuture.runAsync(() -> {
             try {
