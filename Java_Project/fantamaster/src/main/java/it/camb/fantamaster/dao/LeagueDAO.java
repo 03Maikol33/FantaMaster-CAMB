@@ -434,4 +434,39 @@ public class LeagueDAO {
             return false;
         }
     }
+
+    //avvio asta a busta chiusa
+    public boolean avviaAstaBustaChiusa(int leagueId, int giocatoreId, int rosaId, int offerta) {
+        String sqlUpdateLega = "UPDATE leghe SET giocatore_chiamato_id = ? WHERE id = ?";
+        String sqlInsertOfferta = "INSERT INTO offerte_asta (lega_id, giocatore_id, rosa_id, tipo, offerta) VALUES (?, ?, ?, 'offerta', ?)";
+
+        try {
+            conn.setAutoCommit(false); // Inizio transazione
+
+            // 1. Aggiorniamo la lega con il giocatore chiamato
+            try (PreparedStatement stmtLega = conn.prepareStatement(sqlUpdateLega)) {
+                stmtLega.setInt(1, giocatoreId);
+                stmtLega.setInt(2, leagueId);
+                stmtLega.executeUpdate();
+            }
+
+            // 2. Inseriamo la tua offerta a busta chiusa nella tabella dedicata
+            try (PreparedStatement stmtOfferta = conn.prepareStatement(sqlInsertOfferta)) {
+                stmtOfferta.setInt(1, leagueId);
+                stmtOfferta.setInt(2, giocatoreId);
+                stmtOfferta.setInt(3, rosaId);
+                stmtOfferta.setInt(4, offerta);
+                stmtOfferta.executeUpdate();
+            }
+
+            conn.commit(); // Conferma tutto
+            return true;
+        } catch (SQLException e) {
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
 }

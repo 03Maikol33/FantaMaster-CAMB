@@ -114,10 +114,12 @@ public class AuctionMainContainerController {
             // Se è il controller della lista, gli passiamo la lega e chiamiamo l'init
             if (controller instanceof FantallenatoreAuctionListController) {
                 ((FantallenatoreAuctionListController) controller).initData(league);
+                ((FantallenatoreAuctionListController) controller).setParentContainer(this);
             }
              
             if (controller instanceof AuctionProposePlayerController) {
                 ((AuctionProposePlayerController) controller).initData(league);
+                ((AuctionProposePlayerController) controller).setParentContainer(this);
             }
 
             if (controller instanceof AuctionBiddingRoomController) {
@@ -138,5 +140,10 @@ public class AuctionMainContainerController {
             pollingTimeline.stop();
             System.out.println("Polling rimosso.");
         }
+    }
+
+    public void forceRefresh() {
+        System.out.println("[Auction] Refresh forzato richiesto...");
+        runCheckTask();
     }
 }

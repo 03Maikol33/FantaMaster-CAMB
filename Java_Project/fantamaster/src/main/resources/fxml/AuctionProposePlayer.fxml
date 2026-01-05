@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.control.TextField?>
 
 <VBox alignment="TOP_CENTER" spacing="15" style="-fx-padding: 20;" 
       stylesheets="@css/style.css"
@@ -26,9 +27,13 @@
         </VBox>
     </HBox>
 
+    <HBox spacing="10" alignment="CENTER_LEFT">
+    <Label text="Budget Residuo:" style="-fx-font-weight: bold;" />
+    <Label fx:id="budgetLabel" text="0 FM" /> </HBox>
+
     <TableView fx:id="playerTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
     <columns>
-        <TableColumn fx:id="colIndex" prefWidth="40.0" text="N." />
+        <TableColumn fx:id="colPrezzo" prefWidth="60.0" text="Base" />
         
         <TableColumn fx:id="colRuolo" prefWidth="40.0" text="R" />
         <TableColumn fx:id="colNome" prefWidth="160.0" text="Giocatore" />
@@ -36,6 +41,10 @@
     </columns>
 </TableView>
 
+    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 10;">
+        <Label text="Tua Offerta Iniziale (Busta Chiusa):" style="-fx-font-weight: bold;" />
+        <TextField fx:id="offertaInizialeField" prefWidth="80" promptText="Es: 15" />
+    </HBox>
     <Button fx:id="btnChiama" maxWidth="Infinity" onAction="#handleChiamata" 
             styleClass="primary-button" text="AVVIA ASTA PER IL GIOCATORE" />
             

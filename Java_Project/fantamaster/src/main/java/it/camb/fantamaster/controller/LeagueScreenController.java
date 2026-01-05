@@ -79,5 +79,28 @@ public class LeagueScreenController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void openAuction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
+            Parent view = loader.load();
+            
+            AuctionMainContainerController controller = loader.getController();
+            controller.initData(currentLeague.getId()); 
+
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Errore caricamento Asta", e.getMessage());
+        }
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }
 // Fix conflitti definitivo

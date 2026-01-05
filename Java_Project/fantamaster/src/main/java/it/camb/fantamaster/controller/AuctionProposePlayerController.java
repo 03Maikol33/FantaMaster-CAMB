@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +24,16 @@ import java.util.stream.Collectors;
 public class AuctionProposePlayerController {
 
     @FXML private TableView<Player> playerTable;
-    @FXML private TableColumn<Player, Void> colIndex;
+    @FXML private TableColumn<Player, Integer> colPrezzo;
     @FXML private TableColumn<Player, String> colRuolo;
     @FXML private TableColumn<Player, String> colNome;
     @FXML private TableColumn<Player, String> colSquadra;
-    
+    @FXML private Label budgetLabel;
+    @FXML private TextField offertaInizialeField;
 
     private League currentLeague;
+
+    private AuctionMainContainerController parentContainer;
     
     // Limiti hardcoded come richiesto
     private static final int MAX_P = 3;
@@ -40,25 +44,43 @@ public class AuctionProposePlayerController {
     public void initData(League league) {
         this.currentLeague = league;
         setupTable();
+        loadBudgetResiduo();
         loadFilteredPlayers();
     }
 
+    public void setParentContainer(AuctionMainContainerController parentContainer) {
+        this.parentContainer = parentContainer;
+    }
+
     private void setupTable() {
-            colIndex.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    //getIndex() restituisce 0 per la prima riga, quindi aggiungiamo 1
-                    setText(String.valueOf(getIndex() + 1));
-                }
-            }
-        });
+        colPrezzo.setCellValueFactory(new PropertyValueFactory<>("prezzo"));
         colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
         colNome.setCellValueFactory(new PropertyValueFactory<>("nomeCompleto"));
         colSquadra.setCellValueFactory(new PropertyValueFactory<>("squadra"));
+    }
+
+    private void loadBudgetResiduo() {
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            int myUserId = SessionUtil.getCurrentSession().getUser().getId();
+            
+            // Query per prendere i crediti direttamente
+            String sql = "SELECT r.crediti_residui FROM rosa r " +
+                        "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                        "WHERE ul.utente_id = ? AND ul.lega_id = ?";
+                        
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, myUserId);
+                stmt.setInt(2, currentLeague.getId());
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        int residuo = rs.getInt("crediti_residui");
+                        budgetLabel.setText("Budget Residuo: " + residuo + " FM");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadFilteredPlayers() {
@@ -117,6 +139,50 @@ public class AuctionProposePlayerController {
     @FXML
     private void handleChiamata() {
         Player scelto = playerTable.getSelectionModel().getSelectedItem();
+        String offertaTesto = offertaInizialeField.getText();
+
+        if (scelto == null) { showAlert("Attenzione", "Seleziona un giocatore."); return; }
+        if (offertaTesto == null || offertaTesto.isEmpty()) { showAlert("Attenzione", "Inserisci l'offerta."); return; }
+
+        try{
+            Connection conn = ConnectionFactory.getConnection();
+            int offerta = Integer.parseInt(offertaTesto.trim());
+            
+            RosaDAO rosaDAO = new RosaDAO(conn);
+            int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
+            // Recuperiamo l'oggetto Rosa completo (che contiene l'ID della rosa)
+            Rosa miaRosa = rosaDAO.getRosaByUserAndLeague(currentUserId, currentLeague.getId());
+
+            // --- VALIDAZIONI ---
+            if (offerta < scelto.getPrezzo()) {
+                showAlert("Errore", "L'offerta deve essere >= " + scelto.getPrezzo());
+                return;
+            }
+            if (miaRosa != null && offerta > miaRosa.getCreditiDisponibili()) {
+                showAlert("Errore", "Crediti insufficienti!");
+                return;
+            }
+
+            // --- ESECUZIONE ---
+            checkAndInsertPlayer(conn, scelto); // Lazy loading anagrafica
+
+            LeagueDAO leagueDAO = new LeagueDAO(conn);
+            // Passiamo l'ID della ROSA (miaRosa.getId()) come richiesto dal DB
+            boolean ok = leagueDAO.avviaAstaBustaChiusa(currentLeague.getId(), scelto.getId(), miaRosa.getId(), offerta);
+
+            if (ok) {
+                System.out.println("Asta avviata correttamente.");
+                if (parentContainer != null) parentContainer.forceRefresh();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /* 
+    @FXML
+    private void handleChiamata() {
+        Player scelto = playerTable.getSelectionModel().getSelectedItem();
         if (scelto == null) return;
 
         try (Connection conn = ConnectionFactory.getConnection()) {
@@ -132,11 +198,15 @@ public class AuctionProposePlayerController {
             
             System.out.println("Asta avviata per: " + scelto.getNome());
             // Il polling del container farà il resto!
-            
+
+            //forza il refresh della view nel parent container
+            if (parentContainer != null) parentContainer.forceRefresh();
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void checkAndInsertPlayer(Connection conn, Player p) throws SQLException {
         String sql = "INSERT IGNORE INTO giocatori (id, id_esterno, nome, squadra_reale, ruolo, quotazione_iniziale) VALUES (?, ?, ?, ?, ?, ?)";
@@ -149,5 +219,12 @@ public class AuctionProposePlayerController {
             stmt.setInt(6, p.getPrezzo());
             stmt.executeUpdate();
         }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
