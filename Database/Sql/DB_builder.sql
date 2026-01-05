@@ -65,8 +65,8 @@ CREATE TABLE leghe (
     modalita VARCHAR(30) DEFAULT 'punti_totali',
     moduli_consentiti VARCHAR(255) DEFAULT '3-4-3;3-5-2;4-3-3;4-4-2;4-5-1;5-3-2;5-4-1',
     
-    mercato_aperto BOOLEAN DEFAULT FALSE,
-    asta_aperta BOOLEAN DEFAULT FALSE,
+    mercato_aperto BOOLEAN DEFAULT FALSE,--avvia e chiude il periodo di scambi--
+    asta_aperta BOOLEAN DEFAULT TRUE, --apre e chiude l'asta iniziale--
     turno_asta_utente_id INT,
     giocatore_chiamato_id INT,
     
