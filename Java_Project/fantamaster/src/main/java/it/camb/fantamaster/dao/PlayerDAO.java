@@ -2,236 +2,187 @@ package it.camb.fantamaster.dao;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import it.camb.fantamaster.model.Player;
+import it.camb.fantamaster.util.SessionUtil;
 
 public class PlayerDAO {
     private static final String LISTONE_JSON_PATH = "/api/listone.json";
+    private final Connection conn;
+    private List<Player> cachedListone = null;
 
-    /**
-     * Carica tutti i giocatori dal file listone.json
-     */
+    // Costruttore che accetta la connessione per il DB
+    public PlayerDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    // ==========================================================
+    // SEZIONE LISTONE (Sorgente JSON) - Per ListoneController
+    // ==========================================================
+
     public List<Player> getAllPlayers() {
+        if (cachedListone != null) return cachedListone;
         List<Player> players = new ArrayList<>();
-        try {
-            InputStream inputStream = PlayerDAO.class.getResourceAsStream(LISTONE_JSON_PATH);
-            if (inputStream == null) {
-                System.err.println("❌ File listone.json non trovato nel classpath!");
-                System.err.println("   Percorso cercato: " + LISTONE_JSON_PATH);
-                return players;
-            }
-
-            // Leggi il contenuto del file
+        try (InputStream inputStream = PlayerDAO.class.getResourceAsStream(LISTONE_JSON_PATH)) {
+            if (inputStream == null) return players;
             String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            inputStream.close();
-            
-            System.out.println("✅ File listone.json caricato con successo");
-            System.out.println("   Dimensione: " + jsonString.length() + " bytes");
-            
-            // Parsa il JSON
             JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
-            System.out.println("   Giocatori trovati: " + jsonArray.size());
-
             for (JsonElement element : jsonArray) {
-                Player player = parsePlayerFromJson(element.getAsJsonObject());
-                players.add(player);
+                players.add(parsePlayerFromJson(element.getAsJsonObject()));
             }
-
-        } catch (Exception e) {
-            System.err.println("❌ Errore durante il caricamento dei giocatori:");
-            e.printStackTrace();
-        }
-
+            cachedListone = players;
+        } catch (Exception e) { e.printStackTrace(); }
         return players;
     }
 
-    /**
-     * Restituisce una pagina di giocatori (offset, limit).
-     * Questo evita di creare nodi UI per tutti i giocatori alla volta.
-     */
     public List<Player> getPlayersPage(int offset, int limit) {
-        List<Player> page = new ArrayList<>();
-        try {
-            InputStream inputStream = PlayerDAO.class.getResourceAsStream(LISTONE_JSON_PATH);
-            if (inputStream == null) {
-                System.err.println("❌ File listone.json non trovato nel classpath!");
-                return page;
-            }
-
-            String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            inputStream.close();
-
-            JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
-            int total = jsonArray.size();
-            if (offset >= total) return page;
-
-            int end = Math.min(offset + limit, total);
-            for (int i = offset; i < end; i++) {
-                JsonElement element = jsonArray.get(i);
-                Player player = parsePlayerFromJson(element.getAsJsonObject());
-                page.add(player);
-            }
-
-            System.out.println("✅ Caricata pagina giocatori: offset=" + offset + " limit=" + limit + " (caricati=" + page.size() + ")");
-
-        } catch (Exception e) {
-            System.err.println("❌ Errore durante il caricamento della pagina dei giocatori:");
-            e.printStackTrace();
-        }
-
-        return page;
+        List<Player> all = getAllPlayers();
+        if (offset >= all.size()) return new ArrayList<>();
+        return new ArrayList<>(all.subList(offset, Math.min(offset + limit, all.size())));
     }
 
-    /**
-     * Restituisce il numero totale di giocatori presenti nel file JSON.
-     */
-    public int getTotalCount() {
-        try {
-            InputStream inputStream = PlayerDAO.class.getResourceAsStream(LISTONE_JSON_PATH);
-            if (inputStream == null) return 0;
-            String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            inputStream.close();
-            JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
-            return jsonArray.size();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+    public int getTotalCount() { return getAllPlayers().size(); }
 
-    /**
-     * Helper per convertire un JsonObject in un Player
-     */
-    private Player parsePlayerFromJson(com.google.gson.JsonObject jsonObject) {
-        int id = jsonObject.get("id").getAsInt();
-        String nome = jsonObject.get("nome").getAsString();
-        String cognome = jsonObject.get("cognome").getAsString();
-        String squadra = jsonObject.get("squadra").getAsString();
-        int numero = jsonObject.get("numero").getAsInt();
-        String ruolo = jsonObject.get("ruolo").getAsString();
-        int prezzo = jsonObject.get("prezzo").getAsInt();
-        String nazionalita = jsonObject.get("nazionalita").getAsString();
-
-        return new Player(id, nome, cognome, squadra, numero, ruolo, prezzo, nazionalita);
-    }
-
-    /**
-     * Cerca un giocatore per ID
-     */
-    public Player getPlayerById(int id) {
-        List<Player> players = getAllPlayers();
-        for (Player player : players) {
-            if (player.getId() == id) {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Cerca giocatori per ruolo
-     */
-    public List<Player> getPlayersByRole(String ruolo) {
-        List<Player> result = new ArrayList<>();
-        List<Player> players = getAllPlayers();
-        for (Player player : players) {
-            if (player.getRuolo().equalsIgnoreCase(ruolo)) {
-                result.add(player);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Cerca giocatori per squadra
-     */
-    public List<Player> getPlayersByTeam(String squadra) {
-        List<Player> result = new ArrayList<>();
-        List<Player> players = getAllPlayers();
-        for (Player player : players) {
-            if (player.getSquadra().equalsIgnoreCase(squadra)) {
-                result.add(player);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Restituisce una pagina di giocatori applicando filtri (ruolo e range prezzo).
-     * I parametri `minPrice` o `maxPrice` possono essere null per indicare nessun vincolo.
-     */
     public List<Player> getPlayersPageFiltered(int offset, int limit, String ruoloFilter, Integer minPrice, Integer maxPrice) {
-        List<Player> matches = new ArrayList<>();
-        try {
-            InputStream inputStream = PlayerDAO.class.getResourceAsStream(LISTONE_JSON_PATH);
-            if (inputStream == null) {
-                System.err.println("❌ File listone.json non trovato nel classpath!");
-                return matches;
+        List<Player> filtered = getAllPlayers().stream()
+            .filter(p -> (ruoloFilter == null || ruoloFilter.equals("Tutti") || p.getRuolo().equalsIgnoreCase(ruoloFilter)))
+            .filter(p -> (minPrice == null || p.getPrezzo() >= minPrice))
+            .filter(p -> (maxPrice == null || p.getPrezzo() <= maxPrice))
+            .collect(Collectors.toList());
+        if (offset >= filtered.size()) return new ArrayList<>();
+        return new ArrayList<>(filtered.subList(offset, Math.min(offset + limit, filtered.size())));
+    }
+
+    public int getFilteredTotalCount(String ruoloFilter, Integer minPrice, Integer maxPrice) {
+        return (int) getAllPlayers().stream()
+            .filter(p -> (ruoloFilter == null || ruoloFilter.equals("Tutti") || p.getRuolo().equalsIgnoreCase(ruoloFilter)))
+            .filter(p -> (minPrice == null || p.getPrezzo() >= minPrice))
+            .filter(p -> (maxPrice == null || p.getPrezzo() <= maxPrice))
+            .count();
+    }
+
+    private Player parsePlayerFromJson(JsonObject jsonObject) {
+        return new Player(
+            jsonObject.get("id").getAsInt(),
+            jsonObject.get("nome").getAsString(),
+            jsonObject.get("cognome").getAsString(),
+            jsonObject.get("squadra").getAsString(),
+            jsonObject.get("numero").getAsInt(),
+            jsonObject.get("ruolo").getAsString(),
+            jsonObject.get("prezzo").getAsInt(),
+            jsonObject.get("nazionalita").getAsString()
+        );
+    }
+
+    // ==========================================================
+    // SEZIONE DATABASE (SQL v5.5) - Per FormationController
+    // ==========================================================
+
+    /**
+     * Recupera i giocatori posseduti dall'utente nella lega specifica.
+     */
+    public List<Player> getTeamRosterByLeague(String leagueName) {
+        List<Integer> playerIds = new ArrayList<>();
+        if (SessionUtil.getCurrentSession() == null) return new ArrayList<>();
+
+        String sql = "SELECT g.id_esterno FROM giocatori g " +
+                     "JOIN giocatori_rose gr ON g.id = gr.giocatore_id " +
+                     "JOIN rosa r ON gr.rosa_id = r.id " +
+                     "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                     "JOIN leghe l ON ul.lega_id = l.id " +
+                     "WHERE ul.utente_id = ? AND l.nome = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, SessionUtil.getCurrentSession().getUser().getId());
+            stmt.setString(2, leagueName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) playerIds.add(rs.getInt("id_esterno"));
             }
+        } catch (SQLException e) { e.printStackTrace(); }
 
-            String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            inputStream.close();
-
-            JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
-
-            // Applico i filtri durante l'iterazione per evitare di creare liste intermedie inutili
-            for (JsonElement element : jsonArray) {
-                com.google.gson.JsonObject obj = element.getAsJsonObject();
-                String ruolo = obj.get("ruolo").getAsString();
-                int prezzo = obj.get("prezzo").getAsInt();
-
-                if (ruoloFilter != null && !ruoloFilter.isEmpty() && !ruolo.equalsIgnoreCase(ruoloFilter)) continue;
-                if (minPrice != null && prezzo < minPrice) continue;
-                if (maxPrice != null && prezzo > maxPrice) continue;
-
-                Player player = parsePlayerFromJson(obj);
-                matches.add(player);
-            }
-
-            // Pagination on the filtered list
-            if (offset >= matches.size()) return new ArrayList<>();
-            int end = Math.min(offset + limit, matches.size());
-            return new ArrayList<>(matches.subList(offset, end));
-
-        } catch (Exception e) {
-            System.err.println("❌ Errore durante il caricamento filtrato dei giocatori:");
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        return getAllPlayers().stream()
+                .filter(p -> playerIds.contains(p.getId()))
+                .collect(Collectors.toList());
     }
 
     /**
-     * Restituisce il conteggio totale di giocatori che rispettano i filtri.
+     * Salva la formazione: inserisce in formazioni e dettaglio_formazione.
      */
-    public int getFilteredTotalCount(String ruoloFilter, Integer minPrice, Integer maxPrice) {
-        int count = 0;
-        try {
-            InputStream inputStream = PlayerDAO.class.getResourceAsStream(LISTONE_JSON_PATH);
-            if (inputStream == null) return 0;
-            String jsonString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            inputStream.close();
-            JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
-
-            for (JsonElement element : jsonArray) {
-                com.google.gson.JsonObject obj = element.getAsJsonObject();
-                String ruolo = obj.get("ruolo").getAsString();
-                int prezzo = obj.get("prezzo").getAsInt();
-
-                if (ruoloFilter != null && !ruoloFilter.isEmpty() && !ruolo.equalsIgnoreCase(ruoloFilter)) continue;
-                if (minPrice != null && prezzo < minPrice) continue;
-                if (maxPrice != null && prezzo > maxPrice) continue;
-
-                count++;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean saveFormation(int userId, int leagueId, String modulo, Player capitano, List<Player> titolari, List<Player> panchina) throws SQLException {
+        // 1. Cerchiamo la giornata attiva ('da_giocare')
+        String checkGiornata = "SELECT id FROM giornate WHERE stato = 'da_giocare' LIMIT 1";
+        int giornataId = -1;
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(checkGiornata)) {
+            if (rs.next()) giornataId = rs.getInt("id");
         }
-        return count;
+        
+        if (giornataId == -1) throw new SQLException("Nessuna giornata 'da_giocare' trovata.");
+
+        // 2. Inseriamo o aggiorniamo la testata della formazione
+        String sqlFormazione = "INSERT INTO formazioni (rosa_id, giornata_id, modulo_schierato, capitano_id) " +
+                               "VALUES ((SELECT id FROM rosa WHERE utenti_leghe_id = (SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?)), " +
+                               "?, ?, ?) " +
+                               "ON DUPLICATE KEY UPDATE modulo_schierato = VALUES(modulo_schierato), capitano_id = VALUES(capitano_id)";
+        
+        try {
+            conn.setAutoCommit(false);
+            int formazioneId = -1;
+            
+            try (PreparedStatement stmt = conn.prepareStatement(sqlFormazione, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setInt(1, userId); stmt.setInt(2, leagueId);
+                stmt.setInt(3, giornataId); stmt.setString(4, modulo);
+                stmt.setInt(5, capitano.getId());
+                stmt.executeUpdate();
+                
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) formazioneId = rs.getInt(1);
+                    else {
+                        // Se non ha generato chiavi (Duplicate Key), lo recuperiamo
+                        String find = "SELECT id FROM formazioni WHERE rosa_id = (SELECT id FROM rosa WHERE utenti_leghe_id = (SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?)) AND giornata_id = ?";
+                        PreparedStatement pst = conn.prepareStatement(find);
+                        pst.setInt(1, userId); pst.setInt(2, leagueId); pst.setInt(3, giornataId);
+                        ResultSet rs2 = pst.executeQuery(); if (rs2.next()) formazioneId = rs2.getInt(1);
+                    }
+                }
+            }
+
+            if (formazioneId != -1) {
+                // 3. Puliamo il vecchio dettaglio e inseriamo il nuovo
+                conn.prepareStatement("DELETE FROM dettaglio_formazione WHERE formazione_id = " + formazioneId).executeUpdate();
+                String sqlDet = "INSERT INTO dettaglio_formazione (formazione_id, giocatore_id, stato, ordine_panchina) VALUES (?, (SELECT id FROM giocatori WHERE id_esterno = ?), ?, ?)";
+                try (PreparedStatement stmtDet = conn.prepareStatement(sqlDet)) {
+                    for (Player p : titolari) {
+                        stmtDet.setInt(1, formazioneId); stmtDet.setInt(2, p.getId());
+                        stmtDet.setString(3, "titolare"); stmtDet.setInt(4, 0); stmtDet.addBatch();
+                    }
+                    int ordine = 1;
+                    for (Player p : panchina) {
+                        stmtDet.setInt(1, formazioneId); stmtDet.setInt(2, p.getId());
+                        stmtDet.setString(3, "panchina"); stmtDet.setInt(4, ordine++); stmtDet.addBatch();
+                    }
+                    stmtDet.executeBatch();
+                }
+            }
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
     }
 }
