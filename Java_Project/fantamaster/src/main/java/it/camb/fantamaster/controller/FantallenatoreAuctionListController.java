@@ -42,7 +42,7 @@ public class FantallenatoreAuctionListController {
         this.isAdmin = (currentUser.getId() == league.getCreator().getId());
         
         if (!league.isAuctionOpen()) {
-            showAlert("Attenzione", "L'asta per questa lega è chiusa.");
+            showAlert("Attenzione", "L'asta per questa lega è chiusa. Non dovresti essere qui!");
             // Potresti disabilitare il container o tornare indietro
             fantallenatoriContainer.setDisable(true); 
         }
