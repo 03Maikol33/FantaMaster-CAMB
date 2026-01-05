@@ -22,11 +22,94 @@ public class AuctionBiddingRoomController {
     @FXML private Label statusLabel;
     @FXML private VBox biddingControls;
     @FXML private TextField offertaField;
+    @FXML private Label budgetLabel;
+    @FXML private Button btnInviaOfferta;
+
+    private static final int MAX_P = 3;
+    private static final int MAX_D = 8;
+    private static final int MAX_C = 8;
+    private static final int MAX_A = 6;
+    private static final int MAX_ROSA_TOTAL = 25;
 
     private League currentLeague;
     private Player currentPlayer;
     private Rosa miaRosa;
 
+    public void initData(League league) {
+        this.currentLeague = league;
+        int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
+
+        // 1. Identifichiamo il chiamante
+        boolean sonoIoIlChiamante = (league.getTurnoAstaUtenteId() != null && league.getTurnoAstaUtenteId() == currentUserId);
+
+        // Gestione UI iniziale
+        biddingControls.setVisible(!sonoIoIlChiamante);
+        biddingControls.setManaged(!sonoIoIlChiamante);
+        statusLabel.setVisible(sonoIoIlChiamante);
+
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            PlayerDAO playerDAO = new PlayerDAO();
+            RosaDAO rosaDAO = new RosaDAO(conn);
+            // Inizializziamo l'AuctionDAO per il controllo dell'offerta esistente
+            AuctionDAO auctionDAO = new AuctionDAO(conn);
+
+            // 2. Carichiamo il giocatore (necessario per ruolo e ID)
+            if (league.getGiocatoreChiamatoId() != null) {
+                this.currentPlayer = playerDAO.getPlayerById(league.getGiocatoreChiamatoId());
+                if (currentPlayer != null) {
+                    nomeGiocatoreLabel.setText(currentPlayer.getNome() + " " + currentPlayer.getCognome());
+                    ruoloLabel.setText("Ruolo: " + currentPlayer.getRuolo());
+                    squadraLabel.setText(currentPlayer.getSquadra());
+                    prezzoLabel.setText(String.valueOf(currentPlayer.getPrezzo()));
+                }
+            }
+
+            // 3. Recupero Rosa e check impedimenti
+            this.miaRosa = rosaDAO.getRosaByUserAndLeague(currentUserId, league.getId());
+            
+            if (miaRosa != null && currentPlayer != null) {
+                budgetLabel.setText(miaRosa.getCreditiDisponibili() + " FM");
+
+                // --- CHECK 1: HAI GIÀ OFFERTO? (Risolve il bug del rientro nell'asta) ---
+                // Se non sono il chiamante, verifico tramite DAO se ho già un record in offerte_asta
+                if (!sonoIoIlChiamante && auctionDAO.hasUserAlreadyBid(league.getId(), currentPlayer.getId(), miaRosa.getId())) {
+                    biddingControls.setDisable(true);
+                    statusLabel.setText("Hai già inviato la tua offerta per questo giocatore.");
+                    statusLabel.setVisible(true);
+                    return; // Chiudiamo qui: se hai già offerto, non servono altri controlli
+                }
+
+                // --- CHECK 2: LOGICA LIMITI (PUNTO 2 & 3) ---
+                int totalPlayers = rosaDAO.countGiocatoriInRosa(miaRosa.getId());
+                String ruolo = currentPlayer.getRuolo().toUpperCase();
+                int countPerRuolo = rosaDAO.countGiocatoriPerRuolo(miaRosa.getId(), ruolo);
+
+                boolean isRosaPiena = totalPlayers >= MAX_ROSA_TOTAL;
+                boolean isRuoloPieno = false;
+
+                if (ruolo.equals("P")) isRuoloPieno = countPerRuolo >= MAX_P;
+                else if (ruolo.equals("D")) isRuoloPieno = countPerRuolo >= MAX_D;
+                else if (ruolo.equals("C")) isRuoloPieno = countPerRuolo >= MAX_C;
+                else if (ruolo.equals("A")) isRuoloPieno = countPerRuolo >= MAX_A;
+
+                // Se la rosa è piena O il ruolo specifico è pieno (e non sono io il chiamante)
+                if ((isRosaPiena || isRuoloPieno) && !sonoIoIlChiamante) {
+                    btnInviaOfferta.setDisable(true);
+                    offertaField.setDisable(true);
+                    
+                    String motivo = isRosaPiena ? "Rosa piena (25/25)!" : "Slot " + ruolo + " completati!";
+                    offertaField.setPromptText(motivo);
+                    statusLabel.setText("Non puoi offrire: " + motivo + " Clicca 'Passa'.");
+                    statusLabel.setVisible(true);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+/* 
     public void initData(League league) {
         this.currentLeague = league;
         int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
@@ -56,10 +139,16 @@ public class AuctionBiddingRoomController {
         try{
             Connection conn = ConnectionFactory.getConnection();
             this.miaRosa = new RosaDAO(conn).getRosaByUserAndLeague(currentUserId, league.getId());
+
+            if(miaRosa != null) {
+                budgetLabel.setText(miaRosa.getCreditiDisponibili() + " FM");
+                
+
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @FXML
     private void handleInviaOfferta() {

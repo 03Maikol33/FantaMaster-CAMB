@@ -107,4 +107,47 @@ public class AuctionDAO {
             ps.executeUpdate();
         }
     }
+
+    //usato per notificare l'esito dell'asta nella UI
+    public String getUltimoRisultatoAsta(int leagueId)  throws SQLException {
+        // Cerchiamo l'ultimo giocatore inserito in giocatori_rose per questa lega
+        String sql = "SELECT g.nome, r.nome_rosa, gr.costo_acquisto " +
+                    "FROM giocatori_rose gr " +
+                    "JOIN giocatori g ON gr.giocatore_id = g.id " +
+                    "JOIN rosa r ON gr.rosa_id = r.id " +
+                    "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                    "WHERE ul.lega_id = ? " +
+                    "ORDER BY gr.id DESC LIMIT 1";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, leagueId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("nome") + " assegnato a " + 
+                        rs.getString("nome_rosa") + " per " + 
+                        rs.getInt("costo_acquisto") + " FM";
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Nessun dato disponibile";
+    }
+
+    public boolean hasUserAlreadyBid(int leagueId, int giocatoreId, int rosaId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM offerte_asta WHERE lega_id = ? AND giocatore_id = ? AND rosa_id = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, leagueId);
+            stmt.setInt(2, giocatoreId);
+            stmt.setInt(3, rosaId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -1,5 +1,6 @@
 package it.camb.fantamaster.controller;
 
+import it.camb.fantamaster.dao.AuctionDAO;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
@@ -11,6 +12,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 
@@ -25,6 +27,8 @@ public class AuctionMainContainerController {
     private Timeline pollingTimeline;
     private int currentLeagueId;
     private String currentView = ""; 
+
+    private Integer lastGiocatoreId = null;
 
     public void initData(int leagueId) {
         this.currentLeagueId = leagueId;
@@ -79,6 +83,41 @@ public class AuctionMainContainerController {
     }
 
     private void updateAuctionView(League league, User currentUser) {
+        // --- LOGICA DI SINCRONIZZAZIONE NOTIFICA ---
+        Integer currentGiocatoreId = league.getGiocatoreChiamatoId();
+
+        // Se al giro prima c'era un giocatore (last != null) 
+        // e ora non c'è più (current == null), l'asta è finita!
+        if (this.lastGiocatoreId != null && (currentGiocatoreId == null || currentGiocatoreId == 0)) {
+            System.out.println("[Auction] Rilevata fine asta per giocatore ID: " + lastGiocatoreId);
+            mostraRisultatoAsta(league.getId());
+        }
+
+        // Fondamentale: aggiorniamo il 'last' per il prossimo giro di polling
+        this.lastGiocatoreId = currentGiocatoreId;
+
+        // --- LOGICA DI SWITCH VISTE (Tua esistente) ---
+        if (league.getTurnoAstaUtenteId() == null || league.getTurnoAstaUtenteId() == 0) {
+            if (currentUser.getId() == league.getCreator().getId()) {
+                loadView("/fxml/fantallenatoreAuctionList.fxml", "ADMIN_SELECT_TURN", league);
+            } else {
+                loadView("/fxml/AuctionWaitTurnSelection.fxml", "WAIT_ADMIN", league);
+            }
+        } 
+        else if (currentGiocatoreId == null || currentGiocatoreId == 0) {
+            if (currentUser.getId() == league.getTurnoAstaUtenteId()) {
+                loadView("/fxml/AuctionProposePlayer.fxml", "PROPOSE_PLAYER", league);
+            } else {
+                loadView("/fxml/AuctionWaitPlayerProposal.fxml", "WAIT_PROPOSAL", league);
+            }
+        } 
+        else {
+            loadView("/fxml/AuctionBiddingRoom.fxml", "BIDDING", league);
+        }
+    }
+
+/* 
+    private void updateAuctionView(League league, User currentUser) {
         // STATO 1: Turno non assegnato
         if (league.getTurnoAstaUtenteId() == null || league.getTurnoAstaUtenteId() == 0) {
             if (currentUser.getId() == league.getCreator().getId()) {
@@ -99,7 +138,7 @@ public class AuctionMainContainerController {
         else {
             loadView("/fxml/AuctionBiddingRoom.fxml", "BIDDING", league);
         }
-    }
+    }*/
 
     private void loadView(String fxmlPath, String viewKey, League league) {
         if (currentView.equals(viewKey)) return;
@@ -145,5 +184,28 @@ public class AuctionMainContainerController {
     public void forceRefresh() {
         System.out.println("[Auction] Refresh forzato richiesto...");
         runCheckTask();
+    }
+    private void mostraRisultatoAsta(int leagueId) {
+        try {
+            // Recuperiamo la connessione unica (Singleton)
+            Connection conn = ConnectionFactory.getConnection();
+            
+            // Inizializziamo il DAO
+            it.camb.fantamaster.dao.AuctionDAO auctionDAO = new it.camb.fantamaster.dao.AuctionDAO(conn);
+            
+            // Il metodo getUltimoRisultatoAsta potrebbe lanciare SQLException
+            String risultato = auctionDAO.getUltimoRisultatoAsta(leagueId);
+
+            // Mostriamo l'Alert (siamo già nel thread JavaFX)
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("ASTA CONCLUSA");
+            alert.setHeaderText("Il giocatore è stato assegnato!");
+            alert.setContentText("Esito: " + risultato);
+            alert.show(); 
+
+        } catch (SQLException e) {
+            System.err.println("Errore nel recupero dell'ultimo risultato asta: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
