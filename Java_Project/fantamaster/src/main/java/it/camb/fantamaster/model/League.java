@@ -100,7 +100,7 @@ public class League {
         if (allowedFormations == null || allowedFormations.isEmpty()) {
             return new ArrayList<>();
         }
-        return Arrays.asList(allowedFormations.split(","));
+        return Arrays.asList(allowedFormations.split("[,;]"));
     }
     // ----------------------------------
     // --- Getter e Setter ---
