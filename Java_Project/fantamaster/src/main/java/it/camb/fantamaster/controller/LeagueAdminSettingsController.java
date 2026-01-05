@@ -50,6 +50,8 @@ public class LeagueAdminSettingsController {
     // Zona Pericolosa
     @FXML private Button closeRegistrationsButton;
     @FXML private Label closeRegistrationsWarningLabel;
+    // Bottone Apri/Chiudi Mercato
+    @FXML private Button apriChiudiMercatoButton;
 
     // Dati
     private League currentLeague;
@@ -130,6 +132,18 @@ public class LeagueAdminSettingsController {
             disableCloseButton("Partecipanti dispari (" + currentLeague.getParticipants().size() + ").", true);
         } else {
             enableCloseButton();
+        }
+
+        // 5. Bottone Apri/Chiudi Mercato
+        // Aggiorna il testo del bottone del mercato in base allo stato
+        if (apriChiudiMercatoButton != null) {
+            if (currentLeague.isMercatoAperto()) {
+                apriChiudiMercatoButton.setText("🔴 CHIUDI MERCATO SCAMBI");
+                apriChiudiMercatoButton.setStyle("-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold;");
+            } else {
+                apriChiudiMercatoButton.setText("🟢 APRI MERCATO SCAMBI");
+                apriChiudiMercatoButton.setStyle("-fx-background-color: #2f855a; -fx-text-fill: white; -fx-font-weight: bold;");
+            }
         }
     }
 
@@ -275,6 +289,29 @@ public class LeagueAdminSettingsController {
             } catch (Exception e) {
                 e.printStackTrace();
                 showAlert(AlertType.ERROR, "Errore", "Errore eliminazione.");
+            }
+        }
+    }
+
+    @FXML
+    public void handleApriChiudiMercato() {
+        if (currentLeague != null) {
+            try {
+                Connection conn = ConnectionFactory.getConnection();
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                boolean nuovoStato = !currentLeague.isMercatoAperto();
+                if (leagueDAO.updateMercato(nuovoStato, currentLeague.getId())) {
+                    currentLeague.setMercatoAperto(nuovoStato);
+                    updateUI();
+                    String statoTesto = nuovoStato ? "aperto" : "chiuso";
+                    showAlert(AlertType.INFORMATION, "Successo", "Mercato " + statoTesto + " con successo.");
+                   /* if (parentController != null) {
+                        parentController.refreshLeagueData(currentLeague.getId());
+                    }*/
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Errore", "Errore durante l'aggiornamento dello stato del mercato.");
             }
         }
     }

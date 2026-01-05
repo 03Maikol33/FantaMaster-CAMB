@@ -30,6 +30,7 @@ public class LeagueDAO {
         int maxMembers = rs.getInt("max_membri");
         boolean closed = rs.getBoolean("iscrizioni_chiuse");
         boolean astaAperta = rs.getBoolean("asta_aperta");
+        boolean mercatoAperto = rs.getBoolean("mercato_aperto");
 
         Timestamp ts = rs.getTimestamp("created_at");
         java.time.LocalDateTime createdAt = (ts != null) ? ts.toLocalDateTime() : null;
@@ -57,6 +58,8 @@ public class LeagueDAO {
         int budget = rs.getInt("budget_iniziale");
         league.setInitialBudget(budget > 0 ? budget : 500); // Fallback a 500 se 0 o null
         
+        league.setMercatoAperto(mercatoAperto);
+        
         int turnoId = rs.getInt("turno_asta_utente_id");
         if (!rs.wasNull()) {
             league.setTurnoAstaUtenteId(turnoId);
@@ -69,6 +72,33 @@ public class LeagueDAO {
 
 
         return league;
+    }
+
+    public boolean isMercatoAperto(int leagueId) {
+        String sql = "SELECT mercato_aperto FROM leghe WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, leagueId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("mercato_aperto");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Default se non trovato o errore
+    }
+
+    public boolean updateMercato(boolean isOpen, int leagueId) {
+        String sql = "UPDATE leghe SET mercato_aperto = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBoolean(1, isOpen);
+            stmt.setInt(2, leagueId);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // Metodo per aggiornare le regole (moduli)
