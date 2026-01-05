@@ -37,6 +37,10 @@
         <content>
             <VBox spacing="20" prefWidth="Infinity" style="-fx-padding: 10 0;">
                 
+                <!--apri/chiudi il mercato-->
+                <Button text="Apri/Chiudi gli scambi" fx:id="apriChiudiMercatoButton" maxWidth="Infinity" styleClass="primary-button" 
+                        style="-fx-font-size: 16; -fx-padding: 12;" onAction="#handleApriChiudiMercato"/>
+
                 <VBox spacing="15" styleClass="modern-card">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <StackPane>

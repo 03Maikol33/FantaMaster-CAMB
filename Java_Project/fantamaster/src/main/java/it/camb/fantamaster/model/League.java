@@ -14,6 +14,7 @@ public class League {
     private List<User> participants;
     private boolean registrationsClosed;
     private boolean astaAperta;
+    private boolean mercatoAperto;
     private LocalDateTime createdAt;
     private String inviteCode;
     private String allowedFormations;
@@ -64,6 +65,19 @@ public class League {
         this.participants = (participants != null) ? participants : new ArrayList<>();
         this.initialBudget = 500;
         this.gameMode = gameMode;
+    }
+
+    public boolean isAstaAperta() {
+        return astaAperta;
+    }
+    public void setAstaAperta(boolean astaAperta) {
+        this.astaAperta = astaAperta;
+    }
+    public boolean isMercatoAperto() {
+        return mercatoAperto;
+    }
+    public void setMercatoAperto(boolean mercatoAperto) {
+        this.mercatoAperto = mercatoAperto;
     }
 
     public Integer getTurnoAstaUtenteId() {
