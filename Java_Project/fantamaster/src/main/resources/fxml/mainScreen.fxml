@@ -24,7 +24,7 @@
                     <Circle radius="20" fill="#667eea" opacity="0.1"/>
                     <ImageView fitHeight="25.0" preserveRatio="true">
                         <image>
-                            <Image url="@../images/wideLogo.png"/>
+                            <Image url="@../images/LogoFantamaster.png"/>
                         </image>
                     </ImageView>
                 </StackPane>
