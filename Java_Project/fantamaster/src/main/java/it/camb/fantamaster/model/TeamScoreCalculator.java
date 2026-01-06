@@ -1,9 +1,5 @@
 package it.camb.fantamaster.model;
 
-import it.camb.fantamaster.model.Formation;
-import it.camb.fantamaster.model.FormationPlayer;
-import it.camb.fantamaster.model.MatchPerformance;
-import it.camb.fantamaster.model.Rules;
 
 import java.util.Comparator;
 import java.util.List;
