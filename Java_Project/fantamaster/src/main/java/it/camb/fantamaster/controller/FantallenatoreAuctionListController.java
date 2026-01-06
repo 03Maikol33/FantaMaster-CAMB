@@ -28,6 +28,12 @@ public class FantallenatoreAuctionListController {
     private User currentUser;
     private boolean isAdmin;
 
+    private AuctionMainContainerController parentContainer;
+
+    public void setParentContainer(AuctionMainContainerController parentContainer) {
+        this.parentContainer = parentContainer;
+    }
+
     // --- COSTANTI LIMITI ROSA ---
     private static final int MAX_PORTIERI = 3;
     private static final int MAX_DIFENSORI = 8;
@@ -49,6 +55,7 @@ public class FantallenatoreAuctionListController {
 
         loadFantallenatori();
     }
+
 
     public void loadFantallenatori() {
         fantallenatoriContainer.getChildren().clear();
@@ -118,6 +125,8 @@ public class FantallenatoreAuctionListController {
             
             // Ricarichiamo la lista (anche se idealmente il padre dovrebbe cambiare schermata ora)
             loadFantallenatori();
+            //forza il refresh della view nel parent container
+            if (parentContainer != null) parentContainer.forceRefresh();
 
         } catch (SQLException e) {
             e.printStackTrace();

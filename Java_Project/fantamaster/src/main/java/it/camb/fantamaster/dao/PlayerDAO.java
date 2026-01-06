@@ -285,4 +285,12 @@ public class PlayerDAO {
         }
         return 0.0;
     }
+
+    // cercare un giocatore nel listone JSON partendo dal suo ID
+    public Player getPlayerById(int id) {
+        return getAllPlayers().stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
 }
