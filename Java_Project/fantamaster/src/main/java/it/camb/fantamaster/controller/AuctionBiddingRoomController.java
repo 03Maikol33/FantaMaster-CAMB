@@ -49,7 +49,7 @@ public class AuctionBiddingRoomController {
 
         try {
             Connection conn = ConnectionFactory.getConnection();
-            PlayerDAO playerDAO = new PlayerDAO();
+            PlayerDAO playerDAO = new PlayerDAO(conn);
             RosaDAO rosaDAO = new RosaDAO(conn);
             // Inizializziamo l'AuctionDAO per il controllo dell'offerta esistente
             AuctionDAO auctionDAO = new AuctionDAO(conn);

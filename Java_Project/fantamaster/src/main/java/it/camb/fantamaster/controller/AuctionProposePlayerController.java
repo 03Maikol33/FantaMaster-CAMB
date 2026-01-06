@@ -84,9 +84,10 @@ public class AuctionProposePlayerController {
     }
 
     private void loadFilteredPlayers() {
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             // DAO JSON (Senza connessione)
-            PlayerDAO playerDAO = new PlayerDAO(); 
+            PlayerDAO playerDAO = new PlayerDAO(conn); 
             // DAO Database
             RosaDAO rosaDAO = new RosaDAO(conn);
             

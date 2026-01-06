@@ -7,10 +7,15 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class LeagueListItemController {
 
@@ -30,45 +35,31 @@ public class LeagueListItemController {
     private void setLeagueData() {
         if (league == null) return;
 
-        // 1. Gestione Nome
         leagueName.setText(league.getName() != null ? league.getName() : "Lega senza nome");
 
-        // 2. Gestione Creatore (Difensiva)
         User creator = league.getCreator();
         if (creator != null) {
             creatorName.setText("Creatore: " + creator.getUsername());
         } else {
             creatorName.setText("Creatore: Sconosciuto");
-            // Se non c'è creatore, non possiamo confrontarlo per il badge admin
             adminBadgeContainer.setVisible(false);
-            return; 
         }
 
-        // 3. Gestione Partecipanti (Null Safe)
-        // Grazie al refactoring del Model, getParticipants() non dovrebbe mai essere null,
-        // ma un controllo in più non guasta mai nella UI.
         int count = (league.getParticipants() != null) ? league.getParticipants().size() : 0;
         participantCount.setText("Partecipanti: " + count);
 
-        // 4. Gestione Immagine
         if (league.getImage() != null && league.getImage().length > 0) {
             try {
-                Image img = new Image(new ByteArrayInputStream(league.getImage()));
-                leagueIcon.setImage(img);
+                leagueIcon.setImage(new Image(new ByteArrayInputStream(league.getImage())));
             } catch (Exception e) {
-                // Se l'immagine è corrotta, usa quella di default
                 setDefaultImage();
             }
         } else {
             setDefaultImage();
         }
 
-        // 5. Gestione Badge Admin
-        // Qui sfruttiamo il metodo equals() di User che abbiamo testato
         User currentUser = SessionUtil.getCurrentSession().getUser();
-        boolean isAdmin = creator.equals(currentUser);
-        
-        // Usa setVisible(boolean) invece di visibleProperty().set(...) -> è più idiomatico
+        boolean isAdmin = (creator != null && creator.getId() == currentUser.getId());
         adminBadgeContainer.setVisible(isAdmin);
     }
 
@@ -85,19 +76,53 @@ public class LeagueListItemController {
         try {
             User currentUser = SessionUtil.getCurrentSession().getUser();
             User creator = league.getCreator();
-
-            // Controllo null-safe
-            if (creator != null && creator.equals(currentUser)) {
-                System.out.println("Apro schermata lega come admin: " + league.getName());
+            if (creator != null && creator.getId() == currentUser.getId()) {
                 Main.showLeagueAdminScreen(league);
             } else {
-                System.out.println("Apro schermata lega come partecipante: " + league.getName());
                 Main.showLeagueScreen(league);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Errore nell'apertura della lega.");
+        }
+    }
+
+    @FXML
+    private void handleQuickFormation() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/formation.fxml"));
+            Parent root = loader.load();
+            
+            FormationController controller = loader.getController();
+            controller.setLeague(league);
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setTitle("Schiera Formazione - " + league.getName());
+            popupStage.setScene(new Scene(root));
+            popupStage.show();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleShowResults() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/simulated_matchdays.fxml"));
+            Parent root = loader.load();
+            
+            SimulatedMatchdaysController controller = loader.getController();
+            controller.setLeague(league);
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setTitle("Risultati Giornate - " + league.getName());
+            popupStage.setScene(new Scene(root));
+            popupStage.show();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
-// Fix conflitti definitivo

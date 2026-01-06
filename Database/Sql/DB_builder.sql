@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS regole;
 DROP TABLE IF EXISTS leghe;
 DROP TABLE IF EXISTS giocatori;
 DROP TABLE IF EXISTS utenti;
+DROP TABLE IF EXISTS stato_campionato;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -65,8 +66,8 @@ CREATE TABLE leghe (
     modalita VARCHAR(30) DEFAULT 'punti_totali',
     moduli_consentiti VARCHAR(255) DEFAULT '3-4-3;3-5-2;4-3-3;4-4-2;4-5-1;5-3-2;5-4-1',
     
-    mercato_aperto BOOLEAN DEFAULT FALSE,--avvia e chiude il periodo di scambi--
-    asta_aperta BOOLEAN DEFAULT TRUE, --apre e chiude l'asta iniziale--
+    mercato_aperto BOOLEAN DEFAULT FALSE,
+    asta_aperta BOOLEAN DEFAULT FALSE,
     turno_asta_utente_id INT,
     giocatore_chiamato_id INT,
     
@@ -191,7 +192,7 @@ CREATE TABLE dettaglio_formazione (
     FOREIGN KEY (formazione_id) REFERENCES formazioni(id) ON DELETE CASCADE,
     FOREIGN KEY (giocatore_id) REFERENCES giocatori(id) ON DELETE CASCADE
 );
-
+ALTER TABLE dettaglio_formazione ADD COLUMN fantavoto_calcolato DOUBLE DEFAULT 0.0; --nuovo campo per memorizzare il fantavoto calcolato
 -- ==========================================================
 -- SEZIONE E: EVENTI (Sostituiscono i Voti)
 -- ==========================================================
@@ -273,4 +274,13 @@ CREATE TABLE richieste_accesso (
     stato ENUM('in_attesa','accettata','rifiutata') DEFAULT 'in_attesa',
     FOREIGN KEY (utente_id) REFERENCES utenti(id) ON DELETE CASCADE,
     FOREIGN KEY (lega_id) REFERENCES leghe(id) ON DELETE CASCADE
+);
+
+-- ==========================================================
+-- CAMPIONATO
+-- ==========================================================
+CREATE TABLE stato_campionato (
+    id INT PRIMARY KEY DEFAULT 1,
+    giornata_corrente INT NOT NULL DEFAULT 0,
+    ultima_modifica TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox prefHeight="580.0" prefWidth="320.0" spacing="5" style="-fx-background-color: #1a202c; -fx-padding: 8;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.FormationController">
+    <HBox alignment="CENTER_LEFT" spacing="8">
+        <Button onAction="#handleBack" style="-fx-background-color: transparent;"><graphic><ImageView fitHeight="15.0" fitWidth="15.0" preserveRatio="true"><Image url="@/icons/back-arrow-white.png" /></ImageView></graphic></Button>
+        <VBox HBox.hgrow="ALWAYS"><Label fx:id="leagueNameLabel" text="Lega" textFill="WHITE" style="-fx-font-weight: bold;" /><Label text="Tasto destro -> Capitano" textFill="#a0aec0" style="-fx-font-size: 8;" /></VBox>
+        <ComboBox fx:id="moduleComboBox" prefWidth="75.0" style="-fx-background-color: #2d3748; -fx-text-fill: white;" />
+    </HBox>
+    <AnchorPane fx:id="pitchPane" prefHeight="240.0" style="-fx-background-color: #276749; -fx-background-radius: 10; -fx-border-color: rgba(255,255,255,0.2);">
+        <Pane layoutY="120" prefHeight="1" prefWidth="300" style="-fx-background-color: rgba(255,255,255,0.1);" />
+    </AnchorPane>
+    <VBox spacing="2">
+        <Label text="Panchina (Trascina qui)" textFill="#48bb78" style="-fx-font-size: 9; -fx-font-weight: bold;" />
+        <ScrollPane fitToHeight="true" minHeight="75.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: #48bb78; -fx-border-radius: 8;">
+            <HBox fx:id="benchContainer" minWidth="300" spacing="8" style="-fx-padding: 5;" />
+        </ScrollPane>
+    </VBox>
+    <VBox spacing="2" VBox.vgrow="ALWAYS">
+        <HBox><Label text="Rosa" textFill="WHITE" style="-fx-font-size: 9;" /><Region HBox.hgrow="ALWAYS" /><Label fx:id="countLabel" text="0/11" textFill="#48bb78" /></HBox>
+        <ScrollPane fitToHeight="true" minHeight="85.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: #2d3748; -fx-border-radius: 8;">
+            <HBox fx:id="availableContainer" minWidth="300" spacing="8" style="-fx-padding: 5;" />
+        </ScrollPane>
+    </VBox>
+    <VBox alignment="CENTER" spacing="2">
+        <Label fx:id="saveFeedbackLabel" style="-fx-font-size: 10;" />
+        <Label fx:id="errorLabel" visible="false" textFill="#feb2b2" style="-fx-font-size: 10;" />
+        <Button onAction="#handleSaveFormation" prefHeight="35.0" prefWidth="180.0" style="-fx-background-color: #48bb78; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 18;" text="SALVA" />
+    </VBox>
+</VBox>
