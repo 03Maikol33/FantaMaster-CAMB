@@ -711,3 +711,66 @@ View {
     -fx-font-weight: bold;
     -fx-text-fill: #475569;
 }
+/* Bottone Azioni (Tre puntini verticali) */
+.menu-button-pro {
+    -fx-background-color: transparent;
+    -fx-font-size: 24px;
+    -fx-text-fill: #1e40af; /* blu scuro visibile su bianco */
+    -fx-cursor: hand;
+    -fx-padding: 0 5 0 5;
+}
+
+.menu-button-pro:hover {
+    -fx-text-fill: #1d2f4e;
+}
+
+/* La Tendina (Menu contestuale) */
+.context-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 8;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-border-width: 0.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 15, 0, 0, 5);
+}
+
+/* Singola voce del menu */
+.menu-item {
+    -fx-padding: 10 20 10 15;
+    -fx-background-radius: 8;
+}
+
+.menu-item:focused, .menu-item:hover {
+    -fx-background-color: #f7fafc;
+}
+
+.menu-item .label {
+    -fx-text-fill: #2d3748;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+/* La tendina (Context Menu) stile Professionale */
+.context-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 12;
+    -fx-border-width: 0.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 5);
+}
+
+.menu-item {
+    -fx-padding: 10 20 10 15;
+}
+
+.menu-item .label {
+    -fx-text-fill: #2d3748;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.menu-item:focused {
+    -fx-background-color: #f7fafc;
+}

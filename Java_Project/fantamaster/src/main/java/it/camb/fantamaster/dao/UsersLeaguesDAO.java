@@ -19,6 +19,9 @@ public class UsersLeaguesDAO {
     public UsersLeaguesDAO(Connection connection) {
         this.connection = connection;
     }
+    public List<User> getParticipants(int leagueId) {
+        return getUsersInLeagueId(leagueId);
+    }
 
     /**
      * Recupera la lista degli utenti iscritti a una lega dato l'ID della lega.

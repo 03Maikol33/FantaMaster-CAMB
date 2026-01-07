@@ -259,6 +259,25 @@ public class PlayerDAO {
             stmt.executeBatch();
         }
     }
+    /**
+     * METODO AGGIUNTO PER GLI SCAMBI: Recupera i giocatori di una rosa specifica.
+     */
+    public List<Player> getPlayersByRosa(int rosaId) {
+        List<Integer> playerIds = new ArrayList<>();
+        String sql = "SELECT g.id_esterno FROM giocatori g " +
+                     "JOIN giocatori_rose gr ON g.id = gr.giocatore_id " +
+                     "WHERE gr.rosa_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, rosaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) playerIds.add(rs.getInt("id_esterno"));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return getAllPlayers().stream()
+                .filter(p -> playerIds.contains(p.getId()))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Esegue la User Story: "Consulti tutte le righe di Dettaglio_formazione facendo sum..."
