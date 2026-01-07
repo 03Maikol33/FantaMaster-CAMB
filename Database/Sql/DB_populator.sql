@@ -91,3 +91,6 @@ INSERT INTO giocatori_rose (rosa_id, giocatore_id, costo_acquisto) VALUES
 (4, 11, 55), (4, 12, 60), (4, 13, 25), (4, 14, 35), (4, 15, 20), (4, 16, 8), (4, 29, 75), (4, 30, 38),
 -- Attaccanti
 (4, 17, 95), (4, 18, 82), (4, 19, 40), (4, 20, 5), (4, 35, 88), (4, 36, 60);
+
+-- Inizializzazione del campionato
+INSERT IGNORE INTO stato_campionato (id, giornata_corrente) VALUES (1, 0);
