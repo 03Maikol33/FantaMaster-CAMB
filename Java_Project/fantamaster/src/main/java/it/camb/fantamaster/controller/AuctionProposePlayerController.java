@@ -208,12 +208,33 @@ public class AuctionProposePlayerController {
             e.printStackTrace();
         }
     }*/
-
+/*
     private void checkAndInsertPlayer(Connection conn, Player p) throws SQLException {
         String sql = "INSERT IGNORE INTO giocatori (id, id_esterno, nome, squadra_reale, ruolo, quotazione_iniziale) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, p.getId());
             stmt.setInt(2, p.getId()); // Usiamo l'ID JSON come ID esterno
+            stmt.setString(3, p.getNome() + " " + p.getCognome());
+            stmt.setString(4, p.getSquadra());
+            stmt.setString(5, p.getRuolo());
+            stmt.setInt(6, p.getPrezzo());
+            stmt.executeUpdate();
+        }
+    }*/
+
+    private void checkAndInsertPlayer(Connection conn, Player p) throws SQLException {
+        // Usiamo ON DUPLICATE KEY UPDATE per sovrascrivere i dati finti con quelli reali del JSON
+        String sql = "INSERT INTO giocatori (id, id_esterno, nome, squadra_reale, ruolo, quotazione_iniziale) " +
+                    "VALUES (?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "nome = VALUES(nome), " +
+                    "squadra_reale = VALUES(squadra_reale), " +
+                    "ruolo = VALUES(ruolo), " +
+                    "quotazione_iniziale = VALUES(quotazione_iniziale)";
+                    
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, p.getId());
+            stmt.setInt(2, p.getId()); // id_esterno
             stmt.setString(3, p.getNome() + " " + p.getCognome());
             stmt.setString(4, p.getSquadra());
             stmt.setString(5, p.getRuolo());
