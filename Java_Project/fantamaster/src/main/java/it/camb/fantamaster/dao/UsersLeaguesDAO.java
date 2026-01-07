@@ -19,6 +19,9 @@ public class UsersLeaguesDAO {
     public UsersLeaguesDAO(Connection connection) {
         this.connection = connection;
     }
+    public List<User> getParticipants(int leagueId) {
+        return getUsersInLeagueId(leagueId);
+    }
 
     // ==========================================================
     // SEZIONE UTENTI E ISCRIZIONI
@@ -57,6 +60,41 @@ public class UsersLeaguesDAO {
         return getUsersInLeagueId(league.getId());
     }
 
+
+    public int subscribeUserToLeague(User user, League league) throws SQLException {
+        String sql = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
+
+        // Chiediamo al driver di restituire le chiavi generate
+        try (PreparedStatement stmt = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, user.getId());
+            stmt.setInt(2, league.getId());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // Restituiamo l'ID di utenti_leghe
+                }
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            // Se è già iscritto, dobbiamo recuperare l'ID esistente
+            return getExistingSubscriptionId(user.getId(), league.getId());
+        }
+        return -1;
+    }
+
+    public int getExistingSubscriptionId(int userId, int leagueId) throws SQLException {
+        String sql = "SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("id");
+            }
+        }
+        return -1;
+    }
+/* 
+    // Iscrive un utente a una lega
     public boolean subscribeUserToLeague(User user, League league) {
         String sql = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -70,7 +108,7 @@ public class UsersLeaguesDAO {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
     public boolean isUserSubscribed(User user, League league) {
         String sql = "SELECT 1 FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
@@ -133,11 +171,11 @@ public class UsersLeaguesDAO {
         
         // Correzione: Prende punteggio_totale e nome_rosa dalla tabella ROSA
         String sql = "SELECT u.username, r.nome_rosa, r.punteggio_totale " +
-                     "FROM utenti_leghe ul " +
-                     "JOIN utenti u ON ul.utente_id = u.id " +
-                     "LEFT JOIN rosa r ON r.utenti_leghe_id = ul.id " + 
-                     "WHERE ul.lega_id = ? " +
-                     "ORDER BY r.punteggio_totale DESC";
+                 "FROM utenti_leghe ul " +
+                 "JOIN utenti u ON ul.utente_id = u.id " +
+                 "LEFT JOIN rosa r ON r.utenti_leghe_id = ul.id " + 
+                 "WHERE ul.lega_id = ? " +
+                 "ORDER BY r.punteggio_totale DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, leagueId);
@@ -191,13 +229,13 @@ public class UsersLeaguesDAO {
         List<Integer> matchdays = new ArrayList<>();
         
         // Correzione: Join con tabella 'giornate' per prendere 'numero_giornata'
-        String sql = "SELECT DISTINCT g.numero_giornata " +
-                     "FROM formazioni f " +
-                     "JOIN giornate g ON f.giornata_id = g.id " + // Usa giornata_id -> g.id
-                     "JOIN rosa r ON f.rosa_id = r.id " +
-                     "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
-                     "WHERE ul.utente_id = ? AND ul.lega_id = ? " +
-                     "ORDER BY g.numero_giornata DESC";
+        String sql = "SELECT DISTINCT gio.numero_giornata " +
+                 "FROM formazioni f " +
+                 "JOIN giornate gio ON f.giornata_id = gio.id " +
+                 "JOIN rosa r ON f.rosa_id = r.id " +
+                 "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                 "WHERE ul.utente_id = ? AND ul.lega_id = ? " +
+                 "ORDER BY gio.numero_giornata DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
@@ -220,15 +258,14 @@ public class UsersLeaguesDAO {
         List<PlayerScoreRow> scores = new ArrayList<>();
         
         // Correzione: Join con giornate per filtrare per numero, e usa 'df.fantavoto'
-        String sql = "SELECT g.cognome, g.ruolo, df.fantavoto, df.stato " +
-                     "FROM dettaglio_formazione df " +
-                     "JOIN formazioni f ON df.formazione_id = f.id " +
-                     "JOIN giornate gio ON f.giornata_id = gio.id " +
-                     "JOIN giocatori g ON df.giocatore_id = g.id " +
-                     "JOIN rosa r ON f.rosa_id = r.id " +
-                     "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
-                     "WHERE ul.utente_id = ? AND ul.lega_id = ? AND gio.numero_giornata = ? " +
-                     "ORDER BY CASE g.ruolo WHEN 'P' THEN 1 WHEN 'D' THEN 2 WHEN 'C' THEN 3 WHEN 'A' THEN 4 END";
+        String sql = "SELECT g.nome, g.ruolo, df.fantavoto, df.stato " +
+                 "FROM dettaglio_formazione df " +
+                 "JOIN formazioni f ON df.formazione_id = f.id " +
+                 "JOIN giornate gio ON f.giornata_id = gio.id " +
+                 "JOIN giocatori g ON df.giocatore_id = g.id " +
+                 "JOIN rosa r ON f.rosa_id = r.id " +
+                 "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                 "WHERE ul.utente_id = ? AND ul.lega_id = ? AND gio.numero_giornata = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
@@ -239,7 +276,7 @@ public class UsersLeaguesDAO {
                 while (rs.next()) {
                     boolean isTitolare = "titolare".equalsIgnoreCase(rs.getString("stato"));
                     scores.add(new PlayerScoreRow(
-                        rs.getString("cognome"),
+                        rs.getString("nome"),
                         rs.getString("ruolo"),
                         rs.getDouble("fantavoto"), // Nome colonna corretto
                         isTitolare

@@ -34,6 +34,10 @@ public class Player implements Serializable {
         this.id = id;
     }
 
+    public String getNomeCompleto() {
+        return (nome != null ? nome : "") + " " + (cognome != null ? cognome : "");
+    }
+
     public String getNome() {
         return nome;
     }

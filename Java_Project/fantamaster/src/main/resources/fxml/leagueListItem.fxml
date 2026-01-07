@@ -30,12 +30,6 @@
                 </HBox>
             </VBox>
         </HBox>
-
-        <MenuButton mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16;" text="⋮">
-            <items>
-                <MenuItem onAction="#handleQuickFormation" text="⚽ Schiera Formazione" />
-                <MenuItem onAction="#handleShowResults" text="📜 Risultati Giornate" />
-            </items>
-        </MenuButton>
-    </HBox>
+        
+        </HBox>
 </AnchorPane>

@@ -208,20 +208,54 @@ public class FormationController {
         new Timer().schedule(new TimerTask() { @Override public void run() { javafx.application.Platform.runLater(() -> errorLabel.setVisible(false)); } }, 3000);
     }
 
-    @FXML private void handleSaveFormation() {
+    @FXML 
+    private void handleSaveFormation() {
+        // 1. Validazione preliminare: check 11 giocatori e capitano
         if (startersList.size() != 11 || selectedCaptain == null) {
             saveFeedbackLabel.setText("Mancano 11 titolari o il capitano!");
-            saveFeedbackLabel.setTextFill(Color.web("#feb2b2")); return;
+            saveFeedbackLabel.setTextFill(Color.web("#feb2b2")); 
+            return;
         }
+
         try {
-            if (playerDAO.saveFormation(SessionUtil.getCurrentSession().getUser().getId(), currentLeague.getId(), moduleComboBox.getValue(), selectedCaptain, startersList, orderedBench)) {
-                saveFeedbackLabel.setText("Formazione salvata!"); saveFeedbackLabel.setTextFill(Color.web("#48bb78"));
-                new Alert(Alert.AlertType.INFORMATION, "Successo! Formazione inviata.").show();
+            // 2. Chiamata al DAO (che ora restituisce errori parlanti)
+            boolean successo = playerDAO.saveFormation(
+                SessionUtil.getCurrentSession().getUser().getId(), 
+                currentLeague.getId(), 
+                moduleComboBox.getValue(), 
+                selectedCaptain, 
+                startersList, 
+                orderedBench
+            );
+
+            // 3. Gestione Successo
+            if (successo) {
+                saveFeedbackLabel.setText("Formazione salvata correttamente!");
+                saveFeedbackLabel.setTextFill(Color.web("#48bb78"));
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successo");
+                alert.setHeaderText("Formazione Inviata!");
+                alert.setContentText("La tua formazione per la prossima giornata è stata registrata.");
+                alert.showAndWait();
             }
+
         } catch (SQLException e) {
-            saveFeedbackLabel.setText("Errore DB: " + e.getMessage());
+            // 4. Gestione Errore Specifico (Giornata mancante, etc.)
+            // Il messaggio viene direttamente dal "throw new SQLException" che abbiamo messo nel DAO
+            String errorMessage = e.getMessage();
+            
+            saveFeedbackLabel.setText("Errore: " + errorMessage);
             saveFeedbackLabel.setTextFill(Color.web("#feb2b2"));
-            new Alert(Alert.AlertType.ERROR, "Errore: " + e.getMessage()).show();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore Schieramento");
+            alert.setHeaderText("Impossibile salvare la formazione");
+            alert.setContentText(errorMessage); 
+            alert.showAndWait();
+            
+            // Log per il debug in console
+            System.err.println("[Formation] Errore durante il salvataggio: " + e.getErrorCode() + " - " + errorMessage);
         }
     }
 }

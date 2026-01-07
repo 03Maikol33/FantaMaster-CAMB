@@ -123,6 +123,91 @@ public class PlayerDAO {
      * AGGIORNAMENTO: Salva anche il flag 'capitano' nella tabella di dettaglio.
      */
     public boolean saveFormation(int userId, int leagueId, String modulo, Player capitano, List<Player> titolari, List<Player> panchina) throws SQLException {
+        // 1. Cerchiamo la giornata attiva nel DB
+        String sqlGiornata = "SELECT id FROM giornate WHERE stato = 'da_giocare' ORDER BY numero_giornata ASC LIMIT 1";
+        int giornataId = -1;
+        
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sqlGiornata)) {
+            if (rs.next()) {
+                giornataId = rs.getInt("id");
+            }
+        }
+
+        // Se non c'è una giornata "da_giocare", non possiamo salvare!
+        if (giornataId == -1) {
+            throw new SQLException("Il campionato non è ancora iniziato o non ci sono giornate aperte.");
+        }
+
+        // 2. Recupero ID della Rosa
+        String sqlRosa = "SELECT id FROM rosa WHERE utenti_leghe_id = (SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?)";
+        int rosaId = -1;
+        try (PreparedStatement ps = conn.prepareStatement(sqlRosa)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, leagueId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) rosaId = rs.getInt("id");
+        }
+
+        if (rosaId == -1) throw new SQLException("Rosa non trovata per l'utente.");
+
+        // 3. Inserimento Formazione (Utilizziamo transazione)
+        try {
+            conn.setAutoCommit(false);
+            
+            String sqlForm = "INSERT INTO formazioni (rosa_id, giornata_id, modulo_schierato, capitano_id) " +
+                            "VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE modulo_schierato=VALUES(modulo_schierato), capitano_id=VALUES(capitano_id)";
+            
+            int formazioneId = -1;
+            try (PreparedStatement ps = conn.prepareStatement(sqlForm, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setInt(1, rosaId);
+                ps.setInt(2, giornataId);
+                ps.setString(3, modulo);
+                ps.setInt(4, capitano.getId());
+                ps.executeUpdate();
+                
+                ResultSet rsKeys = ps.getGeneratedKeys();
+                if (rsKeys.next()) formazioneId = rsKeys.getInt(1);
+                else {
+                    // Se è un update, recuperiamo l'id esistente
+                    String find = "SELECT id FROM formazioni WHERE rosa_id=? AND giornata_id=?";
+                    PreparedStatement psF = conn.prepareStatement(find);
+                    psF.setInt(1, rosaId); psF.setInt(2, giornataId);
+                    ResultSet rsF = psF.executeQuery();
+                    if(rsF.next()) formazioneId = rsF.getInt("id");
+                }
+            }
+
+            // 4. Pulizia e inserimento dettagli
+            conn.prepareStatement("DELETE FROM dettaglio_formazione WHERE formazione_id = " + formazioneId).executeUpdate();
+            
+            String sqlDet = "INSERT INTO dettaglio_formazione (formazione_id, giocatore_id, stato, ordine_panchina) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement psD = conn.prepareStatement(sqlDet)) {
+                // Titolari
+                for (Player p : titolari) {
+                    psD.setInt(1, formazioneId); psD.setInt(2, p.getId());
+                    psD.setString(3, "titolare"); psD.setInt(4, 0);
+                    psD.addBatch();
+                }
+                // Panchina
+                int o = 1;
+                for (Player p : panchina) {
+                    psD.setInt(1, formazioneId); psD.setInt(2, p.getId());
+                    psD.setString(3, "panchina"); psD.setInt(4, o++);
+                    psD.addBatch();
+                }
+                psD.executeBatch();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+    }
+    /*public boolean saveFormation(int userId, int leagueId, String modulo, Player capitano, List<Player> titolari, List<Player> panchina) throws SQLException {
         // 1. Cerchiamo la giornata attiva ('da_giocare')
         String checkGiornata = "SELECT id FROM giornate WHERE stato = 'da_giocare' LIMIT 1";
         int giornataId = -1;
@@ -217,7 +302,7 @@ public class PlayerDAO {
         } finally {
             conn.setAutoCommit(true);
         }
-    }
+    }*/
 
     // ==========================================================
     // SEZIONE CALCOLO PUNTEGGI - (User Story: Punteggio Totale)
@@ -259,6 +344,25 @@ public class PlayerDAO {
             stmt.executeBatch();
         }
     }
+    /**
+     * METODO AGGIUNTO PER GLI SCAMBI: Recupera i giocatori di una rosa specifica.
+     */
+    public List<Player> getPlayersByRosa(int rosaId) {
+        List<Integer> playerIds = new ArrayList<>();
+        String sql = "SELECT g.id_esterno FROM giocatori g " +
+                     "JOIN giocatori_rose gr ON g.id = gr.giocatore_id " +
+                     "WHERE gr.rosa_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, rosaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) playerIds.add(rs.getInt("id_esterno"));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return getAllPlayers().stream()
+                .filter(p -> playerIds.contains(p.getId()))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Esegue la User Story: "Consulti tutte le righe di Dettaglio_formazione facendo sum..."
@@ -284,5 +388,13 @@ public class PlayerDAO {
             e.printStackTrace();
         }
         return 0.0;
+    }
+
+    // cercare un giocatore nel listone JSON partendo dal suo ID
+    public Player getPlayerById(int id) {
+        return getAllPlayers().stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 }

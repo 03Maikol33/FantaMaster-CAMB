@@ -133,6 +133,49 @@ public class RequestDAO {
         String updateSql = "UPDATE richieste_accesso SET stato = ? WHERE utente_id = ? AND lega_id = ?";
         
         try {
+            conn.setAutoCommit(false); // Inizio transazione
+
+            // 1. Iscrizione e recupero ID legame
+            UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
+            int utentiLegheId = ulDAO.subscribeUserToLeague(user, league);
+            
+            if (utentiLegheId == -1) {
+                conn.rollback();
+                return false;
+            }
+
+            // 2. CREAZIONE AUTOMATICA ROSA (Risolve il NullPointer)
+            RosaDAO rosaDAO = new RosaDAO(conn);
+            rosaDAO.createDefaultRosa(utentiLegheId);
+
+            // 3. Aggiornamento Stato Richiesta
+            try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                stmt.setString(1, "accettata"); 
+                stmt.setInt(2, user.getId());
+                stmt.setInt(3, league.getId());
+                
+                if (stmt.executeUpdate() == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            conn.commit(); // Salviamo tutto
+            league.addParticipant(user); 
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            return false;
+        } finally {
+            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
+    /*public boolean approveRequest(User user, League league) {
+        String updateSql = "UPDATE richieste_accesso SET stato = ? WHERE utente_id = ? AND lega_id = ?";
+        
+        try {
             // 1. Inizio Transazione
             conn.setAutoCommit(false);
 
@@ -186,7 +229,7 @@ public class RequestDAO {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     // Rifiuta una richiesta: la elimina dal DB
     public boolean rejectRequest(User user, League league) {

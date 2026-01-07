@@ -49,7 +49,7 @@ public class ScoreHistoryController {
         }
         
         // 1. SIMULA (Importante: Se la rosa è vuota, qui non farà nulla!)
-        it.camb.fantamaster.util.DataSimulator.simulateDayForUser(currentUser, currentLeague, 1);
+        // it.camb.fantamaster.util.DataSimulator.simulateDayForUser(currentUser, currentLeague, 1);
         
         // 2. CONFIGURA TABELLA
         setupTable();
