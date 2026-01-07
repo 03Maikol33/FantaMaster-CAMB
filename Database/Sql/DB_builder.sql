@@ -67,7 +67,7 @@ CREATE TABLE leghe (
     moduli_consentiti VARCHAR(255) DEFAULT '3-4-3;3-5-2;4-3-3;4-4-2;4-5-1;5-3-2;5-4-1',
     
     mercato_aperto BOOLEAN DEFAULT FALSE,
-    asta_aperta BOOLEAN DEFAULT FALSE,
+    asta_aperta BOOLEAN DEFAULT TRUE,
     turno_asta_utente_id INT,
     giocatore_chiamato_id INT,
     
@@ -192,7 +192,7 @@ CREATE TABLE dettaglio_formazione (
     FOREIGN KEY (formazione_id) REFERENCES formazioni(id) ON DELETE CASCADE,
     FOREIGN KEY (giocatore_id) REFERENCES giocatori(id) ON DELETE CASCADE
 );
-ALTER TABLE dettaglio_formazione ADD COLUMN fantavoto_calcolato DOUBLE DEFAULT 0.0; --nuovo campo per memorizzare il fantavoto calcolato
+
 -- ==========================================================
 -- SEZIONE E: EVENTI (Sostituiscono i Voti)
 -- ==========================================================

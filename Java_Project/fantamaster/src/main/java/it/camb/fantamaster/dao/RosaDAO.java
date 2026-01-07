@@ -151,4 +151,13 @@ public class RosaDAO {
         return counts;
     }
 
+    public boolean createDefaultRosa(int utentiLegheId) throws SQLException {
+        // Usiamo INSERT IGNORE per evitare errori se per qualche motivo la rosa esiste già
+        String sql = "INSERT IGNORE INTO rosa (utenti_leghe_id) VALUES (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, utentiLegheId);
+            return stmt.executeUpdate() == 1;
+        }
+    }
+
 }

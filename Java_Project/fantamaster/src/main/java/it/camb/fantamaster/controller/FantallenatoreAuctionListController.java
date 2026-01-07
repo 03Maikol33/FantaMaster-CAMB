@@ -56,7 +56,74 @@ public class FantallenatoreAuctionListController {
         loadFantallenatori();
     }
 
+    public void loadFantallenatori() {
+        fantallenatoriContainer.getChildren().clear();
 
+        // Usiamo la connessione unica senza chiuderla (se Singleton) 
+        // o con il try-with-resources se preferisci, basta che sia coerente con il resto del progetto
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
+            RosaDAO rosaDAO = new RosaDAO(conn);
+
+            int maxPlayers = MAX_ROSA_TOTAL;
+
+            // 1. Recupera tutti i partecipanti della lega
+            List<User> participants = ulDAO.getUsersInLeagueId(currentLeague.getId());
+            
+            for (User participant : participants) {
+                // 2. Cerchiamo la rosa nel DB
+                Rosa rosa = rosaDAO.getRosaByUserAndLeague(participant.getId(), currentLeague.getId());
+                
+                // --- LOGICA DI CORREZIONE (Lazy Creation) ---
+                // Se la rosa non esiste per questo partecipante, la creiamo al volo
+                if (rosa == null) {
+                    System.out.println("[Fix] Rosa mancante per " + participant.getUsername() + ". Creazione in corso...");
+                    
+                    // Recuperiamo l'ID del legame utenti_leghe
+                    int ulId = ulDAO.getExistingSubscriptionId(participant.getId(), currentLeague.getId());
+                    
+                    if (ulId != -1) {
+                        // Creiamo il record nel DB
+                        rosaDAO.createDefaultRosa(ulId);
+                        // Ricarichiamo l'oggetto rosa (ora non sarà più null)
+                        rosa = rosaDAO.getRosaByUserAndLeague(participant.getId(), currentLeague.getId());
+                    }
+                }
+
+                // 3. Ora procediamo con i calcoli (ora rosa.getId() è sicuro)
+                if (rosa != null) {
+                    int playersCount = rosaDAO.countGiocatoriInRosa(rosa.getId());
+                    boolean isRosterFull = playersCount >= maxPlayers;
+
+                    // Carichiamo l'elemento grafico
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fantallenatoreListItem.fxml"));
+                    Node node = loader.load();
+                    
+                    FantallenatoreListItemController itemController = loader.getController();
+
+                    // Passiamo i dati al controller della riga
+                    itemController.setData(
+                        participant, 
+                        playersCount, 
+                        maxPlayers, 
+                        isRosterFull, 
+                        isAdmin,
+                        this::handleAssignTurn 
+                    );
+
+                    fantallenatoriContainer.getChildren().add(node);
+                } else {
+                    System.err.println("Errore critico: Impossibile creare rosa per " + participant.getUsername());
+                }
+            }
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            showAlert("Errore", "Impossibile caricare la lista fantallenatori.");
+        }
+    }
+
+/*
     public void loadFantallenatori() {
         fantallenatoriContainer.getChildren().clear();
 
@@ -98,7 +165,7 @@ public class FantallenatoreAuctionListController {
             e.printStackTrace();
             showAlert("Errore", "Impossibile caricare la lista fantallenatori.");
         }
-    }
+    }*/
 
     // Questa funzione viene chiamata quando clicchi il bottone nell'item
     private void handleAssignTurn(User targetUser) {
