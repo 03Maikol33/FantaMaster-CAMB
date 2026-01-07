@@ -26,13 +26,10 @@
                 maxWidth="Infinity" prefHeight="60"
                 style="-fx-background-color: white; -fx-text-fill: #2d3748; -fx-font-size: 16; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1); -fx-background-radius: 10; -fx-cursor: hand;"/>
 
-        <Button text="Punteggi Ultima Giornata" onAction="#goToLastMatchdayScores" 
-                maxWidth="Infinity" prefHeight="60"
-                style="-fx-background-color: white; -fx-text-fill: #2d3748; -fx-font-size: 16; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1); -fx-background-radius: 10; -fx-cursor: hand;"/>
 
         <Button text="Risultati Giornate" onAction="#goToMatchdayResults" 
                 maxWidth="Infinity" prefHeight="60"
-                style="-fx-background-color: #4a5568; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1); -fx-background-radius: 10; -fx-cursor: hand;"/>
+                style="-fx-background-color: white; -fx-text-fill: #2d3748; -fx-font-size: 16; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1); -fx-background-radius: 10; -fx-cursor: hand;"/>
     </VBox>
 
 </VBox>

@@ -36,18 +36,29 @@ public class StatisticsMenuController {
             System.err.println("Errore nel caricamento di ranking_general.fxml");
         }
     }
-
-    @FXML
+@FXML
     private void goToScoreHistory() {
         System.out.println("Navigazione verso: Storico Punteggi");
-        // TODO: Implementare caricamento storico_punteggi.fxml
+        try {
+            // 1. CARICA IL FILE FXML GIUSTO (Quello nuovo che abbiamo creato)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/score_history.fxml"));
+            Parent view = loader.load();
+
+            // 2. USA IL CONTROLLER GIUSTO (Quello che contiene initData)
+            ScoreHistoryController controller = loader.getController();
+            
+            // 3. ORA initData FUNZIONERÀ
+            controller.initData(currentLeague, mainContentArea);
+
+            mainContentArea.getChildren().setAll(view);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento di score_history.fxml");
+        }
+    
     }
 
-    @FXML
-    private void goToLastMatchdayScores() {
-        System.out.println("Navigazione verso: Punteggi Ultima Giornata");
-        // TODO: Implementare caricamento punteggi_ultima.fxml
-    }
 
     @FXML
     private void goToMatchdayResults() {

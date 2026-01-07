@@ -20,14 +20,12 @@ public class UsersLeaguesDAO {
         this.connection = connection;
     }
 
-    /**
-     * Recupera la lista degli utenti iscritti a una lega dato l'ID della lega.
-     * Questo metodo è usato da LeagueDAO durante la costruzione dell'oggetto League.
-     */
+    // ==========================================================
+    // SEZIONE UTENTI E ISCRIZIONI
+    // ==========================================================
+
     public List<User> getUsersInLeagueId(int leagueId) {
         List<User> users = new ArrayList<>();
-        
-        // CORREZIONE: ul.lega_id (invece di id_leghe)
         String sql = "SELECT u.* FROM utenti u " +
                      "JOIN utenti_leghe ul ON u.id = ul.utente_id " +
                      "WHERE ul.lega_id = ?";
@@ -46,10 +44,6 @@ public class UsersLeaguesDAO {
                     if (ts != null) {
                         user.setCreatedAt(ts.toLocalDateTime());
                     }
-
-                    // Nota: se l'utente ha un avatar, dovresti mapparlo qui
-                    // Blob blob = rs.getBlob("avatar"); ...
-
                     users.add(user);
                 }
             }
@@ -59,23 +53,18 @@ public class UsersLeaguesDAO {
         return users;
     }
 
-    // Wrapper per comodità
     public List<User> getUsersInLeague(League league) {
         return getUsersInLeagueId(league.getId());
     }
 
-    // Iscrive un utente a una lega
     public boolean subscribeUserToLeague(User user, League league) {
-        // CORREZIONE: lega_id (invece di id_leghe)
         String sql = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
-
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
             stmt.executeUpdate();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
-            // Già iscritto
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -83,11 +72,8 @@ public class UsersLeaguesDAO {
         }
     }
 
-    // Verifica se l'utente è iscritto a una lega
     public boolean isUserSubscribed(User user, League league) {
-        // CORREZIONE: lega_id (invece di id_leghe)
         String sql = "SELECT 1 FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
-
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
@@ -100,11 +86,8 @@ public class UsersLeaguesDAO {
         }
     }
 
-    // Rimuove l'iscrizione
     public boolean unsubscribeUserFromLeague(User user, League league) {
-        // CORREZIONE: lega_id (invece di id_leghe)
         String sql = "DELETE FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
-
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, user.getId());
             stmt.setInt(2, league.getId());
@@ -114,62 +97,60 @@ public class UsersLeaguesDAO {
             return false;
         }
     }
+
     // ==========================================================
-    // SEZIONE CLASSIFICA 
+    // SEZIONE CLASSIFICA (CORRETTA)
     // ==========================================================
 
     /**
-     * Aggiorna il punteggio totale di TUTTI i partecipanti di una lega.
-     * Somma tutti i 'fantavoto_calcolato' presenti in dettaglio_formazione per quella squadra.
-     * Da chiamare alla fine del calcolo di una giornata.
+     * Aggiorna il punteggio totale nella tabella ROSA (non utenti_leghe).
      */
     public void updateLeagueRanking(int leagueId) {
-        // 1. Prende la tabella utenti_leghe (le squadre)
-        // 2. Fa una JOIN con formazioni e dettaglio_formazione
-        // 3. Somma i voti calcolati
-        // 4. Aggiorna il campo punteggio_totale della squadra
-        
-        String sql = "UPDATE utenti_leghe ul " +
-                     "SET ul.punteggio_totale = ( " +
-                     "    SELECT COALESCE(SUM(df.fantavoto_calcolato), 0) " +
+        // Correzione: Aggiorna la tabella ROSA usando i fantavoti in dettaglio_formazione
+        String sql = "UPDATE rosa r " +
+                     "SET r.punteggio_totale = ( " +
+                     "    SELECT COALESCE(SUM(df.fantavoto), 0) " +  // Usa 'fantavoto' (non fantavoto_calcolato)
                      "    FROM formazioni f " +
                      "    JOIN dettaglio_formazione df ON f.id = df.formazione_id " +
-                     // Nota: Assicurati che la tua tabella formazioni usi 'rosa_id' o 'id_utente'+'id_lega'
-                     // Qui uso una logica generica basata sulla rosa/squadra
-                     "    WHERE f.rosa_id = (SELECT id FROM rosa WHERE utenti_leghe_id = ul.id) " +
+                     "    WHERE f.rosa_id = r.id " +
                      ") " +
-                     "WHERE ul.lega_id = ?";
+                     "WHERE r.utenti_leghe_id IN (SELECT id FROM utenti_leghe WHERE lega_id = ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, leagueId);
-            int updatedRows = stmt.executeUpdate();
-            System.out.println("✅ Classifica aggiornata per lega " + leagueId + ". Squadre aggiornate: " + updatedRows);
+            stmt.executeUpdate();
+            System.out.println("✅ Classifica aggiornata per la lega " + leagueId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Recupera la classifica completa della lega, ordinata per punteggio totale decrescente.
+     * Recupera la classifica leggendo 'punteggio_totale' dalla tabella ROSA.
      */
     public List<UserRankingRow> getLeagueRanking(int leagueId) {
         List<UserRankingRow> ranking = new ArrayList<>();
         
-        String sql = "SELECT u.username, ul.nome_squadra, ul.punteggio_totale " +
+        // Correzione: Prende punteggio_totale e nome_rosa dalla tabella ROSA
+        String sql = "SELECT u.username, r.nome_rosa, r.punteggio_totale " +
                      "FROM utenti_leghe ul " +
                      "JOIN utenti u ON ul.utente_id = u.id " +
+                     "LEFT JOIN rosa r ON r.utenti_leghe_id = ul.id " + 
                      "WHERE ul.lega_id = ? " +
-                     "ORDER BY ul.punteggio_totale DESC";
+                     "ORDER BY r.punteggio_totale DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, leagueId);
             try (ResultSet rs = stmt.executeQuery()) {
                 int position = 1;
                 while (rs.next()) {
+                    String nomeSquadra = rs.getString("nome_rosa");
+                    if (nomeSquadra == null) nomeSquadra = "Nessuna Rosa";
+                    
                     ranking.add(new UserRankingRow(
                         position++,
                         rs.getString("username"),
-                        rs.getString("nome_squadra"),
+                        nomeSquadra,
                         rs.getDouble("punteggio_totale")
                     ));
                 }
@@ -180,12 +161,11 @@ public class UsersLeaguesDAO {
         return ranking;
     }
     
-    // Classe di supporto interna (o esterna) per rappresentare una riga di classifica
     public static class UserRankingRow {
-        public int posizione;
-        public String username;
-        public String nomeSquadra;
-        public double punteggio;
+        private int posizione;
+        private String username;
+        private String nomeSquadra;
+        private double punteggio;
 
         public UserRankingRow(int posizione, String username, String nomeSquadra, double punteggio) {
             this.posizione = posizione;
@@ -200,6 +180,182 @@ public class UsersLeaguesDAO {
         public double getPunteggio() { return punteggio; }
     }
 
+    // ==========================================================
+    // SEZIONE STORICO E SIMULAZIONE
+    // ==========================================================
 
+    /**
+     * Recupera le giornate giocate facendo JOIN con la tabella giornate.
+     */
+    public List<Integer> getPlayedMatchdays(int userId, int leagueId) {
+        List<Integer> matchdays = new ArrayList<>();
+        
+        // Correzione: Join con tabella 'giornate' per prendere 'numero_giornata'
+        String sql = "SELECT DISTINCT g.numero_giornata " +
+                     "FROM formazioni f " +
+                     "JOIN giornate g ON f.giornata_id = g.id " + // Usa giornata_id -> g.id
+                     "JOIN rosa r ON f.rosa_id = r.id " +
+                     "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                     "WHERE ul.utente_id = ? AND ul.lega_id = ? " +
+                     "ORDER BY g.numero_giornata DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    matchdays.add(rs.getInt("numero_giornata"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return matchdays;
+    }
+
+    /**
+     * Recupera i punteggi usando il nome colonna corretto 'fantavoto'.
+     */
+    public List<PlayerScoreRow> getFormationScores(int userId, int leagueId, int numeroGiornata) {
+        List<PlayerScoreRow> scores = new ArrayList<>();
+        
+        // Correzione: Join con giornate per filtrare per numero, e usa 'df.fantavoto'
+        String sql = "SELECT g.cognome, g.ruolo, df.fantavoto, df.stato " +
+                     "FROM dettaglio_formazione df " +
+                     "JOIN formazioni f ON df.formazione_id = f.id " +
+                     "JOIN giornate gio ON f.giornata_id = gio.id " +
+                     "JOIN giocatori g ON df.giocatore_id = g.id " +
+                     "JOIN rosa r ON f.rosa_id = r.id " +
+                     "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                     "WHERE ul.utente_id = ? AND ul.lega_id = ? AND gio.numero_giornata = ? " +
+                     "ORDER BY CASE g.ruolo WHEN 'P' THEN 1 WHEN 'D' THEN 2 WHEN 'C' THEN 3 WHEN 'A' THEN 4 END";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            stmt.setInt(3, numeroGiornata);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    boolean isTitolare = "titolare".equalsIgnoreCase(rs.getString("stato"));
+                    scores.add(new PlayerScoreRow(
+                        rs.getString("cognome"),
+                        rs.getString("ruolo"),
+                        rs.getDouble("fantavoto"), // Nome colonna corretto
+                        isTitolare
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return scores;
+    }
+
+    public static class PlayerScoreRow {
+        private String nome;
+        private String ruolo;
+        private double fantavoto;
+        private boolean titolare;
+
+        public PlayerScoreRow(String nome, String ruolo, double fantavoto, boolean titolare) {
+            this.nome = nome;
+            this.ruolo = ruolo;
+            this.fantavoto = fantavoto;
+            this.titolare = titolare;
+        }
+
+        public String getNome() { return nome; }
+        public String getRuolo() { return ruolo; }
+        public double getFantavoto() { return fantavoto; }
+        public boolean isTitolare() { return titolare; }
+    }
+
+    // --- SIMULATORE ---
+
+    public int getRosaId(int userId, int leagueId) {
+        String sql = "SELECT id FROM rosa WHERE utenti_leghe_id = (SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int createDummyFormation(int rosaId, int numeroGiornata) throws SQLException {
+        // 1. Dobbiamo trovare l'ID della giornata corrispondente al numero
+        int giornataId = getGiornataIdByNumero(numeroGiornata);
+        if (giornataId == -1) {
+            // Se non esiste nel DB, la creiamo al volo per evitare crash del simulatore
+            giornataId = createGiornataIfMissing(numeroGiornata);
+        }
+
+        // 2. Controlla se esiste già la formazione
+        String checkSql = "SELECT id FROM formazioni WHERE rosa_id = ? AND giornata_id = ?";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
+            checkStmt.setInt(1, rosaId);
+            checkStmt.setInt(2, giornataId);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("id");
+            }
+        }
+
+        // 3. Crea formazione (usa giornata_id)
+        String sql = "INSERT INTO formazioni (rosa_id, giornata_id, modulo_schierato) VALUES (?, ?, '4-4-2')";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, rosaId);
+            stmt.setInt(2, giornataId);
+            stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) return generatedKeys.getInt(1);
+            }
+        }
+        throw new SQLException("Errore creazione formazione");
+    }
+
+    public void savePlayerScore(int formationId, int playerId, double fantavoto, boolean titolare) {
+        // Correzione: usa 'fantavoto' e 'stato' (enum) invece di 'titolare' (boolean)
+        String sql = "INSERT INTO dettaglio_formazione (formazione_id, giocatore_id, fantavoto, stato) " +
+                     "VALUES (?, ?, ?, ?) " +
+                     "ON DUPLICATE KEY UPDATE fantavoto = VALUES(fantavoto)";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, formationId);
+            stmt.setInt(2, playerId);
+            stmt.setDouble(3, fantavoto);
+            stmt.setString(4, titolare ? "titolare" : "panchina");
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Helper per gestire l'ID giornata
+    private int getGiornataIdByNumero(int numero) {
+        String sql = "SELECT id FROM giornate WHERE numero_giornata = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, numero);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("id");
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return -1;
+    }
+
+    private int createGiornataIfMissing(int numero) {
+        String sql = "INSERT INTO giornate (numero_giornata, data_inizio, stato) VALUES (?, NOW(), 'calcolata')";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, numero);
+            stmt.executeUpdate();
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return -1;
+    }
 }
-

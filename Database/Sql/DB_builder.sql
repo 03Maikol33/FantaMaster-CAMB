@@ -192,7 +192,6 @@ CREATE TABLE dettaglio_formazione (
     FOREIGN KEY (formazione_id) REFERENCES formazioni(id) ON DELETE CASCADE,
     FOREIGN KEY (giocatore_id) REFERENCES giocatori(id) ON DELETE CASCADE
 );
-ALTER TABLE dettaglio_formazione ADD COLUMN fantavoto_calcolato DOUBLE DEFAULT 0.0; --nuovo campo per memorizzare il fantavoto calcolato
 -- ==========================================================
 -- SEZIONE E: EVENTI (Sostituiscono i Voti)
 -- ==========================================================

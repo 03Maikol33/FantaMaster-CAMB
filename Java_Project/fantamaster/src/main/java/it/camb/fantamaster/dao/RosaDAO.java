@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+
+import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rosa;
 
 public class RosaDAO {
@@ -89,5 +93,39 @@ public class RosaDAO {
         }
         return counts;
     }
+    /**
+     * Recupera la lista completa dei giocatori (oggetti Player) appartenenti a una rosa.
+     * Usato dal simulatore per schierare la formazione.
+     */
+    public List<Player> getPlayersByRosaId(int rosaId) {
+        List<Player> players = new ArrayList<>();
+        
+        // Join tra la tabella di collegamento (giocatori_rose) e l'anagrafica (giocatori)
+        String sql = "SELECT g.* FROM giocatori g " +
+                     "JOIN giocatori_rose gr ON g.id = gr.giocatore_id " +
+                     "WHERE gr.rosa_id = ?";
 
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, rosaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Player p = new Player();
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setCognome(rs.getString("cognome"));
+                    p.setRuolo(rs.getString("ruolo"));
+                    p.setNumero(rs.getInt("numero"));
+                    p.setSquadra(rs.getString("squadra"));
+                    p.setPrezzo(rs.getInt("prezzo"));
+                    p.setNazionalita(rs.getString( "nazionalità"));
+                    // Se hai altri campi nel DB (es. quotazione_iniziale), aggiungili qui
+                    
+                    players.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return players;
+    }
 }
