@@ -21,8 +21,20 @@ public class StatisticsMenuController {
     @FXML
     private void goToGeneralRanking() {
         System.out.println("Navigazione verso: Classifica Generale");
-        // TODO: Implementare caricamento classifica_generale.fxml
-        // loadSubView("/fxml/ranking_general.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ranking_general.fxml"));
+            Parent view = loader.load();
+
+            RankingGeneralController controller = loader.getController();
+            // Passiamo la lega e l'area contenuti per mantenere il contesto
+            controller.initData(currentLeague, mainContentArea);
+
+            mainContentArea.getChildren().setAll(view);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Errore nel caricamento di ranking_general.fxml");
+        }
     }
 
     @FXML

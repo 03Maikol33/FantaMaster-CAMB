@@ -193,7 +193,13 @@ public class UsersLeaguesDAO {
             this.nomeSquadra = nomeSquadra;
             this.punteggio = punteggio;
         }
+
+        public int getPosizione() { return posizione; }
+        public String getUsername() { return username; }
+        public String getNomeSquadra() { return nomeSquadra; }
+        public double getPunteggio() { return punteggio; }
     }
+
 
 }
 
