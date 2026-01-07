@@ -10,6 +10,7 @@ import it.camb.fantamaster.controller.LeagueScreenController;
 import it.camb.fantamaster.dao.CampionatoDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.CampionatoUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -49,63 +51,87 @@ public class Main extends Application {
     /**
      * Crea una piccola finestra accessoria per chiudere tutto e gestire il campionato.
      */
+    // Sostituisci il metodo createKillSwitch nel tuo Main.java
+
     private void createKillSwitch() {
         Stage utilityStage = new Stage();
         utilityStage.setTitle("Dev Tools");
-        
-        // Bottone originale Chiusura
-        Button killButton = new Button("CHIUDI APP & DB");
-        killButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
-        killButton.setMaxWidth(Double.MAX_VALUE);
-        killButton.setOnAction(e -> shutdown());
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-padding: 20; -fx-background-color: #f4f4f4;");
 
-        // NUOVO: Bottone Gestione Giornate nella finestra esterna
-        Button manageButton = new Button("GESTIONE GIORNATE");
-        manageButton.setStyle("-fx-background-color: #3182ce; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
-        manageButton.setMaxWidth(Double.MAX_VALUE);
-        manageButton.setOnAction(e -> {
+        Runnable refreshUI = () -> {
+            layout.getChildren().clear();
+            
+            Button killButton = new Button("CHIUDI APP & DB");
+            killButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-weight: bold;");
+            killButton.setMaxWidth(Double.MAX_VALUE);
+            killButton.setOnAction(e -> shutdown());
+            layout.getChildren().add(killButton);
+
             try {
                 CampionatoDAO dao = new CampionatoDAO(ConnectionFactory.getConnection());
-                int attuale = dao.getGiornataCorrente();
+                
+                if (!dao.existsStatoCampionato()) {
+                    Button initBtn = new Button("INIZIALIZZA CAMPIONATO");
+                    initBtn.setStyle("-fx-background-color: #2b6cb0; -fx-text-fill: white;");
+                    initBtn.setMaxWidth(Double.MAX_VALUE);
+                    initBtn.setOnAction(e -> {
+                        try { dao.inizializzaCampionato(); utilityStage.close(); createKillSwitch(); } 
+                        catch (SQLException ex) { ex.printStackTrace(); }
+                    });
+                    layout.getChildren().add(initBtn);
+                } else {
+                    int passate = dao.getGiornataCorrente();
+                    int daGiocare = passate + 1;
 
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Gestione Campionato");
-                alert.setHeaderText("Giornata Sbloccata nel DB: " + attuale);
-                alert.setContentText("Cosa vuoi fare con le giornate simulate?");
+                    CampionatoUtil.load("/api/campionato.json");
+                    boolean esisteInJson = !CampionatoUtil.getMatchesByDay(daGiocare).isEmpty();
 
-                ButtonType btnAvanza = new ButtonType("Sblocca Prossima");
-                ButtonType btnReset = new ButtonType("Reset a 0");
-                ButtonType btnAnnulla = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-                alert.getButtonTypes().setAll(btnAvanza, btnReset, btnAnnulla);
-
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent()) {
-                    if (result.get() == btnAvanza) {
-                        dao.avanzaGiornata();
-                        new Alert(Alert.AlertType.INFORMATION, "Successo! Sbloccata giornata " + dao.getGiornataCorrente()).show();
-                    } else if (result.get() == btnReset) {
-                        // Reset manuale
-                        java.sql.PreparedStatement st = ConnectionFactory.getConnection().prepareStatement("UPDATE stato_campionato SET giornata_corrente = 0 WHERE id = 1");
-                        st.executeUpdate();
-                        new Alert(Alert.AlertType.INFORMATION, "Campionato resettato a 0.").show();
+                    if (esisteInJson) {
+                        if (!dao.existsGiornataFisica(daGiocare)) {
+                            Button progBtn = new Button("PROGRAMMA GIORNATA " + daGiocare);
+                            progBtn.setStyle("-fx-background-color: #38a169; -fx-text-fill: white;");
+                            progBtn.setMaxWidth(Double.MAX_VALUE);
+                            progBtn.setOnAction(e -> {
+                                try { dao.programmaGiornata(daGiocare); utilityStage.close(); createKillSwitch(); } 
+                                catch (SQLException ex) { ex.printStackTrace(); }
+                            });
+                            layout.getChildren().add(progBtn);
+                        } else {
+                            Button execBtn = new Button("ESEGUI " + daGiocare + " E APRI " + (daGiocare + 1));
+                            execBtn.setStyle("-fx-background-color: #d69e2e; -fx-text-fill: white;");
+                            execBtn.setMaxWidth(Double.MAX_VALUE);
+                            execBtn.setOnAction(e -> {
+                                try { dao.eseguiGiornataEProgrammaSuccessiva(daGiocare); utilityStage.close(); createKillSwitch(); } 
+                                catch (SQLException ex) { ex.printStackTrace(); }
+                            });
+                            layout.getChildren().add(execBtn);
+                        }
+                    } else {
+                        Label fin = new Label("🏆 CAMPIONATO CONCLUSO");
+                        fin.setStyle("-fx-text-fill: #2b6cb0; -fx-font-weight: bold;");
+                        layout.getChildren().add(fin);
                     }
+
+                    Button resetBtn = new Button("RESET TOTALE");
+                    resetBtn.setStyle("-fx-background-color: #718096; -fx-text-fill: white;");
+                    resetBtn.setMaxWidth(Double.MAX_VALUE);
+                    resetBtn.setOnAction(e -> {
+                        try { dao.inizializzaCampionato(); utilityStage.close(); createKillSwitch(); } 
+                        catch (SQLException ex) { ex.printStackTrace(); }
+                    });
+                    layout.getChildren().add(resetBtn);
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Errore connessione DB.").show();
+                layout.getChildren().add(new Label("Errore DB: " + ex.getMessage()));
             }
-        });
+        };
 
-        VBox layout = new VBox(15, killButton, manageButton);
-        layout.setAlignment(Pos.CENTER);
-        layout.setStyle("-fx-padding: 20;");
-
-        Scene scene = new Scene(layout, 250, 160);
+        refreshUI.run();
+        Scene scene = new Scene(layout, 280, 260);
         utilityStage.setScene(scene);
-        
-        utilityStage.setX(100);
-        utilityStage.setY(100);
+        utilityStage.setX(50); utilityStage.setY(50);
         utilityStage.setAlwaysOnTop(true);
         utilityStage.show();
     }
