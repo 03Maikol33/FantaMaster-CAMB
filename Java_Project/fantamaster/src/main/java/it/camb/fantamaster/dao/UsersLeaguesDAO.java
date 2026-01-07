@@ -67,6 +67,40 @@ public class UsersLeaguesDAO {
         return getUsersInLeagueId(league.getId());
     }
 
+
+    public int subscribeUserToLeague(User user, League league) throws SQLException {
+        String sql = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
+
+        // Chiediamo al driver di restituire le chiavi generate
+        try (PreparedStatement stmt = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, user.getId());
+            stmt.setInt(2, league.getId());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // Restituiamo l'ID di utenti_leghe
+                }
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            // Se è già iscritto, dobbiamo recuperare l'ID esistente
+            return getExistingSubscriptionId(user.getId(), league.getId());
+        }
+        return -1;
+    }
+
+    public int getExistingSubscriptionId(int userId, int leagueId) throws SQLException {
+        String sql = "SELECT id FROM utenti_leghe WHERE utente_id = ? AND lega_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt("id");
+            }
+        }
+        return -1;
+    }
+/* 
     // Iscrive un utente a una lega
     public boolean subscribeUserToLeague(User user, League league) {
         // CORREZIONE: lega_id (invece di id_leghe)
@@ -84,7 +118,7 @@ public class UsersLeaguesDAO {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
     // Verifica se l'utente è iscritto a una lega
     public boolean isUserSubscribed(User user, League league) {

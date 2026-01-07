@@ -1,10 +1,14 @@
 package it.camb.fantamaster.controller;
 
 import java.io.ByteArrayInputStream;
+import java.sql.Connection;
 
 import it.camb.fantamaster.Main;
+import it.camb.fantamaster.dao.RosaDAO;
+import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
+import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,6 +79,24 @@ public class LeagueListItemController {
     private void handleLeagueOpening() {
         try {
             User currentUser = SessionUtil.getCurrentSession().getUser();
+            
+            Connection conn = ConnectionFactory.getConnection(); // Connessione unica
+        
+            // --- LOGICA AUTO-RIPARANTE (Lazy Creation) ---
+            RosaDAO rosaDAO = new RosaDAO(conn);
+            // Controlliamo se la rosa esiste già
+            if (rosaDAO.getRosaByUserAndLeague(currentUser.getId(), league.getId()) == null) {
+                UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
+                // Se non esiste, recuperiamo l'ID del legame utente_lega
+                int ulId = ulDAO.getExistingSubscriptionId(currentUser.getId(), league.getId());
+                
+                if (ulId != -1) {
+                    // Creiamo la rosa di default on-the-fly
+                    rosaDAO.createDefaultRosa(ulId);
+                    System.out.println("[Fix] Rosa creata automaticamente per l'utente " + currentUser.getUsername());
+                }
+            }
+            
             User creator = league.getCreator();
             if (creator != null && creator.getId() == currentUser.getId()) {
                 Main.showLeagueAdminScreen(league);
