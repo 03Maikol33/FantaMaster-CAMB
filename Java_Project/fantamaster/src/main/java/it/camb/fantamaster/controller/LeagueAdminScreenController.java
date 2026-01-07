@@ -81,6 +81,26 @@ public class LeagueAdminScreenController {
             showError("Errore caricamento Asta", e.getMessage());
         }
     }
+ 
+    @FXML
+    private void openStatistics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statistics_menu.fxml"));
+            Parent view = loader.load();
+
+            // Recupero il controller del menu statistiche
+            StatisticsMenuController controller = loader.getController();
+            
+            // Passo la lega corrente e il riferimento all'area centrale per la navigazione successiva
+            controller.initData(currentLeague, contentArea);
+
+            // Mostro la view dentro contentArea
+            contentArea.getChildren().setAll(view);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void showListone() {
