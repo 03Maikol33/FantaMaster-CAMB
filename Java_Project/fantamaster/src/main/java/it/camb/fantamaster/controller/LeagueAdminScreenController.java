@@ -1,9 +1,17 @@
 package it.camb.fantamaster.controller;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import it.camb.fantamaster.Main;
+import it.camb.fantamaster.dao.RosaDAO;
+import it.camb.fantamaster.dao.ScambiDAO;
 import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.model.Rosa;
+import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.SessionUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,6 +30,7 @@ public class LeagueAdminScreenController {
     @FXML private Label leagueNameLabel;
     @FXML private Button richiesteButton;
     @FXML private Button auctionButton;
+    @FXML private MenuItem scambiMenuItem; // Assicurati di aggiungere fx:id="scambiMenuItem" nel tuo FXML dell'admin
 
     private League currentLeague;
 
@@ -28,6 +38,40 @@ public class LeagueAdminScreenController {
         this.currentLeague = league;
         if (leagueNameLabel != null) {
             leagueNameLabel.setText(league.getName().toUpperCase());
+        }
+        // Attivo il controllo notifiche per lo scambio
+        checkTradeNotifications();
+    }
+
+    /**
+     * Sistema di notifica scambi per l'amministratore.
+     */
+    private void checkTradeNotifications() {
+        if (currentLeague == null || SessionUtil.getCurrentSession() == null) return;
+        
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            Rosa miaRosa = new RosaDAO(conn).getRosaByUserAndLeague(
+                SessionUtil.getCurrentSession().getUser().getId(), 
+                currentLeague.getId()
+            );
+            
+            if (miaRosa != null) {
+                int pending = new ScambiDAO(conn).countRichiestePendenti(miaRosa.getId());
+                Platform.runLater(() -> {
+                    if (scambiMenuItem != null) {
+                        if (pending > 0) {
+                            scambiMenuItem.setText("🔄 Scambi (" + pending + " NUOVI!)");
+                            scambiMenuItem.setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
+                        } else {
+                            scambiMenuItem.setText("🔄 Scambi Mercato");
+                            scambiMenuItem.setStyle("");
+                        }
+                    }
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -54,7 +98,18 @@ public class LeagueAdminScreenController {
 
     @FXML
     private void openAuction() {
-        System.out.println("Apertura Asta");
+        try {
+            // Integrazione Asta nella schermata principale dell'admin
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
+            Parent view = loader.load();
+            
+            AuctionMainContainerController controller = loader.getController();
+            controller.initData(currentLeague.getId()); // Inizializzo l'asta
+            
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -76,7 +131,7 @@ public class LeagueAdminScreenController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // --- MENU AZIONI SUPERIORE (Tutti i partecipanti) ---
+    // --- MENU AZIONI SUPERIORE ---
 
     @FXML
     private void handleShareLeague() {
@@ -88,23 +143,25 @@ public class LeagueAdminScreenController {
     }
 
     @FXML
-private void showScambi() {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/trades.fxml"));
-        Parent root = loader.load();
-        
-        TradesController controller = loader.getController();
-        controller.setLeague(currentLeague);
+    private void showScambi() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/trades.fxml"));
+            Parent root = loader.load();
+            
+            TradesController controller = loader.getController();
+            controller.setLeague(currentLeague);
 
-        Stage popup = new Stage();
-        popup.initModality(Modality.APPLICATION_MODAL);
-        popup.setTitle("Mercato Scambi - " + currentLeague.getName());
-        popup.setScene(new Scene(root));
-        popup.show();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-
+            Stage popup = new Stage();
+            popup.initModality(Modality.APPLICATION_MODAL);
+            popup.setTitle("Mercato Scambi - " + currentLeague.getName());
+            popup.setScene(new Scene(root));
+            
+            // Quando si chiude la finestra scambi, rinfresca le notifiche
+            popup.setOnHidden(e -> checkTradeNotifications());
+            popup.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

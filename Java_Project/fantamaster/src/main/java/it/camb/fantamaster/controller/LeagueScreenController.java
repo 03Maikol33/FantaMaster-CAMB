@@ -1,24 +1,18 @@
 package it.camb.fantamaster.controller;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import it.camb.fantamaster.Main;
-import it.camb.fantamaster.dao.RosaDAO;
-import it.camb.fantamaster.dao.ScambiDAO;
 import it.camb.fantamaster.model.League;
-import it.camb.fantamaster.model.Rosa;
-import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.SessionUtil;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -27,43 +21,79 @@ public class LeagueScreenController {
 
     @FXML private StackPane contentArea;
     @FXML private Label leagueNameLabel;
-    @FXML private MenuItem scambiMenuItem; 
+    @FXML private Button impostazioniButton; // Assicurati che questo ID sia presente nel tuo leagueScreen.fxml
 
     private League currentLeague;
 
     public void setCurrentLeague(League league) {
         this.currentLeague = league;
-        if (leagueNameLabel != null && league != null) {
+        if (leagueNameLabel != null) {
             leagueNameLabel.setText(league.getName().toUpperCase());
         }
-        checkTradeNotifications();
+
+        // --- GESTIONE BOTTONE IMPOSTAZIONI ---
+        // Recupero l'utente corrente dalla sessione
+        User currentUser = SessionUtil.getCurrentSession().getUser();
+        
+        // Se l'utente non è l'amministratore (creatore), nascondo il tasto
+        if (currentLeague.getCreator().getId() != currentUser.getId()) {
+            impostazioniButton.setVisible(false);
+            impostazioniButton.setManaged(false); // Rimuove lo spazio occupato dal bottone nel layout
+        }
     }
 
-    private void checkTradeNotifications() {
-        if (currentLeague == null || SessionUtil.getCurrentSession() == null) return;
-        
+    // --- METODI NAVBAR INFERIORE ---
+
+    @FXML
+    private void openAuction() {
         try {
-            Connection conn = ConnectionFactory.getConnection();
-            RosaDAO rosaDAO = new RosaDAO(conn);
-            Rosa miaRosa = rosaDAO.getRosaByUserAndLeague(SessionUtil.getCurrentSession().getUser().getId(), currentLeague.getId());
+            // Carico l'asta dentro la contentArea invece di aprire una nuova finestra
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
+            Parent view = loader.load();
             
-            if (miaRosa != null) {
-                ScambiDAO scambiDAO = new ScambiDAO(conn);
-                int pending = scambiDAO.countRichiestePendenti(miaRosa.getId());
-                
-                Platform.runLater(() -> {
-                    if (scambiMenuItem != null) {
-                        if (pending > 0) {
-                            scambiMenuItem.setText("🔄 Scambi (" + pending + " NUOVI!)");
-                            scambiMenuItem.setStyle("-fx-text-fill: #dc2626; -fx-font-weight: bold;");
-                        } else {
-                            scambiMenuItem.setText("🔄 Scambi Mercato");
-                            scambiMenuItem.setStyle("");
-                        }
-                    }
-                });
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
+            AuctionMainContainerController controller = loader.getController();
+            controller.initData(currentLeague.getId()); // Inizializzo l'asta con l'ID della lega
+            
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openChat() {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml"));
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void showImpostazioniLega() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueRules.fxml"));
+            Parent view = loader.load();
+            LeagueRulesController controller = loader.getController();
+            
+            controller.setCurrentLeague(currentLeague); 
+            
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // --- METODI MENU TENDINA ---
+
+    @FXML
+    private void handleShareLeague() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Codice Lega");
+        alert.setHeaderText("Codice di invito:");
+        alert.setContentText(currentLeague.getInviteCode());
+        alert.showAndWait();
     }
 
     @FXML
@@ -71,6 +101,7 @@ public class LeagueScreenController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/trades.fxml"));
             Parent root = loader.load();
+            
             TradesController controller = loader.getController();
             controller.setLeague(currentLeague);
 
@@ -78,16 +109,54 @@ public class LeagueScreenController {
             popup.initModality(Modality.APPLICATION_MODAL);
             popup.setTitle("Mercato Scambi - " + currentLeague.getName());
             popup.setScene(new Scene(root));
-            popup.setOnHidden(e -> checkTradeNotifications());
             popup.show();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML private void openAuction() { System.out.println("Asta"); }
-    @FXML private void openChat() { try { Parent v = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml")); contentArea.getChildren().setAll(v); } catch (IOException e) {} }
-    @FXML private void showImpostazioniLega() { try { FXMLLoader l = new FXMLLoader(getClass().getResource("/fxml/leagueRules.fxml")); Parent v = l.load(); ((LeagueRulesController)l.getController()).setCurrentLeague(currentLeague); contentArea.getChildren().setAll(v); } catch (IOException e) {} }
-    @FXML private void handleShareLeague() { if (currentLeague != null) { Alert a = new Alert(Alert.AlertType.INFORMATION); a.setTitle("Codice"); a.setContentText(currentLeague.getInviteCode()); a.showAndWait(); } }
-    @FXML private void handleQuickFormation() { System.out.println("Formazione"); }
-    @FXML private void handleShowResults() { System.out.println("Risultati"); }
-    @FXML private void goBackToLeagueList() { try { Main.showHome(); } catch (IOException e) {} }
+    @FXML
+    private void handleQuickFormation() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/formation.fxml"));
+            Parent root = loader.load();
+            FormationController controller = loader.getController();
+            controller.setLeague(currentLeague);
+
+            Stage popup = new Stage();
+            popup.initModality(Modality.APPLICATION_MODAL);
+            popup.setTitle("Schiera Formazione");
+            popup.setScene(new Scene(root));
+            popup.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleShowResults() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/simulated_matchdays.fxml"));
+            Parent root = loader.load();
+            SimulatedMatchdaysController controller = loader.getController();
+            controller.setLeague(currentLeague);
+
+            Stage popup = new Stage();
+            popup.initModality(Modality.APPLICATION_MODAL);
+            popup.setTitle("Risultati Giornate");
+            popup.setScene(new Scene(root));
+            popup.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goBackToLeagueList() {
+        try {
+            Main.showHome();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

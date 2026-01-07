@@ -1,6 +1,9 @@
 package it.camb.fantamaster.controller;
 
-import it.camb.fantamaster.dao.AuctionDAO;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
@@ -16,10 +19,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-
 public class AuctionMainContainerController {
 
     @FXML private BorderPane mainContainer;
@@ -29,6 +28,7 @@ public class AuctionMainContainerController {
     private String currentView = ""; 
 
     private Integer lastGiocatoreId = null;
+    private boolean isPollingInProgress = false;
 
     public void initData(int leagueId) {
         this.currentLeagueId = leagueId;
@@ -43,10 +43,8 @@ public class AuctionMainContainerController {
     }
 
     private void startPolling() {
-        // Eseguiamo il primo controllo
         runCheckTask();
 
-        // Polling ogni 2 secondi
         pollingTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
             runCheckTask();
         }));
@@ -54,15 +52,12 @@ public class AuctionMainContainerController {
         pollingTimeline.play();
     }
 
-    private boolean isPollingInProgress = false; // Aggiungi questa variabile di classe
-
     private void runCheckTask() {
-        if (isPollingInProgress) return; // Salta se il controllo precedente non è ancora finito
+        if (isPollingInProgress) return; 
 
         isPollingInProgress = true;
         Thread thread = new Thread(() -> {
             try {
-                // NON usare try-with-resources sulla connessione se è un Singleton!
                 Connection conn = ConnectionFactory.getConnection(); 
                 
                 LeagueDAO leagueDAO = new LeagueDAO(conn);
@@ -86,17 +81,21 @@ public class AuctionMainContainerController {
         // --- LOGICA DI SINCRONIZZAZIONE NOTIFICA ---
         Integer currentGiocatoreId = league.getGiocatoreChiamatoId();
 
-        // Se al giro prima c'era un giocatore (last != null) 
-        // e ora non c'è più (current == null), l'asta è finita!
         if (this.lastGiocatoreId != null && (currentGiocatoreId == null || currentGiocatoreId == 0)) {
             System.out.println("[Auction] Rilevata fine asta per giocatore ID: " + lastGiocatoreId);
             mostraRisultatoAsta(league.getId());
         }
 
-        // Fondamentale: aggiorniamo il 'last' per il prossimo giro di polling
         this.lastGiocatoreId = currentGiocatoreId;
 
-        // --- LOGICA DI SWITCH VISTE (Tua esistente) ---
+        // --- GESTIONE ASTA CHIUSA (FIX LOOP ALERT) ---
+        // Se l'asta è chiusa, mostriamo la vista di attesa ed usciamo
+        if (!league.isAuctionOpen()) {
+            loadView("/fxml/AuctionWaitTurnSelection.fxml", "WAIT_ADMIN", league);
+            return;
+        }
+
+        // --- LOGICA DI SWITCH VISTE ---
         if (league.getTurnoAstaUtenteId() == null || league.getTurnoAstaUtenteId() == 0) {
             if (currentUser.getId() == league.getCreator().getId()) {
                 loadView("/fxml/fantallenatoreAuctionList.fxml", "ADMIN_SELECT_TURN", league);
@@ -116,30 +115,6 @@ public class AuctionMainContainerController {
         }
     }
 
-/* 
-    private void updateAuctionView(League league, User currentUser) {
-        // STATO 1: Turno non assegnato
-        if (league.getTurnoAstaUtenteId() == null || league.getTurnoAstaUtenteId() == 0) {
-            if (currentUser.getId() == league.getCreator().getId()) {
-                loadView("/fxml/fantallenatoreAuctionList.fxml", "ADMIN_SELECT_TURN", league);
-            } else {
-                loadView("/fxml/AuctionWaitTurnSelection.fxml", "WAIT_ADMIN", league);
-            }
-        } 
-        // STATO 2: Turno assegnato, scelta giocatore
-        else if (league.getGiocatoreChiamatoId() == null || league.getGiocatoreChiamatoId() == 0) {
-            if (currentUser.getId()==league.getTurnoAstaUtenteId()) {
-                loadView("/fxml/AuctionProposePlayer.fxml", "PROPOSE_PLAYER", league);
-            } else {
-                loadView("/fxml/AuctionWaitPlayerProposal.fxml", "WAIT_PROPOSAL", league);
-            }
-        } 
-        // STATO 3: Asta in corso
-        else {
-            loadView("/fxml/AuctionBiddingRoom.fxml", "BIDDING", league);
-        }
-    }*/
-
     private void loadView(String fxmlPath, String viewKey, League league) {
         if (currentView.equals(viewKey)) return;
 
@@ -147,10 +122,8 @@ public class AuctionMainContainerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Node node = loader.load();
             
-            // --- PASSAGGIO DATI FONDAMENTALE ---
             Object controller = loader.getController();
             
-            // Se è il controller della lista, gli passiamo la lega e chiamiamo l'init
             if (controller instanceof FantallenatoreAuctionListController) {
                 ((FantallenatoreAuctionListController) controller).initData(league);
                 ((FantallenatoreAuctionListController) controller).setParentContainer(this);
@@ -185,18 +158,13 @@ public class AuctionMainContainerController {
         System.out.println("[Auction] Refresh forzato richiesto...");
         runCheckTask();
     }
+
     private void mostraRisultatoAsta(int leagueId) {
         try {
-            // Recuperiamo la connessione unica (Singleton)
             Connection conn = ConnectionFactory.getConnection();
-            
-            // Inizializziamo il DAO
             it.camb.fantamaster.dao.AuctionDAO auctionDAO = new it.camb.fantamaster.dao.AuctionDAO(conn);
-            
-            // Il metodo getUltimoRisultatoAsta potrebbe lanciare SQLException
             String risultato = auctionDAO.getUltimoRisultatoAsta(leagueId);
 
-            // Mostriamo l'Alert (siamo già nel thread JavaFX)
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("ASTA CONCLUSA");
             alert.setHeaderText("Il giocatore è stato assegnato!");
@@ -205,7 +173,6 @@ public class AuctionMainContainerController {
 
         } catch (SQLException e) {
             System.err.println("Errore nel recupero dell'ultimo risultato asta: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
