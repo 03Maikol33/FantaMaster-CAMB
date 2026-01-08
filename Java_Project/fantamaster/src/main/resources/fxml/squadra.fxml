@@ -12,7 +12,7 @@
         <StackPane>
             <Circle radius="30" fill="#f0f2f5"/>
             <ImageView fx:id="logoImageView" fitHeight="45.0" fitWidth="45.0" preserveRatio="true">
-                <Image url="@/images/userDefaultPic.png"/>
+                <Image url="@/images/teamDefaultPic.png"/>
             </ImageView>
         </StackPane>
         

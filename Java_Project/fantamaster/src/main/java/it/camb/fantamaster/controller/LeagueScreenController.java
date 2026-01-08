@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -20,6 +21,12 @@ public class LeagueScreenController {
 
     private League currentLeague;
 
+    @FXML
+    public void initialize() {
+        // Carica la dashboard di default all'inizio
+        //showDashboard();
+    }
+
     /**
      * Inizializza la schermata con i dati della lega selezionata.
      */
@@ -28,8 +35,21 @@ public class LeagueScreenController {
         if (leagueNameLabel != null) {
             leagueNameLabel.setText(league.getName().toUpperCase());
         }
-        
-        
+        showDashboard();
+    }
+    @FXML
+    public void showDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/league_dashboard.fxml"));
+            VBox dashboard = loader.load();
+            
+            LeagueDashboardController controller = loader.getController();
+            controller.initData(currentLeague);
+            
+            contentArea.getChildren().setAll(dashboard);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // --- METODI NAVBAR INFERIORE (Azioni Principali) ---

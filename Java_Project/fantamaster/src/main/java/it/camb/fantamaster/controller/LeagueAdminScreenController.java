@@ -20,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -31,12 +32,19 @@ public class LeagueAdminScreenController {
 
     private League currentLeague;
 
+    @FXML
+    public void initialize() {
+        // Carica la dashboard di default all'inizio
+        //showDashboard();
+    }
+
     public void setCurrentLeague(League league) {
         this.currentLeague = league;
         if (leagueNameLabel != null) {
             leagueNameLabel.setText(league.getName().toUpperCase());
         }
         checkTradeNotifications();
+        showDashboard();
     }
 
     private void checkTradeNotifications() {
@@ -64,6 +72,21 @@ public class LeagueAdminScreenController {
                 });
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void showDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/league_dashboard.fxml"));
+            VBox dashboard = loader.load();
+            
+            LeagueDashboardController controller = loader.getController();
+            controller.initData(currentLeague);
+            
+            contentArea.getChildren().setAll(dashboard);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

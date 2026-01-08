@@ -30,6 +30,38 @@ public class UsersLeaguesDAO {
     public List<User> getUsersInLeagueId(int leagueId) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT u.* FROM utenti u " +
+                    "JOIN utenti_leghe ul ON u.id = ul.utente_id " +
+                    "WHERE ul.lega_id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, leagueId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("email"));
+                    user.setHashPassword(rs.getString("hash_password"));
+                    
+                    // --- MANCAVA QUESTA RIGA ---
+                    user.setAvatar(rs.getBytes("avatar")); 
+                    // ---------------------------
+
+                    Timestamp ts = rs.getTimestamp("created_at");
+                    if (ts != null) {
+                        user.setCreatedAt(ts.toLocalDateTime());
+                    }
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    /*public List<User> getUsersInLeagueId(int leagueId) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT u.* FROM utenti u " +
                      "JOIN utenti_leghe ul ON u.id = ul.utente_id " +
                      "WHERE ul.lega_id = ?";
 
@@ -54,7 +86,7 @@ public class UsersLeaguesDAO {
             e.printStackTrace();
         }
         return users;
-    }
+    }*/
 
     public List<User> getUsersInLeague(League league) {
         return getUsersInLeagueId(league.getId());
