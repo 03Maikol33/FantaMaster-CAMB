@@ -6,58 +6,68 @@
 <?import javafx.geometry.Insets?>
 
 <VBox prefHeight="600.0" prefWidth="335.0" spacing="0" stylesheets="@css/style.css" 
-      style="-fx-background-color: #f8fafc;" xmlns="http://javafx.com/javafx/21" 
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.TradesController">
+      style="-fx-background-color: linear-gradient(to bottom, #f5f7fa 0%, #c3cfe2 100%);" 
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="it.camb.fantamaster.controller.TradesController">
     
-    <VBox style="-fx-background-color: #081d41; -fx-padding: 25 20 20 20;">
+    <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
         <HBox alignment="CENTER_LEFT" spacing="15">
-            <Button onAction="#handleBack" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 50; -fx-cursor: hand;">
-                <graphic><ImageView fitHeight="18" fitWidth="18"><Image url="@/icons/back-arrow-white.png"/></ImageView></graphic>
+            <Button onAction="#handleBack" style="-fx-background-color: #f1f5f9; -fx-background-radius: 50; -fx-cursor: hand;">
+                <graphic>
+                    <ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+                        <Image url="@/icons/back-arrow-black.png"/>
+                    </ImageView>
+                </graphic>
             </Button>
             <VBox>
-                <Label text="Mercato Scambi" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;"/>
-                <Label fx:id="marketStatusLabel" styleClass="market-badge-open" text="Verifica stato..."/>
+                <Label text="Mercato Scambi" styleClass="modern-title" style="-fx-font-size: 18;" />
+                <Label fx:id="marketStatusLabel" styleClass="subtitle" text="Verifica stato..." style="-fx-font-size: 11;" />
             </VBox>
         </HBox>
     </VBox>
 
-    <TabPane fx:id="tradeTabPane" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+    <TabPane fx:id="tradeTabPane" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE" styleClass="modern-tab-pane">
         <tabs>
             <Tab text="RICHIESTE" onSelectionChanged="#loadReceivedTrades">
-                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-                    <VBox fx:id="receivedTradesContainer" spacing="12" style="-fx-padding: 20;"/>
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+                    <VBox fx:id="receivedTradesContainer" spacing="12" style="-fx-padding: 20;">
+                        </VBox>
                 </ScrollPane>
             </Tab>
 
             <Tab text="PROPONI">
-                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
                     <VBox fx:id="proposalForm" spacing="15" style="-fx-padding: 20;">
                         
-                        <VBox styleClass="step-card" spacing="10">
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label text="1" style="-fx-background-color: #1e40af; -fx-text-fill: white; -fx-background-radius: 50; -fx-padding: 2 8; -fx-font-weight: bold;"/>
-                                <Label text="Cosa vuoi cedere?" style="-fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
-                            </HBox>
-                            <ComboBox fx:id="myPlayersCombo" prefWidth="280" promptText="Seleziona un tuo giocatore" styleClass="modern-combo"/>
-                        </VBox>
+                        <VBox styleClass="modern-card" spacing="20" style="-fx-padding: 20;">
+                            
+                            <VBox spacing="8">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="1" style="-fx-background-color: #1e40af; -fx-text-fill: white; -fx-background-radius: 50; -fx-padding: 2 8; -fx-font-weight: bold; -fx-font-size: 10;"/>
+                                    <Label text="Cosa vuoi cedere?" style="-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-font-size: 12;"/>
+                                </HBox>
+                                <ComboBox fx:id="myPlayersCombo" maxWidth="Infinity" promptText="Seleziona un tuo giocatore" styleClass="modern-combo"/>
+                            </VBox>
 
-                        <VBox styleClass="step-card" spacing="10">
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label text="2" style="-fx-background-color: #1e40af; -fx-text-fill: white; -fx-background-radius: 50; -fx-padding: 2 8; -fx-font-weight: bold;"/>
-                                <Label text="Con chi vuoi scambiare?" style="-fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
-                            </HBox>
-                            <ComboBox fx:id="opponentsCombo" onAction="#loadOpponentPlayers" prefWidth="280" promptText="Seleziona un Fantallenatore" styleClass="modern-combo"/>
-                        </VBox>
+                            <VBox spacing="8">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="2" style="-fx-background-color: #1e40af; -fx-text-fill: white; -fx-background-radius: 50; -fx-padding: 2 8; -fx-font-weight: bold; -fx-font-size: 10;"/>
+                                    <Label text="Con chi vuoi scambiare?" style="-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-font-size: 12;"/>
+                                </HBox>
+                                <ComboBox fx:id="opponentsCombo" onAction="#loadOpponentPlayers" maxWidth="Infinity" promptText="Seleziona un Fantallenatore" styleClass="modern-combo"/>
+                            </VBox>
 
-                        <VBox styleClass="step-card" spacing="10">
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label text="3" style="-fx-background-color: #1e40af; -fx-text-fill: white; -fx-background-radius: 50; -fx-padding: 2 8; -fx-font-weight: bold;"/>
-                                <Label text="Cosa vuoi ricevere?" style="-fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
-                            </HBox>
-                            <ComboBox fx:id="opponentPlayersCombo" prefWidth="280" promptText="Seleziona giocatore avversario" styleClass="modern-combo"/>
-                        </VBox>
+                            <VBox spacing="8">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="3" style="-fx-background-color: #1e40af; -fx-text-fill: white; -fx-background-radius: 50; -fx-padding: 2 8; -fx-font-weight: bold; -fx-font-size: 10;"/>
+                                    <Label text="Cosa vuoi ricevere?" style="-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-font-size: 12;"/>
+                                </HBox>
+                                <ComboBox fx:id="opponentPlayersCombo" maxWidth="Infinity" promptText="Seleziona giocatore avversario" styleClass="modern-combo"/>
+                            </VBox>
 
-                        <Button onAction="#handleSendProposal" text="INVIA PROPOSTA UFFICIALE" maxWidth="Infinity" prefHeight="50" styleClass="primary-button"/>
+                            <Button onAction="#handleSendProposal" text="INVIA PROPOSTA UFFICIALE" maxWidth="Infinity" prefHeight="45" styleClass="primary-button"/>
+                        </VBox>
+                        
                     </VBox>
                 </ScrollPane>
             </Tab>
