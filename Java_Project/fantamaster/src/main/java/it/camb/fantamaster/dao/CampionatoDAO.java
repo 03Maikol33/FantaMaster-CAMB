@@ -2,6 +2,8 @@ package it.camb.fantamaster.dao;
 
 import java.sql.*;
 import java.util.List;
+import java.util.function.Consumer;
+
 import it.camb.fantamaster.util.CampionatoUtil;
 import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rules;
@@ -137,7 +139,7 @@ public class CampionatoDAO {
     /**
      * LOGICA AUTO-RIPARANTE: Calcola i voti mancanti solo per questa lega.
      */
-    public void sincronizzaPunteggiLega(int leagueId) throws SQLException {
+    public void sincronizzaPunteggiLega(int leagueId, Consumer<String> progressReporter) throws SQLException {
         int ultimaConclusa = getGiornataCorrente();
         if (ultimaConclusa == 0) return; // Campionato non iniziato
 
@@ -162,6 +164,9 @@ public class CampionatoDAO {
                 int formationId = rs.getInt("id");
                 int nGiorno = rs.getInt("numero_giornata");
 
+                //notifica di caricamento
+                if (progressReporter != null) progressReporter.accept("Ottengo i punteggi per la giornata " + nGiorno + "...");
+
                 // 2. Recupero i calciatori schierati
                 List<Player> team = playerDAO.getPlayersByFormationId(formationId);
                 
@@ -181,7 +186,8 @@ public class CampionatoDAO {
                 conn.createStatement().executeUpdate("UPDATE formazioni SET totale_fantapunti = " + totale + " WHERE id = " + formationId);
             }
         }
-        
+        // Notifica: Aggiorno le classifiche
+        if (progressReporter != null) progressReporter.accept("Aggiorno le classifiche...");
         // 6. Aggiorno la classifica generale della lega
         ulDAO.updateLeagueRanking(leagueId);
     }

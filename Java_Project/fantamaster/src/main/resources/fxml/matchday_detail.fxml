@@ -2,20 +2,31 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox prefHeight="580.0" prefWidth="320.0" spacing="10" style="-fx-background-color: #1a202c; -fx-padding: 12;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.MatchdayDetailController">
-    <HBox alignment="CENTER_LEFT" spacing="10">
+<VBox spacing="15" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.MatchdayDetailController">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
         <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-cursor: hand;">
             <graphic>
-                <ImageView fitHeight="15.0" fitWidth="15.0" preserveRatio="true">
-                    <Image url="@/icons/back-arrow-white.png" />
+                <ImageView fitHeight="18.0" fitWidth="18.0" preserveRatio="true">
+                    <Image url="@/icons/back-arrow-black.png" />
                 </ImageView>
             </graphic>
         </Button>
-        <Label fx:id="titleLabel" textFill="WHITE" style="-fx-font-size: 14; -fx-font-weight: bold;" />
+        <VBox>
+            <Label fx:id="titleLabel" styleClass="modern-title" text="Risultati Giornata" style="-fx-font-size: 20px;" />
+            <Label styleClass="subtitle" text="Dettaglio bonus e malus" style="-fx-font-size: 11px;" />
+        </VBox>
     </HBox>
 
-    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-        <VBox fx:id="eventsContainer" spacing="12" style="-fx-padding: 5;" />
+    <ScrollPane fitToWidth="true" styleClass="modern-scroll" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox fx:id="eventsContainer" spacing="15" style="-fx-padding: 0 2 10 0;">
+            </VBox>
     </ScrollPane>
+
 </VBox>

@@ -2,21 +2,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox prefHeight="580.0" prefWidth="320.0" spacing="10" style="-fx-background-color: #1a202c; -fx-padding: 15;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.SimulatedMatchdaysController">
+<VBox alignment="TOP_CENTER" spacing="20" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.SimulatedMatchdaysController">
     
-    <HBox alignment="CENTER_LEFT" spacing="10">
+    <padding>
+        <Insets top="10" right="20" bottom="10" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
         <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-cursor: hand;">
             <graphic>
-                <ImageView fitHeight="18.0" fitWidth="18.0" preserveRatio="true">
-                    <Image url="@/icons/back-arrow-white.png" />
+                <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                    <Image url="@/icons/back-arrow-black.png" />
                 </ImageView>
             </graphic>
         </Button>
-        <Label text="Giornate Simulate" textFill="WHITE" style="-fx-font-size: 15; -fx-font-weight: bold;" />
+        <VBox>
+            <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2d3748;" text="Giornate Simulate" />
+            <Label style="-fx-font-size: 13; -fx-text-fill: #718096;" text="Seleziona una giornata per vedere i dettagli dei bonus" />
+        </VBox>
     </HBox>
 
     <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-        <VBox fx:id="matchdayContainer" spacing="10" style="-fx-padding: 5;" />
+        <VBox fx:id="matchdayContainer" spacing="12" style="-fx-padding: 10;">
+            </VBox>
     </ScrollPane>
 </VBox>

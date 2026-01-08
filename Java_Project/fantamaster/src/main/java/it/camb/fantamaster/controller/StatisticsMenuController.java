@@ -62,20 +62,15 @@ public class StatisticsMenuController {
 
     @FXML
     private void goToMatchdayResults() {
-        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/simulated_matchdays.fxml"));
             Parent view = loader.load();
 
             SimulatedMatchdaysController controller = loader.getController();
-            controller.setLeague(currentLeague); // Passiamo la lega come richiesto dal controller esistente
+            // Passiamo Lega e StackPane
+            controller.initData(currentLeague, mainContentArea);
 
-            // Sostituiamo la vista nel contenitore principale
             mainContentArea.getChildren().setAll(view);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Errore nel caricamento di simulated_matchdays.fxml");
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 }

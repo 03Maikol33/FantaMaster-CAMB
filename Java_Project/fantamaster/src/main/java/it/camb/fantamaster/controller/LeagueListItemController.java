@@ -13,12 +13,16 @@ import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -76,40 +80,87 @@ public class LeagueListItemController {
         }
     }
 
+
     @FXML
     private void handleLeagueOpening() {
-        try {
-            User currentUser = SessionUtil.getCurrentSession().getUser();
-            
-            Connection conn = ConnectionFactory.getConnection(); // Connessione unica
-        
-            // --- LOGICA AUTO-RIPARANTE (Lazy Creation) ---
-            RosaDAO rosaDAO = new RosaDAO(conn);
-            // Controlliamo se la rosa esiste già
-            if (rosaDAO.getRosaByUserAndLeague(currentUser.getId(), league.getId()) == null) {
-                UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
-                // Se non esiste, recuperiamo l'ID del legame utente_lega
-                int ulId = ulDAO.getExistingSubscriptionId(currentUser.getId(), league.getId());
-                
-                if (ulId != -1) {
-                    // Creiamo la rosa di default on-the-fly
-                    rosaDAO.createDefaultRosa(ulId);
-                    System.out.println("[Fix] Rosa creata automaticamente per l'utente " + currentUser.getUsername());
+        // 1. Creiamo un popup di caricamento veloce
+        Stage loadingStage = createLoadingPopup();
+        Label statusLabel = (Label) loadingStage.getScene().getRoot().lookup("#statusLabel");
+        loadingStage.show();
+
+        // 2. Definiamo il Task in background
+        javafx.concurrent.Task<Void> syncTask = new javafx.concurrent.Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                updateMessage("Inizializzazione...");
+                Connection conn = ConnectionFactory.getConnection();
+                User currentUser = SessionUtil.getCurrentSession().getUser();
+
+                // A. Fix Rosa (Lazy Creation)
+                updateMessage("Verifica integrità rosa...");
+                RosaDAO rosaDAO = new RosaDAO(conn);
+                if (rosaDAO.getRosaByUserAndLeague(currentUser.getId(), league.getId()) == null) {
+                    UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
+                    int ulId = ulDAO.getExistingSubscriptionId(currentUser.getId(), league.getId());
+                    if (ulId != -1) rosaDAO.createDefaultRosa(ulId);
                 }
+
+                // B. Sincronizzazione con messaggi dinamici
+                CampionatoDAO campionatoDAO = new CampionatoDAO(conn);
+                // Passiamo il metodo updateMessage del Task al DAO come Consumer
+                campionatoDAO.sincronizzaPunteggiLega(league.getId(), this::updateMessage);
+
+                return null;
             }
-            // [Lazy sync] Sincronizza i voti della lega con lo stato del campionato
-            CampionatoDAO campionatoDAO = new CampionatoDAO(conn);
-            campionatoDAO.sincronizzaPunteggiLega(league.getId());
-                        
-            User creator = league.getCreator();
-            if (creator != null && creator.getId() == currentUser.getId()) {
-                Main.showLeagueAdminScreen(league);
-            } else {
-                Main.showLeagueScreen(league);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        };
+
+        // 3. Colleghiamo il messaggio del Task alla Label della UI
+        statusLabel.textProperty().bind(syncTask.messageProperty());
+
+        // 4. Cosa fare al termine (Successo)
+        syncTask.setOnSucceeded(e -> {
+            loadingStage.close();
+            try {
+                User currentUser = SessionUtil.getCurrentSession().getUser();
+                User creator = league.getCreator();
+                if (creator != null && creator.getId() == currentUser.getId()) {
+                    Main.showLeagueAdminScreen(league);
+                } else {
+                    Main.showLeagueScreen(league);
+                }
+            } catch (Exception ex) { ex.printStackTrace(); }
+        });
+
+        // 5. Gestione Errori
+        syncTask.setOnFailed(e -> {
+            loadingStage.close();
+            new Alert(Alert.AlertType.ERROR, "Errore sincronizzazione: " + syncTask.getException().getMessage()).show();
+        });
+
+        // 6. Avvio del thread
+        new Thread(syncTask).start();
+    }
+
+    /**
+     * Crea una semplice finestra di attesa senza decorazioni.
+     */
+    private Stage createLoadingPopup() {
+        Stage stage = new Stage(javafx.stage.StageStyle.UNDECORATED);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        
+        Label lbl = new Label("Sincronizzazione in corso...");
+        lbl.setId("statusLabel");
+        lbl.setStyle("-fx-font-size: 14; -fx-padding: 10;");
+        
+        ProgressIndicator pi = new ProgressIndicator();
+        pi.setPrefSize(50, 50);
+        
+        VBox root = new VBox(15, pi, lbl);
+        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: white; -fx-border-color: #2b6cb0; -fx-border-width: 2; -fx-padding: 20;");
+        
+        stage.setScene(new Scene(root, 250, 150));
+        return stage;
     }
 
     @FXML
