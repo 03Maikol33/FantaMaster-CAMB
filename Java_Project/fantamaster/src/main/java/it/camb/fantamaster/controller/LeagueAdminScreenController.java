@@ -17,7 +17,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
@@ -28,9 +27,7 @@ public class LeagueAdminScreenController {
 
     @FXML private StackPane contentArea;
     @FXML private Label leagueNameLabel;
-    @FXML private Button richiesteButton;
-    @FXML private Button auctionButton;
-    @FXML private MenuItem scambiMenuItem; // Assicurati di aggiungere fx:id="scambiMenuItem" nel tuo FXML dell'admin
+    @FXML private MenuItem scambiMenuItem;
 
     private League currentLeague;
 
@@ -39,13 +36,9 @@ public class LeagueAdminScreenController {
         if (leagueNameLabel != null) {
             leagueNameLabel.setText(league.getName().toUpperCase());
         }
-        // Attivo il controllo notifiche per lo scambio
         checkTradeNotifications();
     }
 
-    /**
-     * Sistema di notifica scambi per l'amministratore.
-     */
     private void checkTradeNotifications() {
         if (currentLeague == null || SessionUtil.getCurrentSession() == null) return;
         
@@ -75,7 +68,39 @@ public class LeagueAdminScreenController {
         }
     }
 
-    // --- NAVBAR INFERIORE ---
+    // --- METODI NAVIGAZIONE (INFERIORI) ---
+
+    @FXML
+    private void openSquadra() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/squadra.fxml"));
+            Parent view = loader.load();
+            SquadraController controller = loader.getController();
+            controller.initData(currentLeague); 
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    @FXML
+    private void openChat() {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml"));
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    @FXML
+    private void openStatistics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statistics_menu.fxml"));
+            Parent view = loader.load();
+            StatisticsMenuController controller = loader.getController();
+            controller.initData(currentLeague, contentArea);
+            contentArea.getChildren().setAll(view);
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // --- METODI GESTIONALI (ORA NEL MENU A TENDINA) ---
 
     @FXML
     private void showRichieste() {
@@ -99,74 +124,12 @@ public class LeagueAdminScreenController {
     @FXML
     private void openAuction() {
         try {
-            // Integrazione Asta nella schermata principale dell'admin
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
             Parent view = loader.load();
-            
             AuctionMainContainerController controller = loader.getController();
-            controller.initData(currentLeague.getId()); // Inizializzo l'asta
-            
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void openChat() {
-        try {
-            Parent view = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml"));
+            controller.initData(currentLeague.getId());
             contentArea.getChildren().setAll(view);
         } catch (IOException e) { e.printStackTrace(); }
-    }
-
- 
-    @FXML
-    private void openStatistics() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statistics_menu.fxml"));
-            Parent view = loader.load();
-
-            // Recupero il controller del menu statistiche
-            StatisticsMenuController controller = loader.getController();
-            
-            // Passo la lega corrente e il riferimento all'area centrale per la navigazione successiva
-            controller.initData(currentLeague, contentArea);
-
-            // Mostro la view dentro contentArea
-            contentArea.getChildren().setAll(view);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-  /*   @FXML
-    private void showListone() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/listone.fxml"));
-            Parent view = loader.load();
-
-            // Mostro la view dentro contentArea
-            contentArea.getChildren().setAll(view);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    } */
-
-       @FXML
-    private void openSquadra() {
-        try {
-            // Carico l'asta dentro la contentArea invece di aprire una nuova finestra
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/squadra.fxml"));
-            Parent view = loader.load();
-            SquadraController controller = loader.getController();
-            controller.initData(currentLeague); // Inizializzo l'asta con l'ID della lega
-            
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -180,7 +143,7 @@ public class LeagueAdminScreenController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // --- MENU AZIONI SUPERIORE ---
+    // --- ALTRI METODI MENU ---
 
     @FXML
     private void handleShareLeague() {
@@ -196,21 +159,15 @@ public class LeagueAdminScreenController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/trades.fxml"));
             Parent root = loader.load();
-            
             TradesController controller = loader.getController();
             controller.setLeague(currentLeague);
-
             Stage popup = new Stage();
             popup.initModality(Modality.APPLICATION_MODAL);
             popup.setTitle("Mercato Scambi - " + currentLeague.getName());
             popup.setScene(new Scene(root));
-            
-            // Quando si chiude la finestra scambi, rinfresca le notifiche
             popup.setOnHidden(e -> checkTradeNotifications());
             popup.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     @FXML

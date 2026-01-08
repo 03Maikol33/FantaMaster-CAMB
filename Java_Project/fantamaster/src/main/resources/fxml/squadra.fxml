@@ -42,4 +42,11 @@
             <Label text="Non hai ancora acquistato giocatori."/>
         </placeholder>
     </TableView>
+
+    <HBox alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+        <Button onAction="#openFormation" text="Schiera Formazione" 
+                style="-fx-background-color: #4c6af0ff; -fx-text-fill: white; -fx-font-weight: bold; 
+                       -fx-padding: 10 30; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-size: 14;"/>
+    </HBox>
+
 </VBox>

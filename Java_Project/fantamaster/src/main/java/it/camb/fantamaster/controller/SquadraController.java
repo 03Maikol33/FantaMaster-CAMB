@@ -8,12 +8,18 @@ import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.scene.Parent;
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -90,4 +96,25 @@ public class SquadraController {
             } catch (SQLException e) { e.printStackTrace(); }
         });
     }
+
+    @FXML
+    private void openFormation() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/formation.fxml"));
+            Parent root = loader.load();
+            
+            // Recupero il controller della formazione e passo la lega corrente
+            FormationController controller = loader.getController();
+            controller.setLeague(this.league);
+
+            Stage popup = new Stage();
+            popup.initModality(Modality.APPLICATION_MODAL);
+            popup.setTitle("Schiera Formazione");
+            popup.setScene(new Scene(root));
+            popup.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
