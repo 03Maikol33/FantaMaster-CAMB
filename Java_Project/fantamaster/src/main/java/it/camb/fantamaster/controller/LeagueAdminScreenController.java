@@ -154,7 +154,20 @@ public class LeagueAdminScreenController {
         }
     } */
 
-
+       @FXML
+    private void openSquadra() {
+        try {
+            // Carico l'asta dentro la contentArea invece di aprire una nuova finestra
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/squadra.fxml"));
+            Parent view = loader.load();
+            SquadraController controller = loader.getController();
+            controller.initData(currentLeague); // Inizializzo l'asta con l'ID della lega
+            
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void showImpostazioniLega() {

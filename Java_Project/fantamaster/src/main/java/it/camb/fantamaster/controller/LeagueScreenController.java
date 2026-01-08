@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import it.camb.fantamaster.controller.SquadraController;
 
 public class LeagueScreenController {
 
@@ -60,6 +61,20 @@ public class LeagueScreenController {
         }
     }
 
+       @FXML
+    private void openSquadra() {
+        try {
+            // Carico l'asta dentro la contentArea invece di aprire una nuova finestra
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/squadra.fxml"));
+            Parent view = loader.load();
+            SquadraController controller = loader.getController();
+            controller.initData(currentLeague); // Inizializzo l'asta con l'ID della lega
+            
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void loadView(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));

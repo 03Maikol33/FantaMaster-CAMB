@@ -172,7 +172,7 @@ public class RosaDAO {
                     p.setNome(rs.getString("nome"));
                     p.setCognome("");
                     p.setRuolo(rs.getString("ruolo"));
-                    p.setNumero(rs.getInt("numero"));
+                 //   p.setNumero(rs.getInt("numero"));
                     p.setSquadra(rs.getString("squadra_reale"));
                     p.setPrezzo(rs.getInt("quotazione_iniziale"));
                                        
@@ -192,5 +192,15 @@ public class RosaDAO {
             return stmt.executeUpdate() == 1;
         }
     }
+
+    public boolean updateRosaInfo(int rosaId, String nuovoNome) throws SQLException {
+    String sql = "UPDATE rosa SET nome_rosa = ? WHERE id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, nuovoNome);
+      //  stmt.setString(2, nuovoLogo);
+        stmt.setInt(2, rosaId);
+        return stmt.executeUpdate() > 0;
+    }
+}
 
 }

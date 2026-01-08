@@ -119,7 +119,22 @@
                         </VBox>
                     </graphic>
                 </Button>
-
+                  <Button onAction="#openSquadra" style="-fx-background-color: transparent; -fx-padding: 0 25; -fx-cursor: hand;">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="5">
+                            <StackPane>
+                                <Circle radius="25" styleClass="navBarCircle"/>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/icons/chat-icon.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+                            <Label text="Squadra" styleClass="navBarLabel"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+                
                 <Button onAction="#openStatistics" style="-fx-background-color: transparent; -fx-padding: 0 25;">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
