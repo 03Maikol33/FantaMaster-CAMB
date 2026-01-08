@@ -60,7 +60,8 @@ public class AuctionProposePlayerController {
     }
 
     private void loadBudgetResiduo() {
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             int myUserId = SessionUtil.getCurrentSession().getUser().getId();
             
             // Query per prendere i crediti direttamente

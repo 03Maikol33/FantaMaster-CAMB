@@ -16,6 +16,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import it.camb.fantamaster.dao.CampionatoDAO;
+import java.util.ArrayList;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -26,6 +28,7 @@ public class ScoreHistoryController {
 
     @FXML private ComboBox<Integer> comboGiornata;
     @FXML private Label lblTotale;
+    @FXML private Label lblWarning;
     @FXML private TableView<PlayerScoreRow> tableScores;
     @FXML private TableColumn<PlayerScoreRow, String> colRuolo;
     @FXML private TableColumn<PlayerScoreRow, String> colNome;
@@ -89,7 +92,62 @@ public class ScoreHistoryController {
     }
 
     private void loadMatchdays() {
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            CampionatoDAO campionatoDao = new CampionatoDAO(conn);
+            
+            // Recuperiamo l'ultima giornata conclusa nel campionato
+            int ultimaConclusa = campionatoDao.getGiornataCorrente();
+            
+            List<Integer> allDays = new ArrayList<>();
+            // Popoliamo la lista con numeri da 1 a ultimaConclusa (o 0 se non iniziato)
+            for (int i = ultimaConclusa; i >= 1; i--) {
+                allDays.add(i);
+            }
+            
+            comboGiornata.setItems(FXCollections.observableArrayList(allDays));
+            
+            if (!allDays.isEmpty()) {
+                comboGiornata.getSelectionModel().selectFirst();
+                loadScoresForDay(allDays.get(0));
+            } else {
+                lblWarning.setText("Il campionato non è ancora iniziato.");
+                lblWarning.setVisible(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadScoresForDay(int giornata) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
+            UsersLeaguesDAO dao = new UsersLeaguesDAO(conn);
+            
+            // Recuperiamo i voti (se esistono)
+            List<PlayerScoreRow> scores = dao.getFormationScores(currentUser.getId(), currentLeague.getId(), giornata);
+            
+            if (scores.isEmpty()) {
+                // Caso: Nessuna formazione schierata
+                tableScores.setItems(FXCollections.emptyObservableList());
+                lblTotale.setText("0.0");
+                lblWarning.setVisible(true);
+            } else {
+                // Caso: Formazione presente
+                tableScores.setItems(FXCollections.observableArrayList(scores));
+                double totale = scores.stream().mapToDouble(PlayerScoreRow::getFantavoto).sum();
+                lblTotale.setText(String.format("%.1f", totale));
+                lblWarning.setVisible(false);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*private void loadMatchdays() {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UsersLeaguesDAO dao = new UsersLeaguesDAO(conn);
             List<Integer> days = dao.getPlayedMatchdays(currentUser.getId(), currentLeague.getId());
             
@@ -106,7 +164,8 @@ public class ScoreHistoryController {
     }
 
     private void loadScoresForDay(int giornata) {
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UsersLeaguesDAO dao = new UsersLeaguesDAO(conn);
             List<PlayerScoreRow> scores = dao.getFormationScores(currentUser.getId(), currentLeague.getId(), giornata);
             
@@ -119,7 +178,7 @@ public class ScoreHistoryController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @FXML
     private void handleBack() {

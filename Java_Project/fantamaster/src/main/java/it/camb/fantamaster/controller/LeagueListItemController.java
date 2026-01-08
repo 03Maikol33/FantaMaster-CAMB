@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 
 import it.camb.fantamaster.Main;
+import it.camb.fantamaster.dao.CampionatoDAO;
 import it.camb.fantamaster.dao.RosaDAO;
 import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
@@ -96,7 +97,10 @@ public class LeagueListItemController {
                     System.out.println("[Fix] Rosa creata automaticamente per l'utente " + currentUser.getUsername());
                 }
             }
-            
+            // [Lazy sync] Sincronizza i voti della lega con lo stato del campionato
+            CampionatoDAO campionatoDAO = new CampionatoDAO(conn);
+            campionatoDAO.sincronizzaPunteggiLega(league.getId());
+                        
             User creator = league.getCreator();
             if (creator != null && creator.getId() == currentUser.getId()) {
                 Main.showLeagueAdminScreen(league);

@@ -25,6 +25,7 @@
         </VBox>
     </HBox>
 
+    <Label fx:id="lblWarning" style="-fx-text-fill: #e53e3e; -fx-font-weight: bold;" text="Non hai schierato nessuna formazione in questa giornata" visible="false" />
     <TableView fx:id="tableScores" maxWidth="600" prefHeight="350" style="-fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);">
         <columns>
             <TableColumn fx:id="colRuolo" prefWidth="50" style="-fx-alignment: CENTER;" text="R" />

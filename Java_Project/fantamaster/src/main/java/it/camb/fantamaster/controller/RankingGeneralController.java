@@ -49,7 +49,8 @@ public class RankingGeneralController {
     }
 
     private void loadRankingData() {
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UsersLeaguesDAO dao = new UsersLeaguesDAO(conn);
             
             // 1. (Opzionale) Ricalcola i punteggi per essere sicuri siano aggiornati

@@ -53,7 +53,8 @@ public class FantallenatoreAuctionListController {
 
         // Usiamo la connessione unica senza chiuderla (se Singleton) 
         // o con il try-with-resources se preferisci, basta che sia coerente con il resto del progetto
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
             RosaDAO rosaDAO = new RosaDAO(conn);
 
@@ -165,7 +166,8 @@ public class FantallenatoreAuctionListController {
         confirm.setHeaderText("Dare la parola a " + targetUser.getUsername() + "?");
 
         if (confirm.showAndWait().orElse(null) == javafx.scene.control.ButtonType.OK) {
-            try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                Connection conn = ConnectionFactory.getConnection();
                 new LeagueDAO(conn).updateTurnoAsta(currentLeague.getId(), targetUser.getId(), null);
                 loadFantallenatori();
                 if (parentContainer != null) parentContainer.forceRefresh();

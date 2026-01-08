@@ -397,4 +397,27 @@ public class PlayerDAO {
                 .findFirst()
                 .orElse(null);
     }
+
+    /**
+     * Recupera i giocatori schierati in una formazione specifica.
+     */
+    public List<Player> getPlayersByFormationId(int formationId) throws SQLException {
+        List<Integer> idsEsterni = new ArrayList<>();
+        String sql = "SELECT g.id_esterno FROM dettaglio_formazione df " +
+                    "JOIN giocatori g ON df.giocatore_id = g.id " +
+                    "WHERE df.formazione_id = ?";
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, formationId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                idsEsterni.add(rs.getInt("id_esterno"));
+            }
+        }
+
+        // Filtriamo il listone JSON (già in memoria) per restituire gli oggetti Player completi
+        return getAllPlayers().stream()
+                .filter(p -> idsEsterni.contains(p.getId()))
+                .collect(Collectors.toList());
+    }
 }

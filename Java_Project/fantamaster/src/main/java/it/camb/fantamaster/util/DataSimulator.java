@@ -22,7 +22,8 @@ public class DataSimulator {
     public static void simulateDayForUser(User user, League league, int giornata) {
         System.out.println("--- 🎲 INIZIO SIMULAZIONE GIORNATA " + giornata + " per " + user.getUsername() + " ---");
         
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UsersLeaguesDAO dao = new UsersLeaguesDAO(conn);
             RosaDAO rosaDAO = new RosaDAO(conn);
             RulesDAO rulesDAO = new RulesDAO(conn); // DAO per le regole

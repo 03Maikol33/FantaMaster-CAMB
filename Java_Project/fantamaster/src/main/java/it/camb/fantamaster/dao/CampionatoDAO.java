@@ -3,7 +3,13 @@ package it.camb.fantamaster.dao;
 import java.sql.*;
 import java.util.List;
 import it.camb.fantamaster.util.CampionatoUtil;
+import it.camb.fantamaster.model.Player;
+import it.camb.fantamaster.model.Rules;
 import it.camb.fantamaster.model.campionato.MatchData;
+import it.camb.fantamaster.model.MatchPerformance;
+import it.camb.fantamaster.model.FantavotoCalculator;
+import it.camb.fantamaster.util.RealDataGenerator;
+
 
 public class CampionatoDAO {
     private Connection conn;
@@ -126,5 +132,57 @@ public class CampionatoDAO {
         } finally {
             conn.setAutoCommit(true);
         }
+    }
+
+    /**
+     * LOGICA AUTO-RIPARANTE: Calcola i voti mancanti solo per questa lega.
+     */
+    public void sincronizzaPunteggiLega(int leagueId) throws SQLException {
+        int ultimaConclusa = getGiornataCorrente();
+        if (ultimaConclusa == 0) return; // Campionato non iniziato
+
+        Rules rules = new RulesDAO(conn).getRulesByLeagueId(leagueId);
+        PlayerDAO playerDAO = new PlayerDAO(conn);
+        UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(conn);
+        RealDataGenerator generator = new RealDataGenerator();
+
+        // 1. Cerchiamo le formazioni della lega per le giornate concluse che hanno ancora punteggio 0
+        String sqlCheck = "SELECT f.id, g.numero_giornata FROM formazioni f " +
+                          "JOIN giornate g ON f.giornata_id = g.id " +
+                          "JOIN rosa r ON f.rosa_id = r.id " +
+                          "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                          "WHERE ul.lega_id = ? AND g.numero_giornata <= ? AND f.totale_fantapunti = 0.0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sqlCheck)) {
+            ps.setInt(1, leagueId);
+            ps.setInt(2, ultimaConclusa);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int formationId = rs.getInt("id");
+                int nGiorno = rs.getInt("numero_giornata");
+
+                // 2. Recupero i calciatori schierati
+                List<Player> team = playerDAO.getPlayersByFormationId(formationId);
+                
+                // 3. Ottengo dati reali dal JSON (Classe di Chiara)
+                CampionatoUtil.load("/api/campionato.json");
+                List<MatchPerformance> perfs = generator.getPrestazioniReali(team, nGiorno);
+
+                double totale = 0.0;
+                for (MatchPerformance mp : perfs) {
+                    // 4. Calcolo voto singolo con regole lega (Classe di Chiara)
+                    double voto = FantavotoCalculator.calcolaFantavoto(mp, rules);
+                    ulDAO.savePlayerScore(formationId, mp.getPlayer().getId(), voto, true);
+                    totale += voto;
+                }
+
+                // 5. Salvo il totale sulla formazione per segnarla come "calcolata"
+                conn.createStatement().executeUpdate("UPDATE formazioni SET totale_fantapunti = " + totale + " WHERE id = " + formationId);
+            }
+        }
+        
+        // 6. Aggiorno la classifica generale della lega
+        ulDAO.updateLeagueRanking(leagueId);
     }
 }

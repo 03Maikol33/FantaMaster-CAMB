@@ -194,7 +194,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             System.out.println("Test iniziale: Connessione al database riuscita!");
         } catch (Exception e) {
             e.printStackTrace();
