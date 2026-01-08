@@ -1,8 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
+<VBox spacing="10" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.camb.fantamaster.controller.ProfiloController">
+    
+    <padding>
+        <Insets top="10" right="20" bottom="10" left="20"/>
+    </padding>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="335.0">
-    <Label layoutX="20.0" layoutY="20.0" text="Profilo non disponibile (feature rimossa)." />
-</AnchorPane>
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <VBox>
+            <Label text="Il Tuo Profilo" styleClass="modern-title" style="-fx-font-size: 20px;" />
+            <Label text="Personalizza la tua identità" styleClass="subtitle" style="-fx-font-size: 11px;" />
+        </VBox>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="modern-scroll" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+        
+        <VBox alignment="TOP_CENTER" spacing="15" styleClass="modern-card">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <VBox alignment="CENTER" spacing="8">
+                <StackPane maxWidth="100" maxHeight="100">
+                    <ImageView fx:id="avatarImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true">
+                        <Image url="@/icons/profilo-icon.png" />
+                    </ImageView>
+                </StackPane>
+                <Button onAction="#handleChangeAvatar" text="Cambia Foto" styleClass="text-button" style="-fx-font-size: 12px;" />
+            </VBox>
+
+            <VBox spacing="12" maxWidth="280">
+                <VBox spacing="3">
+                    <Label text="Username" styleClass="hint-text" style="-fx-font-weight: bold; -fx-font-size: 11px;" />
+                    <TextField fx:id="usernameField" styleClass="modern-textfield" />
+                </VBox>
+                
+                <VBox spacing="3">
+                    <Label text="Email" styleClass="hint-text" style="-fx-font-size: 11px;" />
+                    <Label fx:id="emailLabel" style="-fx-font-size: 13px; -fx-text-fill: #475569; -fx-padding: 5 0 0 0;" />
+                </VBox>
+            </VBox>
+
+            <Button onAction="#handleSave" prefWidth="180" styleClass="primary-button" text="Salva Modifiche" />
+        </VBox>
+    </ScrollPane>
+</VBox>

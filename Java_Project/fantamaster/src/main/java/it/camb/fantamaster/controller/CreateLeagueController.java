@@ -3,6 +3,7 @@ package it.camb.fantamaster.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ImageUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -103,12 +105,27 @@ public class CreateLeagueController {
 
             byte[] imageBytes = null;
             if (selectedImageFile != null) {
+                try {
+                    // Leggiamo i byte originali
+                    byte[] rawBytes = Files.readAllBytes(selectedImageFile.toPath());
+                    
+                    // Usiamo ImageUtil per comprimere (es. 300px per il logo della lega)
+                    imageBytes = ImageUtil.compressImage(rawBytes, 300, 0.7f); 
+                    
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showError("Errore nella lettura dell'immagine.");
+                }
+            }
+
+            /*byte[] imageBytes = null;
+            if (selectedImageFile != null) {
                 try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
                     imageBytes = fis.readAllBytes();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
 
             User creator = SessionUtil.getCurrentSession().getUser();
             
