@@ -147,6 +147,7 @@ public class UserDAO {
         user.setUsername(rs.getString("username"));
         user.setEmail(rs.getString("email"));
         user.setHashPassword(rs.getString("hash_password"));
+        user.setAvatar(rs.getBytes("avatar"));
         
         java.sql.Timestamp ts = rs.getTimestamp("created_at");
         if (ts != null) {
@@ -154,5 +155,69 @@ public class UserDAO {
         }
         return user;
     }
+
+    // --- METODI PER AGGIORNAMENTI SINGOLI ---
+
+    /**
+     * Aggiorna solo lo username nel database
+     */
+    public boolean updateUsername(int id, String newUsername) {
+        String sql = "UPDATE utenti SET username = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newUsername);
+            stmt.setInt(2, id);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Aggiorna solo l'avatar (BLOB) nel database
+     */
+    public boolean updateAvatar(int id, byte[] avatarBytes) {
+        String sql = "UPDATE utenti SET avatar = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBytes(1, avatarBytes);
+            stmt.setInt(2, id);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Ottiene solo l'avatar dal database senza caricare tutto l'utente
+     */
+    public byte[] getAvatarById(int id) {
+        String sql = "SELECT avatar FROM utenti WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBytes("avatar");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getEmailById(int id) {
+        String sql = "SELECT email FROM utenti WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("email");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
-// Fix conflitti definitivo

@@ -36,7 +36,7 @@ CREATE TABLE utenti (
     email VARCHAR(100) NOT NULL UNIQUE,
     hash_password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    avatar BLOB
+    avatar mediumblob
 );
 
 CREATE TABLE giocatori (

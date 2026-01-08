@@ -16,14 +16,7 @@ public class MainScreenController {
 
     @FXML
     private void showProfilo() {
-        // Profilo UI removed; show placeholder instead
-        try {
-            Label placeholder = new Label("Funzionalità Profilo non disponibile.");
-            placeholder.setStyle("-fx-font-size: 14; -fx-text-fill: #333;");
-            contentArea.getChildren().setAll(placeholder);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadView("/fxml/profilo.fxml");
     }
 
     private void loadView(String fxmlPath) {
