@@ -6,6 +6,7 @@ public class Rosa implements Serializable {
     private int id;
     private String nomeRosa;
     private int creditiDisponibili;
+    private String logoPath;
     // Mettiamo i campi essenziali, gli altri (crediti, punti) li aggiungerà chi gestisce il mercato/calcolo se servono
     
     public Rosa() {}
@@ -28,4 +29,7 @@ public class Rosa implements Serializable {
 
     public String getNomeRosa() { return nomeRosa; }
     public void setNomeRosa(String nomeRosa) { this.nomeRosa = nomeRosa; }
+
+    public String getLogoPath() { return logoPath; }
+    public void setLogoPath(String logoPath) { this.logoPath = logoPath; }
 }

@@ -9,6 +9,8 @@ import java.util.List;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rosa;
 
 public class RosaDAO {
@@ -158,6 +160,38 @@ public class RosaDAO {
             stmt.setInt(1, utentiLegheId);
             return stmt.executeUpdate() == 1;
         }
+    }
+
+     // Aggiungi questi metodi in RosaDAO.java
+
+   public List<Player> getGiocatoriDellaRosa(int rosaId) throws SQLException {
+    List<Player> giocatori = new ArrayList<>();
+    String sql = "SELECT g.* FROM giocatori g " +
+                 "JOIN giocatori_rose gr ON g.id = gr.giocatore_id " +
+                 "WHERE gr.rosa_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, rosaId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                giocatori.add(new Player(
+                    rs.getInt("id"), rs.getString("nome"), rs.getString("cognome"),
+                    rs.getString("squadra"), rs.getInt("numero"), rs.getString("ruolo"),
+                    rs.getInt("prezzo"), rs.getString("nazionalita")
+                ));
+            }
+        }
+    }
+    return giocatori;
+    }
+
+   public boolean updateRosaInfo(int rosaId, String nuovoNome, String nuovoLogo) throws SQLException {
+    String sql = "UPDATE rosa SET nome_rosa = ?, logo_path = ? WHERE id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, nuovoNome);
+        stmt.setString(2, nuovoLogo);
+        stmt.setInt(3, rosaId);
+        return stmt.executeUpdate() > 0;
+    }
     }
 
 }

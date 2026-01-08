@@ -11,8 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,38 +21,43 @@ public class LeagueScreenController {
 
     @FXML private StackPane contentArea;
     @FXML private Label leagueNameLabel;
-    @FXML private Button impostazioniButton; // Assicurati che questo ID sia presente nel tuo leagueScreen.fxml
+    @FXML private MenuItem impostazioniMenuItem; // Gestito nel menu a tendina
 
     private League currentLeague;
 
+    /**
+     * Inizializza la dashboard della lega.
+     * @param league La lega selezionata.
+     */
     public void setCurrentLeague(League league) {
         this.currentLeague = league;
         if (leagueNameLabel != null) {
             leagueNameLabel.setText(league.getName().toUpperCase());
         }
 
-        // --- GESTIONE BOTTONE IMPOSTAZIONI ---
-        // Recupero l'utente corrente dalla sessione
+        // --- GESTIONE PERMESSI AMMINISTRATORE ---
         User currentUser = SessionUtil.getCurrentSession().getUser();
+        boolean isAdmin = currentLeague.getCreator().getId() == currentUser.getId();
         
-        // Se l'utente non è l'amministratore (creatore), nascondo il tasto
-        if (currentLeague.getCreator().getId() != currentUser.getId()) {
-            impostazioniButton.setVisible(false);
-            impostazioniButton.setManaged(false); // Rimuove lo spazio occupato dal bottone nel layout
+        if (impostazioniMenuItem != null) {
+            impostazioniMenuItem.setVisible(isAdmin);
         }
+
+        // Carica la vista "Squadra" come predefinita all'apertura
+        showSquadra();
     }
 
-    // --- METODI NAVBAR INFERIORE ---
+    // --- METODI NAVBAR INFERIORE (SQUADRA - CHAT - STATS) ---
 
     @FXML
-    private void openAuction() {
+    private void showSquadra() {
         try {
-            // Carico l'asta dentro la contentArea invece di aprire una nuova finestra
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/squadra.fxml"));
             Parent view = loader.load();
             
-            AuctionMainContainerController controller = loader.getController();
-            controller.initData(currentLeague.getId()); // Inizializzo l'asta con l'ID della lega
+            // Inizializziamo il controller della squadra con la lega corrente
+            SquadraController controller = loader.getController();
+            controller.initData(currentLeague);
             
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
@@ -71,13 +76,13 @@ public class LeagueScreenController {
     }
 
     @FXML
-    private void showImpostazioniLega() {
+    private void showStatistiche() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueRules.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/statistics_menu.fxml"));
             Parent view = loader.load();
-            LeagueRulesController controller = loader.getController();
             
-            controller.setCurrentLeague(currentLeague); 
+            StatisticsMenuController controller = loader.getController();
+            controller.setLeague(currentLeague);
             
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
@@ -85,7 +90,7 @@ public class LeagueScreenController {
         }
     }
 
-    // --- METODI MENU TENDINA ---
+    // --- METODI MENU TENDINA (AZIONI E GESTIONE) ---
 
     @FXML
     private void handleShareLeague() {
@@ -101,7 +106,6 @@ public class LeagueScreenController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/trades.fxml"));
             Parent root = loader.load();
-            
             TradesController controller = loader.getController();
             controller.setLeague(currentLeague);
 
@@ -146,6 +150,52 @@ public class LeagueScreenController {
             popup.setTitle("Risultati Giornate");
             popup.setScene(new Scene(root));
             popup.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleShowListone() {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource("/fxml/listone.fxml"));
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleShowRequests() {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource("/fxml/requestList.fxml"));
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openAuction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AuctionMainContainer.fxml"));
+            Parent view = loader.load();
+            AuctionMainContainerController controller = loader.getController();
+            controller.initData(currentLeague.getId());
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void showImpostazioniLega() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/leagueRules.fxml"));
+            Parent view = loader.load();
+            LeagueRulesController controller = loader.getController();
+            controller.setCurrentLeague(currentLeague);
+            contentArea.getChildren().setAll(view);
         } catch (IOException e) {
             e.printStackTrace();
         }
