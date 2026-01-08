@@ -10,6 +10,12 @@ public class MainScreenController {
     @FXML private StackPane contentArea;
 
     @FXML
+    public void initialize() {
+        // Carica la vista di benvenuto all'inizio
+        showWelcome();
+    }
+
+    @FXML
     private void showLeghe() {
         loadView("/fxml/leagueList.fxml");
     }
@@ -17,6 +23,11 @@ public class MainScreenController {
     @FXML
     private void showProfilo() {
         loadView("/fxml/profilo.fxml");
+    }
+
+    @FXML
+    private void showWelcome() {
+        loadView("/fxml/welcome.fxml");
     }
 
     private void loadView(String fxmlPath) {

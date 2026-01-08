@@ -34,7 +34,8 @@ public class ProfiloController {
         User sessionUser = SessionUtil.getCurrentSession().getUser(); 
         
         if (sessionUser != null) {
-            try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                Connection conn = ConnectionFactory.getConnection();
                 UserDAO dao = new UserDAO(conn);
                 
                 // Cerchiamo l'utente nel DB per avere l'avatar più recente
@@ -94,7 +95,8 @@ public class ProfiloController {
             return;
         }
 
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UserDAO dao = new UserDAO(conn);
             boolean success = true;
 

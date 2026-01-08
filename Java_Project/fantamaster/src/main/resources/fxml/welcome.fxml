@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane styleClass="light-gradient" stylesheets="@../fxml/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    
+    <VBox alignment="CENTER" spacing="30">
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+
+        <VBox alignment="CENTER" spacing="25" maxWidth="450" styleClass="modern-card">
+            <padding>
+                <Insets top="40" right="30" bottom="40" left="30"/>
+            </padding>
+
+            <ImageView fitHeight="120.0" fitWidth="120.0" preserveRatio="true">
+                <Image url="@/images/LogoFantamaster.png" />
+            </ImageView>
+
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="Benvenuto su" styleClass="subtitle" style="-fx-font-size: 16px;" />
+                <Label text="FantaMaster" styleClass="modern-title" style="-fx-font-size: 32px; -fx-text-fill: #1e40af;" />
+                
+                <Separator maxWidth="100" style="-fx-opacity: 0.3;">
+                    <VBox.margin>
+                        <Insets top="10" bottom="10"/>
+                    </VBox.margin>
+                </Separator>
+                
+                <Label text="By CAMB" style="-fx-font-weight: bold; -fx-text-fill: #64748b; -fx-font-size: 14px; -fx-letter-spacing: 2;" />
+            </VBox>
+        </VBox>
+    </VBox>
+    
+</StackPane>
