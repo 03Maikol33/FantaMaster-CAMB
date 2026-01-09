@@ -92,7 +92,7 @@ public class LeagueListControllerTest extends ApplicationTest {
         otherLeague.setParticipants(new ArrayList<>());
         leagueDAO.insertLeague(otherLeague); 
         
-        ulDAO.subscribeUserToLeague(me, otherLeague);
+       ulDAO.subscribeUserToLeague(me, otherLeague);
     }
 
     @After
