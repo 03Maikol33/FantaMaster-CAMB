@@ -28,7 +28,8 @@ public class LeagueDashboardController {
     public void initData(League league) {
         leagueNameLabel.setText(league.getName());
         
-        try (Connection conn = ConnectionFactory.getConnection()) {
+        try {
+            Connection conn = ConnectionFactory.getConnection();
             UsersLeaguesDAO userLeagueDao = new UsersLeaguesDAO(conn);
             RosaDAO rosaDao = new RosaDAO(conn); // Istanziamo RosaDAO
             
