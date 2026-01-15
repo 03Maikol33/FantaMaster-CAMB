@@ -420,4 +420,11 @@ public class PlayerDAO {
                 .filter(p -> idsEsterni.contains(p.getId()))
                 .collect(Collectors.toList());
     }
+
+    // Aggiungi questo metodo in PlayerDAO.java
+    public List<Player> getPlayersByRole(String ruolo) {
+        return getAllPlayers().stream()
+                .filter(p -> p.getRuolo().equalsIgnoreCase(ruolo))
+                .collect(Collectors.toList());
+    }
 }

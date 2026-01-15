@@ -12,7 +12,8 @@ import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane; 
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Test;
@@ -31,11 +32,20 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
     private User adminUser;
     private League testLeague;
     private LeagueAdminSettingsController controller;
+    
+    // FIX 1: Dichiarati come campi della classe per essere usati in tutti i metodi
+    private RulesDAO rulesDAO;
+    private LeagueDAO leagueDAO;
 
     @Override
     public void start(Stage stage) throws Exception {
         Main.setPrimaryStage(stage);
         connection = ConnectionFactory.getConnection();
+        
+        // Inizializziamo i DAO qui
+        rulesDAO = new RulesDAO(connection);
+        leagueDAO = new LeagueDAO(connection);
+        
         setupDatabase();
         createTestData();
         SessionUtil.createSession(adminUser);
@@ -53,10 +63,18 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("DROP ALL OBJECTS");
             stmt.execute("CREATE TABLE utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
-            stmt.execute("CREATE TABLE leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), asta_aperta BOOLEAN DEFAULT FALSE, turno_asta_utente_id INT, giocatore_chiamato_id INT, budget_iniziale INT DEFAULT 500)");
-            stmt.execute("CREATE TABLE utenti_leghe (utente_id INT, lega_id INT, PRIMARY KEY(utente_id, lega_id))");
-            // Schema completo per la tabella regole
-            stmt.execute("CREATE TABLE regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500, bonus_gol DOUBLE DEFAULT 3.0, bonus_assist DOUBLE DEFAULT 1.0, bonus_rigore_parato DOUBLE DEFAULT 3.0, bonus_imbattibilita DOUBLE DEFAULT 1.0, bonus_fattore_campo DOUBLE DEFAULT 2.0, malus_gol_subito DOUBLE DEFAULT 1.0, malus_autogol DOUBLE DEFAULT 2.0, malus_rigore_sbagliato DOUBLE DEFAULT 3.0, malus_espulsione DOUBLE DEFAULT 1.0, malus_ammonizione DOUBLE DEFAULT 0.5, usa_modificatore_difesa BOOLEAN DEFAULT FALSE)");
+            
+            // FIX 2: Schema allineato alla v5.5 per evitare "Column mercato_aperto not found"
+            stmt.execute("CREATE TABLE leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), " +
+                         "mercato_aperto BOOLEAN DEFAULT FALSE, asta_aperta BOOLEAN DEFAULT TRUE, turno_asta_utente_id INT, giocatore_chiamato_id INT)");
+            
+            stmt.execute("CREATE TABLE utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
+            
+            stmt.execute("CREATE TABLE regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500, " +
+                         "voto_base DECIMAL(4,1) DEFAULT 6.0, bonus_gol DOUBLE DEFAULT 3.0, bonus_assist DOUBLE DEFAULT 1.0, bonus_rigore_parato DOUBLE DEFAULT 3.0, bonus_imbattibilita DOUBLE DEFAULT 1.0, bonus_fattore_campo DOUBLE DEFAULT 2.0, " +
+                         "malus_gol_subito DOUBLE DEFAULT 1.0, malus_autogol DOUBLE DEFAULT 2.0, malus_rigore_sbagliato DOUBLE DEFAULT 3.0, malus_espulsione DOUBLE DEFAULT 1.0, malus_ammonizione DOUBLE DEFAULT 0.5, usa_modificatore_difesa BOOLEAN DEFAULT FALSE)");
+            
+            stmt.execute("CREATE TABLE rosa (id INT AUTO_INCREMENT PRIMARY KEY, utenti_leghe_id INT, nome_rosa VARCHAR(255), punteggio_totale DOUBLE DEFAULT 0.0)");
         }
     }
 
@@ -66,8 +84,8 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
         userDAO.insert(adminUser);
 
         testLeague = new League("TestSettings", null, 10, adminUser, "punti_totali", LocalDateTime.now());
-        new LeagueDAO(connection).insertLeague(testLeague);
-        new RulesDAO(connection).insertDefaultRules(testLeague.getId());
+        leagueDAO.insertLeague(testLeague);
+        rulesDAO.insertDefaultRules(testLeague.getId());
     }
 
     @After
@@ -79,14 +97,27 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
 
     @Test
     public void testUpdateRules() {
-        // Pulizia e inserimento nuovo valore budget
-        doubleClickOn("#budgetField").write("7000"); 
-        scroll(1.0); 
-        clickOn("#saveRulesButton");
-        clickOn("OK"); 
+        // Selezioniamo il campo budget
+        clickOn("4-4-2");
 
-        Rules updated = new RulesDAO(connection).getRulesByLeagueId(testLeague.getId());
-        assertEquals(7000, updated.getInitialBudget());
+        clickOn("#budgetField")
+            .push(KeyCode.CONTROL, KeyCode.A)
+            .push(KeyCode.BACK_SPACE)
+            .write("7000");
+        
+        // Clicchiamo sul pulsante SALVA (assicurati che nel FXML l'id sia corretto o usa il testo)
+        scroll(1.0);
+        clickOn("#saveRulesButton");
+
+        // Attendiamo che il thread background del Controller finisca la query
+        sleep(1000); 
+        clickOn("OK");
+
+        // FIX 3: Usiamo testLeague invece di league (nome corretto della variabile)
+        Rules updated = rulesDAO.getRulesByLeagueId(testLeague.getId());
+        
+        assertNotNull("Le regole dovrebbero esistere nel DB", updated);
+        assertEquals("Il budget dovrebbe essere aggiornato a 7000", 7000, updated.getInitialBudget());
     }
 
     private void scroll(double v) {

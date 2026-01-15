@@ -1,8 +1,12 @@
 package it.camb.fantamaster.dao;
 
 import it.camb.fantamaster.model.Player;
+import it.camb.fantamaster.util.ConnectionFactory;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import java.sql.Connection;
 import java.util.List;
 import static org.junit.Assert.*;
 
@@ -11,8 +15,9 @@ public class PlayerDAOTest {
     private PlayerDAO playerDAO;
 
     @Before
-    public void setUp() {
-        playerDAO = new PlayerDAO();
+    public void setUp() throws Exception {
+        Connection conn = ConnectionFactory.getConnection();
+        playerDAO = new PlayerDAO(conn);
     }
 
     @Test

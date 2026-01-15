@@ -47,11 +47,11 @@
                 <items>
                     
                     <MenuItem fx:id="scambiMenuItem" mnemonicParsing="false" onAction="#showScambi" text="🔄  Scambi Mercato" />
-                    <MenuItem mnemonicParsing="false" onAction="#showListone" text="📜  Listone" />
-                    <MenuItem mnemonicParsing="false" onAction="#openAuction" text="🔨  Asta" />
-                    <MenuItem mnemonicParsing="false" onAction="#handleShareLeague" text="🔗  Invita i tuoi amici" />
-                    <MenuItem mnemonicParsing="false" onAction="#showRichieste" text="👥  Richieste" />
-                    <MenuItem mnemonicParsing="false" onAction="#showImpostazioniLega" text="🔧  Impostazioni Lega" />
+                    <MenuItem fx:id="listoneMenuItem" mnemonicParsing="false" onAction="#showListone" text="📜  Listone" />
+                    <MenuItem fx:id="astaMenuItem" mnemonicParsing="false" onAction="#openAuction" text="🔨  Asta" />
+                    <MenuItem fx:id="invitaMenuItem" mnemonicParsing="false" onAction="#handleShareLeague" text="🔗  Invita i tuoi amici" />
+                    <MenuItem fx:id="richiesteMenuItem" mnemonicParsing="false" onAction="#showRichieste" text="👥  Richieste" />
+                    <MenuItem fx:id="impostazioniLegaMenuItem" mnemonicParsing="false" onAction="#showImpostazioniLega" text="🔧  Impostazioni Lega" />
                     
                     
                 </items>

@@ -27,18 +27,33 @@ public class LeagueAuctionDAOTest {
     @Before
     public void setUp() throws SQLException {
         connection = ConnectionFactory.getConnection();
-        
-        // Ricostruzione DB H2 con la struttura corretta (inclusa asta_aperta e turno_asta)
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, avatar BLOB)");
+            stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
             
-            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, " +
-                    "id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), " +
-                    "modalita VARCHAR(50), budget_iniziale INT DEFAULT 500, moduli_consentiti VARCHAR(255), " +
-                    "asta_aperta BOOLEAN DEFAULT TRUE, turno_asta_utente_id INT DEFAULT NULL, giocatore_chiamato_id INT DEFAULT NULL)");
+            // Tabella leghe allineata alla v5.5
+            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "nome VARCHAR(255), " +
+                "icona BLOB, " +
+                "max_membri INT, " +
+                "id_creatore INT, " +
+                "iscrizioni_chiuse BOOLEAN DEFAULT FALSE, " +
+                "created_at TIMESTAMP, " +
+                "codice_invito VARCHAR(255), " +
+                "modalita VARCHAR(50), " +
+                "moduli_consentiti VARCHAR(255), " +
+                "mercato_aperto BOOLEAN DEFAULT FALSE, " + // FONDAMENTALE
+                "asta_aperta BOOLEAN DEFAULT TRUE, " +     // FONDAMENTALE
+                "turno_asta_utente_id INT DEFAULT NULL, " +
+                "giocatore_chiamato_id INT DEFAULT NULL)");
 
-            stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
+            // FONDAMENTALE: utenti_leghe deve avere la colonna 'id' PK
             stmt.execute("CREATE TABLE IF NOT EXISTS utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
+            
+            stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
+            
+            // Aggiungi la tabella ROSA perché molti DAO ora la usano nei Join
+            stmt.execute("CREATE TABLE IF NOT EXISTS rosa (id INT AUTO_INCREMENT PRIMARY KEY, utenti_leghe_id INT, nome_rosa VARCHAR(255), punteggio_totale DOUBLE DEFAULT 0.0)");
         }
 
         userDAO = new UserDAO(connection);

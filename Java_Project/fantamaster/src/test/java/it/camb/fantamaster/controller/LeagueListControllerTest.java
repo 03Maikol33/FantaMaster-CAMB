@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
@@ -38,7 +39,6 @@ public class LeagueListControllerTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws Exception {
         Main.setPrimaryStage(stage);
-
         setupDatabase();
         createTestData();
         SessionUtil.createSession(me);
@@ -54,18 +54,26 @@ public class LeagueListControllerTest extends ApplicationTest {
     private void setupDatabase() throws Exception {
         connection = ConnectionFactory.getConnection();
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
+            // 1. PULIZIA TOTALE: Risolve l'errore "expected 1 but was 3" (badge duplicati)
+            stmt.execute("DROP ALL OBJECTS");
+
+            stmt.execute("CREATE TABLE utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
             
-            // Fix: Tabella leghe aggiornata
-            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), asta_aperta BOOLEAN DEFAULT FALSE, turno_asta_utente_id INT DEFAULT NULL, giocatore_chiamato_id INT DEFAULT NULL, budget_iniziale INT DEFAULT 500)");
+            stmt.execute("CREATE TABLE leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN DEFAULT FALSE, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), mercato_aperto BOOLEAN DEFAULT FALSE, asta_aperta BOOLEAN DEFAULT TRUE, turno_asta_utente_id INT DEFAULT NULL, giocatore_chiamato_id INT DEFAULT NULL, budget_iniziale INT DEFAULT 500)");
             
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti_leghe (utente_id INT, lega_id INT, PRIMARY KEY(utente_id, lega_id))");
-            stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS richieste_accesso (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT, stato VARCHAR(50), data_richiesta TIMESTAMP)");
+            stmt.execute("CREATE TABLE utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
+
+            // 2. TABELLE MANCANTI: Risolvono i crash dei DAO durante il test
+            stmt.execute("CREATE TABLE scambi (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, rosa_richiedente_id INT, rosa_ricevente_id INT, giocatore_offerto_id INT, giocatore_richiesto_id INT, stato VARCHAR(50))");
+            stmt.execute("CREATE TABLE regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
+            stmt.execute("CREATE TABLE rosa (id INT AUTO_INCREMENT PRIMARY KEY, utenti_leghe_id INT, nome_rosa VARCHAR(255), crediti_residui INT DEFAULT 500, punteggio_totale DOUBLE DEFAULT 0.0)");
+            stmt.execute("CREATE TABLE stato_campionato (id INT PRIMARY KEY, giornata_corrente INT)");
+            stmt.execute("INSERT INTO stato_campionato (id, giornata_corrente) VALUES (1, 0)");
+            stmt.execute("CREATE TABLE richieste_accesso (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT, stato VARCHAR(50), data_richiesta TIMESTAMP)");
         }
     }
 
-    private void createTestData() {
+    private void createTestData() throws Exception {
         UserDAO userDAO = new UserDAO(connection);
         LeagueDAO leagueDAO = new LeagueDAO(connection);
         UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(connection);
@@ -92,17 +100,13 @@ public class LeagueListControllerTest extends ApplicationTest {
         otherLeague.setParticipants(new ArrayList<>());
         leagueDAO.insertLeague(otherLeague); 
         
-       ulDAO.subscribeUserToLeague(me, otherLeague);
+        ulDAO.subscribeUserToLeague(me, otherLeague);
     }
 
     @After
     public void tearDown() throws Exception {
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute("DROP TABLE richieste_accesso");
-            stmt.execute("DROP TABLE regole");
-            stmt.execute("DROP TABLE utenti_leghe");
-            stmt.execute("DROP TABLE leghe");
-            stmt.execute("DROP TABLE utenti");
+            stmt.execute("DROP ALL OBJECTS");
         }
         SessionUtil.deleteSession("me@test.com");
         release(new KeyCode[]{});
@@ -112,23 +116,45 @@ public class LeagueListControllerTest extends ApplicationTest {
 
     @Test
     public void testAdminLeagueInteraction() {
+        sleep(1000);
         verifyThat("Lega Admin", isVisible());
-        verifyThat("#adminBadgeContainer", isVisible());
-        clickOn("Lega Admin");
-        verifyThat("#richiesteButton", isVisible()); 
+        clickOn("Lega Admin"); // Questo apre LeagueAdminScreen
+        
+        // 1. Aspettiamo che la dashboard si carichi
+        sleep(1000); 
+
+        // 2. Clicchiamo sul MenuButton "⋮" per mostrare le voci
+        clickOn("⋮");
+
+        // 3. Verifichiamo che la voce "Richieste" sia presente nel menu a tendina
+        // Usiamo il testo esatto definito nell'FXML
+        verifyThat("#richiesteMenuItem", isVisible());
     }
 
     @Test
     public void testParticipantLeagueInteraction() {
+        sleep(1000);
         verifyThat("Lega Partecipante", isVisible());
 
-        long visibleBadges = lookup("#adminBadgeContainer").queryAll().stream()
+        // Verifica che il badge admin NON sia visibile su questa lega
+        // (Il badge è visibile solo se isAdmin è true nel LeagueListItemController)
+        long adminBadgesCount = lookup("#adminBadgeContainer").queryAll().stream()
                 .filter(Node::isVisible)
                 .count();
-        
-        assertEquals("Dovrebbe esserci esattamente 1 badge admin visibile", 1, visibleBadges);
+        assertEquals("Dovrebbe esserci 1 solo badge admin (quello della prima lega)", 1, adminBadgesCount);
 
-        clickOn("Lega Partecipante");
-        verifyThat("#impostazioniButton", isVisible());
+        clickOn("Lega Partecipante"); // Questo apre LeagueScreen (User)
+        
+        sleep(1000);
+        clickOn("⋮");
+
+        // Verifichiamo che un utente normale NON veda le opzioni admin
+        // Il robot non dovrebbe trovare il testo "Impostazioni Lega"
+        try {
+            verifyThat("#impostazioniLegaMenuItem", isVisible());
+            fail("Un partecipante non dovrebbe vedere le impostazioni admin!");
+        } catch (org.testfx.service.query.EmptyNodeQueryException e) {
+            // Successo: il nodo non esiste per il partecipante
+        }
     }
 }
