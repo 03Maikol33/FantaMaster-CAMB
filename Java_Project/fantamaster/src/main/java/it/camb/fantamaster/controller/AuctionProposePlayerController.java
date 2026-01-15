@@ -7,6 +7,7 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rosa;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -80,7 +81,7 @@ public class AuctionProposePlayerController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento budget residuo", e);
         }
     }
 
@@ -96,6 +97,10 @@ public class AuctionProposePlayerController {
             int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
             Rosa miaRosa = rosaDAO.getRosaByUserAndLeague(currentUserId, currentLeague.getId());
             
+            if(miaRosa == null) {
+                System.out.println("Rosa non trovata per il caricamento dei filtri.");
+                return;
+            }
             // 2. Conteggio ruoli (User Story: slot liberi)
             // Usiamo il conteggio dei giocatori attualmente in rosa nel DB
             int pCount = rosaDAO.countGiocatoriPerRuolo(miaRosa.getId(), "P");
@@ -125,7 +130,7 @@ public class AuctionProposePlayerController {
             playerTable.setItems(FXCollections.observableArrayList(availableAndValid));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento giocatori filtrati", e);
         }
     }
     /*
@@ -155,12 +160,16 @@ public class AuctionProposePlayerController {
             // Recuperiamo l'oggetto Rosa completo (che contiene l'ID della rosa)
             Rosa miaRosa = rosaDAO.getRosaByUserAndLeague(currentUserId, currentLeague.getId());
 
+            if(miaRosa == null) {
+                showAlert("Errore", "Non hai una rosa in questa lega.");
+                return;
+            }
             // --- VALIDAZIONI ---
             if (offerta < scelto.getPrezzo()) {
                 showAlert("Errore", "L'offerta deve essere >= " + scelto.getPrezzo());
                 return;
             }
-            if (miaRosa != null && offerta > miaRosa.getCreditiDisponibili()) {
+            if (offerta > miaRosa.getCreditiDisponibili()) {
                 showAlert("Errore", "Crediti insufficienti!");
                 return;
             }
@@ -178,7 +187,7 @@ public class AuctionProposePlayerController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore avvio asta busta chiusa", e);
         }
     }
     /* 
@@ -206,7 +215,7 @@ public class AuctionProposePlayerController {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            
         }
     }*/
 /*

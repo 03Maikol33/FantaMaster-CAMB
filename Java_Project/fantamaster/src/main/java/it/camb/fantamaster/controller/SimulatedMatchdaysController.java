@@ -5,6 +5,7 @@ import it.camb.fantamaster.util.CampionatoUtil;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.campionato.GiornataData;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -60,7 +61,9 @@ public class SimulatedMatchdaysController {
                 card.setOnMouseClicked(e -> showDetail(g));
                 matchdayContainer.getChildren().add(card);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento giornate simulate", e);
+         }
     }
 
     private void showDetail(GiornataData giornata) {
@@ -71,7 +74,9 @@ public class SimulatedMatchdaysController {
             // Passiamo anche qui il riferimento all'area contenuti
             ctrl.initData(giornata, league, mainContentArea);
             mainContentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento dettaglio giornata", e);
+        }
     }
 
     @FXML
@@ -82,6 +87,8 @@ public class SimulatedMatchdaysController {
             StatisticsMenuController ctrl = loader.getController();
             ctrl.initData(league, mainContentArea);
             mainContentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento schermata statistiche", e);
+        }
     }
 }

@@ -3,6 +3,7 @@ package it.camb.fantamaster.controller;
 import it.camb.fantamaster.dao.UserDAO;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.ImageUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
@@ -51,7 +52,7 @@ public class ProfiloController {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore nel caricamento del profilo utente", e);
                 // Fallback nel caso il DB non risponda
                 this.currentUser = sessionUser;
                 usernameField.setText(currentUser.getUsername());
@@ -82,7 +83,7 @@ public class ProfiloController {
                     avatarImageView.setImage(new Image(new ByteArrayInputStream(selectedAvatarBytes)));
                 }
             } catch (Exception e) {
-                showError("Errore nel caricamento: " + e.getMessage());
+                ErrorUtil.log("Errore nel caricamento dell'avatar", e);
             }
         }
     }
@@ -122,7 +123,7 @@ public class ProfiloController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore di connessione durante il salvataggio del profilo", e);
             showError("Errore di connessione.");
         }
     }

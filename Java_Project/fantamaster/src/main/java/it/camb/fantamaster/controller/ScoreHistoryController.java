@@ -5,6 +5,7 @@ import it.camb.fantamaster.dao.UsersLeaguesDAO.PlayerScoreRow;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -115,7 +116,7 @@ public class ScoreHistoryController {
                 lblWarning.setVisible(true);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento giornate", e);
         }
     }
 
@@ -141,7 +142,7 @@ public class ScoreHistoryController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento punteggi", e);
         }
     }
 
@@ -159,7 +160,7 @@ public class ScoreHistoryController {
                 loadScoresForDay(days.get(0));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento giornate", e);
         }
     }
 
@@ -176,7 +177,7 @@ public class ScoreHistoryController {
             lblTotale.setText(String.format("%.1f", totale));
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento giornate", e);
         }
     }*/
 
@@ -189,7 +190,7 @@ public class ScoreHistoryController {
             controller.initData(currentLeague, mainContentArea);
             mainContentArea.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento schermata statistiche", e);
         }
     }
 }

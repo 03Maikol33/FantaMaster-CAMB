@@ -2,6 +2,7 @@ package it.camb.fantamaster.controller;
 
 import java.io.IOException;
 
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,7 +22,7 @@ public class SuccessfulRegisterController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore apertura finestra login", e);
         }
     }
 }

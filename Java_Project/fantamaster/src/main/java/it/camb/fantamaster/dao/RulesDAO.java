@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import it.camb.fantamaster.model.Rules;
+import it.camb.fantamaster.util.ErrorUtil;
 
 public class RulesDAO {
     private final Connection conn;
@@ -52,7 +53,7 @@ public class RulesDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero regole per lega ID: " + leagueId, e);
         }
         return new Rules();
     }
@@ -86,7 +87,7 @@ public class RulesDAO {
             
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento regole per lega ID: " + leagueId, e);
             return false;
         }
     }

@@ -11,6 +11,7 @@ import java.util.List;
 
 import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rosa;
+import it.camb.fantamaster.util.ErrorUtil;
 
 public class RosaDAO {
     private final Connection conn;
@@ -180,7 +181,7 @@ public class RosaDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero giocatori per rosa ID: " + rosaId, e);
         }
         return players;
     }
@@ -190,7 +191,10 @@ public class RosaDAO {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, utentiLegheId);
             return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            ErrorUtil.log("Errore creazione rosa di default per utenti_leghe_id: " + utentiLegheId, e);
         }
+        return false;
     }
 
     public boolean updateRosaInfo(int rosaId, String nuovoNome) throws SQLException {

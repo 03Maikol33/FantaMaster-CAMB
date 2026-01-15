@@ -12,6 +12,7 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Rosa;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -111,7 +112,7 @@ public class FantallenatoreAuctionListController {
             }
 
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento fantallenatori", e);
             showAlert("Errore", "Impossibile caricare la lista fantallenatori.");
         }
     }
@@ -154,7 +155,7 @@ public class FantallenatoreAuctionListController {
             }
 
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+          
         }
     }*/
 
@@ -172,7 +173,8 @@ public class FantallenatoreAuctionListController {
                 loadFantallenatori();
                 if (parentContainer != null) parentContainer.forceRefresh();
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore assegnazione turno asta", e);
+                showAlert("Errore", "Impossibile assegnare il turno.");
             }
         }
     }

@@ -4,6 +4,7 @@ import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.dao.UsersLeaguesDAO.UserRankingRow;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -64,7 +65,7 @@ public class RankingGeneralController {
             rankingTable.setItems(data);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nel caricamento della classifica generale", e);
             // Qui potresti mostrare un Alert di errore
         }
     }
@@ -80,7 +81,7 @@ public class RankingGeneralController {
 
             mainContentArea.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nel tornare alla schermata precedente", e);
         }
     }
 }

@@ -57,7 +57,10 @@ public class FormationController {
     public void initialize() {
         try {
             this.playerDAO = new PlayerDAO(ConnectionFactory.getConnection());
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            showWarning("Errore di connessione al database.");
+            return;
+         }
         
         moduleComboBox.setOnAction(e -> {
             startersList.clear(); orderedBench.clear(); selectedCaptain = null;

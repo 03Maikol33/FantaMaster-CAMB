@@ -11,6 +11,7 @@ import java.util.List;
 
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
+import it.camb.fantamaster.util.ErrorUtil;
 
 public class UsersLeaguesDAO {
 
@@ -55,7 +56,7 @@ public class UsersLeaguesDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero utenti per lega con ID: " + leagueId, e);
         }
         return users;
     }
@@ -83,7 +84,7 @@ public class UsersLeaguesDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero utenti per lega con ID: " + leagueId, e);
         }
         return users;
     }*/
@@ -137,7 +138,7 @@ public class UsersLeaguesDAO {
         } catch (SQLIntegrityConstraintViolationException e) {
             return false;
         } catch (SQLException e) {
-            e.printStackTrace();
+            
             return false;
         }
     }*/
@@ -151,7 +152,7 @@ public class UsersLeaguesDAO {
                 return rs.next();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore verifica iscrizione utente con ID: " + user.getId() + " alla lega con ID: " + league.getId(), e);
             return false;
         }
     }
@@ -163,7 +164,7 @@ public class UsersLeaguesDAO {
             stmt.setInt(2, league.getId());
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore cancellazione iscrizione utente con ID: " + user.getId() + " dalla lega con ID: " + league.getId(), e);
             return false;
         }
     }
@@ -191,7 +192,7 @@ public class UsersLeaguesDAO {
             stmt.executeUpdate();
             System.out.println("✅ Classifica aggiornata per la lega " + leagueId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento classifica per la lega con ID: " + leagueId, e);
         }
     }
 
@@ -226,7 +227,7 @@ public class UsersLeaguesDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero classifica per la lega con ID: " + leagueId, e);
         }
         return ranking;
     }
@@ -278,7 +279,7 @@ public class UsersLeaguesDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero giornate giocate per utente con ID: " + userId + " nella lega con ID: " + leagueId, e);
         }
         return matchdays;
     }
@@ -316,7 +317,7 @@ public class UsersLeaguesDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero punteggi formazione per utente con ID: " + userId + " nella lega con ID: " + leagueId + " per la giornata numero: " + numeroGiornata, e);
         }
         return scores;
     }
@@ -351,7 +352,7 @@ public class UsersLeaguesDAO {
                 if (rs.next()) return rs.getInt("id");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero rosa per utente con ID: " + userId + " nella lega con ID: " + leagueId, e);
         }
         return -1;
     }
@@ -400,7 +401,7 @@ public class UsersLeaguesDAO {
             stmt.setString(4, titolare ? "titolare" : "panchina");
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore salvataggio punteggio giocatore con ID: " + playerId + " nella formazione con ID: " + formationId, e);
         }
     }
 
@@ -412,7 +413,9 @@ public class UsersLeaguesDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return rs.getInt("id");
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore recupero ID giornata per numero: " + numero, e);
+         }
         return -1;
     }
 
@@ -424,7 +427,9 @@ public class UsersLeaguesDAO {
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) return rs.getInt(1);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore creazione giornata per numero: " + numero, e);
+         }
         return -1;
     }
 }

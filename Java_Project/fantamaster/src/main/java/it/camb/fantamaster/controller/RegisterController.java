@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import java.util.regex.Pattern;
+
 import it.camb.fantamaster.dao.UserDAO;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.PasswordUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -84,10 +87,10 @@ public class RegisterController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore di connessione al Database durante la registrazione", e);
             showError("Errore di connessione al Database.");
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore imprevisto durante la registrazione", e);
             showError("Errore imprevisto.");
         }
     }
@@ -113,7 +116,7 @@ public class RegisterController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Impossibile caricare la schermata successiva", e);
             showError("Impossibile caricare la schermata successiva.");
         }
     }
@@ -132,12 +135,15 @@ public class RegisterController {
     }
 
     private boolean checkPasswordStrength(String password) {
-        if (password.length() < 8 || password.contains(" ") || password.length() > 100) return false;
-        if (!password.matches(".*[A-Z].*")) return false; // Maiuscola
-        if (!password.matches(".*[a-z].*")) return false; // Minuscola
-        if (!password.matches(".*\\d.*")) return false;   // Numero
-        if (!password.matches(".*[!@#$%^&*()].*")) return false; // Speciale
-        return true;
+        if (password.length() < 8 || password.length() > 100 || password.contains(" ")) return false;
+
+        // Definiamo i pattern una volta sola (meglio se come costanti statiche della classe)
+        boolean hasUpper   = Pattern.compile("[A-Z]").matcher(password).find();
+        boolean hasLower   = Pattern.compile("[a-z]").matcher(password).find();
+        boolean hasDigit   = Pattern.compile("\\d").matcher(password).find();
+        boolean hasSpecial = Pattern.compile("[!@#$%^&*()]").matcher(password).find();
+
+        return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 }
 // Fix conflitti definitivo

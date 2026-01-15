@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -113,7 +114,7 @@ public class LeagueRulesController {
                 showError("Errore nel salvataggio su DB.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore salvataggio regole lega", e);
             showError("Errore di connessione.");
         }
     }

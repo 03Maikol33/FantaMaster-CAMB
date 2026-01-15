@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import it.camb.fantamaster.model.Player;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 
 public class PlayerDAO {
@@ -44,7 +45,9 @@ public class PlayerDAO {
                 players.add(parsePlayerFromJson(element.getAsJsonObject()));
             }
             cachedListone = players;
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { 
+            ErrorUtil.log("Errore caricamento listone giocatori", e);
+         }
         return players;
     }
 
@@ -111,7 +114,9 @@ public class PlayerDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) playerIds.add(rs.getInt("id_esterno"));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento giocatori della rosa", e); 
+        }
 
         return getAllPlayers().stream()
                 .filter(p -> playerIds.contains(p.getId()))
@@ -144,8 +149,10 @@ public class PlayerDAO {
         try (PreparedStatement ps = conn.prepareStatement(sqlRosa)) {
             ps.setInt(1, userId);
             ps.setInt(2, leagueId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) rosaId = rs.getInt("id");
+            try(ResultSet rs = ps.executeQuery()){
+                if (rs.next()) rosaId = rs.getInt("id");
+            }
+
         }
 
         if (rosaId == -1) throw new SQLException("Rosa non trovata per l'utente.");
@@ -165,20 +172,29 @@ public class PlayerDAO {
                 ps.setInt(4, capitano.getId());
                 ps.executeUpdate();
                 
-                ResultSet rsKeys = ps.getGeneratedKeys();
-                if (rsKeys.next()) formazioneId = rsKeys.getInt(1);
-                else {
-                    // Se è un update, recuperiamo l'id esistente
-                    String find = "SELECT id FROM formazioni WHERE rosa_id=? AND giornata_id=?";
-                    PreparedStatement psF = conn.prepareStatement(find);
-                    psF.setInt(1, rosaId); psF.setInt(2, giornataId);
-                    ResultSet rsF = psF.executeQuery();
-                    if(rsF.next()) formazioneId = rsF.getInt("id");
+                try (ResultSet rsKeys = ps.getGeneratedKeys()) {
+                    if (rsKeys.next()) {
+                        formazioneId = rsKeys.getInt(1);
+                    } else {
+                        String find = "SELECT id FROM formazioni WHERE rosa_id=? AND giornata_id=?";
+                        // FIX 3: PreparedStatement e ResultSet annidati devono essere chiusi
+                        try (PreparedStatement psF = conn.prepareStatement(find)) {
+                            psF.setInt(1, rosaId); 
+                            psF.setInt(2, giornataId);
+                            try (ResultSet rsF = psF.executeQuery()) {
+                                if(rsF.next()) formazioneId = rsF.getInt("id");
+                            }
+                        }
+                    }
                 }
             }
 
             // 4. Pulizia e inserimento dettagli
-            conn.prepareStatement("DELETE FROM dettaglio_formazione WHERE formazione_id = " + formazioneId).executeUpdate();
+            String sqlDelete = "DELETE FROM dettaglio_formazione WHERE formazione_id = ?";
+            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
+                psDel.setInt(1, formazioneId);
+                psDel.executeUpdate();
+            }
             
             String sqlDet = "INSERT INTO dettaglio_formazione (formazione_id, giocatore_id, stato, ordine_panchina) VALUES (?, ?, ?, ?)";
             try (PreparedStatement psD = conn.prepareStatement(sqlDet)) {
@@ -357,7 +373,9 @@ public class PlayerDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) playerIds.add(rs.getInt("id_esterno"));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento giocatori della rosa", e);
+         }
 
         return getAllPlayers().stream()
                 .filter(p -> playerIds.contains(p.getId()))
@@ -385,7 +403,7 @@ public class PlayerDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore calcolo punteggio totale squadra", e);
         }
         return 0.0;
     }
@@ -409,9 +427,10 @@ public class PlayerDAO {
         
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, formationId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                idsEsterni.add(rs.getInt("id_esterno"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    idsEsterni.add(rs.getInt("id_esterno"));
+                }
             }
         }
 

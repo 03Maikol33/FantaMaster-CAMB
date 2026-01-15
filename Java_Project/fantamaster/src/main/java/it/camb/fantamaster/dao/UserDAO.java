@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.camb.fantamaster.model.User;
+import it.camb.fantamaster.util.ErrorUtil;
 
 public class UserDAO {
     private final Connection conn;
@@ -45,7 +46,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore inserimento utente", e);
             return false;
         }
     }
@@ -61,7 +62,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero utente per ID: " + id, e);
         }
         return null;
     }
@@ -77,7 +78,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero utente per email: " + email, e);
         }
         return null;
     }
@@ -93,7 +94,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero utente per username: " + username, e);
         }
         return null;
     }
@@ -108,7 +109,7 @@ public class UserDAO {
                 users.add(mapResultSetToUser(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero tutti gli utenti", e);
         }
         return users;
     }
@@ -123,7 +124,7 @@ public class UserDAO {
             stmt.setInt(4, user.getId());
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento utente con ID: " + user.getId(), e);
             return false;
         }
     }
@@ -135,7 +136,7 @@ public class UserDAO {
             stmt.setInt(1, id);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore cancellazione utente con ID: " + id, e);
             return false;
         }
     }
@@ -168,7 +169,7 @@ public class UserDAO {
             stmt.setInt(2, id);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento username per utente con ID: " + id, e);
             return false;
         }
     }
@@ -183,7 +184,7 @@ public class UserDAO {
             stmt.setInt(2, id);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento avatar per utente con ID: " + id, e);
             return false;
         }
     }
@@ -201,7 +202,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero avatar per utente con ID: " + id, e);
         }
         return null;
     }
@@ -216,7 +217,7 @@ public class UserDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero email per utente con ID: " + id, e);
         }
         return null;
     }

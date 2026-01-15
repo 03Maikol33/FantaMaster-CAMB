@@ -51,7 +51,7 @@ public class SessionUtil {
                 System.out.println("Sessione caricata da file: " + latestFile.getName());
                 return currentSession;
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore caricamento sessione da file: " + latestFile.getName(), e);
             }
         }
 
@@ -76,7 +76,7 @@ public class SessionUtil {
             out.writeObject(session);
             currentSession = session;
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore salvataggio sessione per utente: " + user.getEmail(), e);
         }
     }
 
@@ -95,7 +95,7 @@ public class SessionUtil {
             currentSession = (Session) in.readObject();
             return currentSession;
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento sessione per utente: " + email, e);
             return null;
         }
     }
@@ -135,7 +135,7 @@ public class SessionUtil {
             try {
                 Files.createDirectory(path);
             } catch (IOException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore creazione cartella sessioni", e);
             }
         }
     }

@@ -78,7 +78,7 @@ public class ImageUtil {
             return baos.toByteArray();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore compressione immagine", e);
             return imageBytes;
         }
     }

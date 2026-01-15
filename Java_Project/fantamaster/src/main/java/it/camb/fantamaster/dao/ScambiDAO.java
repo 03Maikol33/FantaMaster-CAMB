@@ -18,15 +18,15 @@ public class ScambiDAO {
 
     public boolean proponiScambio(Scambio s) throws SQLException {
         String sql = "INSERT INTO scambi (lega_id, rosa_richiedente_id, rosa_ricevente_id, giocatore_offerto_id, giocatore_richiesto_id, stato) VALUES (?, ?, ?, ?, ?, 'proposto')";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, s.getLegaId());
-        stmt.setInt(2, s.getRosaRichiedenteId());
-        stmt.setInt(3, s.getRosaRiceventeId());
-        stmt.setInt(4, s.getGiocatoreOffertoId());
-        stmt.setInt(5, s.getGiocatoreRichiestoId());
-        int res = stmt.executeUpdate();
-        stmt.close();
-        return res == 1;
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, s.getLegaId());
+            stmt.setInt(2, s.getRosaRichiedenteId());
+            stmt.setInt(3, s.getRosaRiceventeId());
+            stmt.setInt(4, s.getGiocatoreOffertoId());
+            stmt.setInt(5, s.getGiocatoreRichiestoId());
+            int res = stmt.executeUpdate();
+            return res == 1;
+        }
     }
 
     public List<Scambio> getScambiRicevuti(int rosaId) throws SQLException {
@@ -41,71 +41,70 @@ public class ScambiDAO {
                      "JOIN giocatori g2 ON s.giocatore_richiesto_id = g2.id " +
                      "WHERE s.rosa_ricevente_id = ? AND s.stato = 'proposto'";
         
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, rosaId);
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            Scambio s = new Scambio();
-            s.setId(rs.getInt("id"));
-            s.setNomeRichiedente(rs.getString("rich_nome"));
-            s.setNomeGiocatoreOfferto(rs.getString("g_off_nome")); 
-            s.setNomeGiocatoreRichiesto(rs.getString("g_riq_nome"));
-            // Salviamo gli ID esterni per il controller
-            s.setGiocatoreOffertoId(rs.getInt("id_ext_off"));
-            s.setGiocatoreRichiestoId(rs.getInt("id_ext_riq"));
-            s.setRosaRichiedenteId(rs.getInt("rosa_richiedente_id"));
-            s.setRosaRiceventeId(rs.getInt("rosa_ricevente_id"));
-            lista.add(s);
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, rosaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Scambio s = new Scambio();
+                    s.setId(rs.getInt("id"));
+                    s.setNomeRichiedente(rs.getString("rich_nome"));
+                    s.setNomeGiocatoreOfferto(rs.getString("g_off_nome")); 
+                    s.setNomeGiocatoreRichiesto(rs.getString("g_riq_nome"));
+                    s.setGiocatoreOffertoId(rs.getInt("id_ext_off"));
+                    s.setGiocatoreRichiestoId(rs.getInt("id_ext_riq"));
+                    s.setRosaRichiedenteId(rs.getInt("rosa_richiedente_id"));
+                    s.setRosaRiceventeId(rs.getInt("rosa_ricevente_id"));
+                    lista.add(s);
+                }
+            }
         }
-        rs.close();
-        stmt.close();
         return lista;
     }
 
     public int countRichiestePendenti(int rosaId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM scambi WHERE rosa_ricevente_id = ? AND stato = 'proposto'";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, rosaId);
-        ResultSet rs = stmt.executeQuery();
-        int count = 0;
-        if (rs.next()) count = rs.getInt(1);
-        rs.close();
-        stmt.close();
-        return count;
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, rosaId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                int count = 0;
+                if (rs.next()) count = rs.getInt(1);
+                return count;
+            }
+        }
     }
 
     public void rifiutaScambio(int scambioId) throws SQLException {
         String sql = "UPDATE scambi SET stato = 'rifiutato' WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, scambioId);
-        stmt.executeUpdate();
-        stmt.close();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, scambioId);
+            stmt.executeUpdate();
+        }
     }
 
     public void accettaScambio(Scambio s) throws SQLException {
         try {
             conn.setAutoCommit(false);
-            PreparedStatement stS = conn.prepareStatement("UPDATE scambi SET stato = 'accettato' WHERE id = ?");
-            stS.setInt(1, s.getId());
-            stS.executeUpdate();
-            stS.close();
+            try (PreparedStatement stS = conn.prepareStatement("UPDATE scambi SET stato = 'accettato' WHERE id = ?")) {
+                stS.setInt(1, s.getId());
+                stS.executeUpdate();
+            }
 
             // Usiamo gli ID esterni per trovare i giocatori corretti nel DB
             String sqlUp = "UPDATE giocatori_rose SET rosa_id = ? WHERE rosa_id = ? AND giocatore_id = (SELECT id FROM giocatori WHERE id_esterno = ?)";
             
-            PreparedStatement st1 = conn.prepareStatement(sqlUp);
-            st1.setInt(1, s.getRosaRiceventeId());
-            st1.setInt(2, s.getRosaRichiedenteId());
-            st1.setInt(3, s.getGiocatoreOffertoId());
-            st1.executeUpdate();
-            st1.close();
+            try (PreparedStatement st1 = conn.prepareStatement(sqlUp)) {
+                st1.setInt(1, s.getRosaRiceventeId());
+                st1.setInt(2, s.getRosaRichiedenteId());
+                st1.setInt(3, s.getGiocatoreOffertoId());
+                st1.executeUpdate();
+            }
 
-            PreparedStatement st2 = conn.prepareStatement(sqlUp);
-            st2.setInt(1, s.getRosaRichiedenteId());
-            st2.setInt(2, s.getRosaRiceventeId());
-            st2.setInt(3, s.getGiocatoreRichiestoId());
-            st2.executeUpdate();
-            st2.close();
+            try (PreparedStatement st2 = conn.prepareStatement(sqlUp)) {
+                st2.setInt(1, s.getRosaRichiedenteId());
+                st2.setInt(2, s.getRosaRiceventeId());
+                st2.setInt(3, s.getGiocatoreRichiestoId());
+                st2.executeUpdate();
+            }
 
             conn.commit();
         } catch (SQLException e) {

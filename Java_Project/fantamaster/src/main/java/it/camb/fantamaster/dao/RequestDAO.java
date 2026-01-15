@@ -12,6 +12,7 @@ import java.util.List;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Request;
 import it.camb.fantamaster.model.User;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.RequestStatus;
 
 public class RequestDAO {
@@ -68,7 +69,7 @@ public class RequestDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero richieste per lega", e);
             return Collections.emptyList();
         }
         return requests;
@@ -90,7 +91,7 @@ public class RequestDAO {
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore creazione richiesta di iscrizione", e);
             return false;
         }
     }
@@ -105,7 +106,7 @@ public class RequestDAO {
                 return rs.next();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore verifica richiesta pendente", e);
             return false;
         }
     }
@@ -118,7 +119,7 @@ public class RequestDAO {
             stmt.setInt(2, league.getId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore cancellazione richiesta", e);
             return false;
         }
     }
@@ -165,11 +166,11 @@ public class RequestDAO {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            ErrorUtil.log("Errore approvazione richiesta", e);
+            try { conn.rollback(); } catch (SQLException ex) { ErrorUtil.log("Errore rollback approvazione richiesta", ex); }
             return false;
         } finally {
-            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+            try { conn.setAutoCommit(true); } catch (SQLException e) { ErrorUtil.log("Errore reset auto-commit approvazione richiesta", e); }
         }
     }
     /*public boolean approveRequest(User user, League league) {
@@ -215,18 +216,18 @@ public class RequestDAO {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore approvazione richiesta", e);
             try {
                 conn.rollback();
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                ErrorUtil.log("Errore rollback approvazione richiesta", ex);
             }
             return false;
         } finally {
             try {
                 conn.setAutoCommit(true);
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore reset auto-commit approvazione richiesta", e);
             }
         }
     }*/

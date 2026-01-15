@@ -5,6 +5,7 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Message;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -109,7 +110,7 @@ public class ChatViewController {
                 MessageDAO dao = new MessageDAO(conn);
                 return dao.insertMessage(newMessage);
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore invio messaggio", e);
                 return false;
             }
         }).thenAccept(success -> {
@@ -140,7 +141,7 @@ public class ChatViewController {
                 MessageDAO dao = new MessageDAO(conn);
                 return dao.getMessagesByLeagueId(currentLeague.getId());
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore caricamento messaggi", e);
                 return null;
             }
         }).thenAccept(messages -> {
@@ -264,7 +265,7 @@ public class ChatViewController {
                 MessageDAO dao = new MessageDAO(conn);
                 return dao.deleteMessage(messageId);
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore eliminazione messaggio", e);
                 return false;
             }
         }).thenAccept(success -> {

@@ -7,6 +7,7 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rosa;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -105,7 +106,7 @@ public class AuctionBiddingRoomController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento dati asta", e);
         }
     }
     
@@ -146,7 +147,7 @@ public class AuctionBiddingRoomController {
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento dati asta", e);
         }
     }*/
 
@@ -215,7 +216,7 @@ public class AuctionBiddingRoomController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore invio offerta asta", e);
         }
     }
 
@@ -249,7 +250,7 @@ public class AuctionBiddingRoomController {
             });
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore invio offerta asta", e);
         }
     }
 

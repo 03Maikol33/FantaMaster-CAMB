@@ -8,6 +8,7 @@ import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -143,7 +144,7 @@ public class AuctionMainContainerController {
             System.out.println("[Auction] Vista cambiata in: " + viewKey);
             
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento vista asta: " + fxmlPath, e);
         }
     }
 

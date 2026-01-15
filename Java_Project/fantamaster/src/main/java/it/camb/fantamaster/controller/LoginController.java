@@ -8,6 +8,7 @@ import it.camb.fantamaster.Main;
 import it.camb.fantamaster.dao.UserDAO;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.PasswordUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.application.Platform;
@@ -61,10 +62,10 @@ public class LoginController {
             showError(e.getMessage());
         } catch (SQLException e) {
             // Errore tecnico (Database down, timeout, ecc.)
-            e.printStackTrace();
+            ErrorUtil.log("Errore di connessione al database durante il login", e);
             showError("Errore di connessione al server. Riprova.");
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nel caricamento della Home Page", e);
             showError("Errore nel caricamento della Home Page.");
         }
     }
@@ -104,7 +105,7 @@ public class LoginController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nell'apertura della registrazione", e);
             showError("Impossibile aprire la registrazione.");
         }
     }
@@ -119,7 +120,7 @@ public class LoginController {
             try {
                 openHomeScreen();
             } catch (IOException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore nel caricamento della Home Page durante auto-login", e);
             }
         }
     }

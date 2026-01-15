@@ -7,6 +7,7 @@ import it.camb.fantamaster.model.campionato.EventoData;
 import it.camb.fantamaster.model.campionato.GiornataData;
 import it.camb.fantamaster.model.campionato.MatchData;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -73,10 +74,10 @@ public class MatchdayDetailController {
             table.getStyleClass().add("modern-card");
             table.setSelectionModel(null);
             table.setFixedCellSize(35);
-            table.setPrefHeight((match.eventi.size() * 35) + 38); 
+            table.setPrefHeight((match.eventi.size() * 35.0) + 38.0); 
             
             // Fondamentale per forzare le colonne a stare dentro i bordi
-            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
             table.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
 
             // Colonna Evento: Prende tutto lo spazio rimanente e taglia il testo se troppo lungo
@@ -161,6 +162,8 @@ public class MatchdayDetailController {
             SimulatedMatchdaysController ctrl = loader.getController();
             ctrl.initData(currentLeague, mainContentArea);
             mainContentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore nel tornare alla schermata precedente", e);
+         }
     }
 }

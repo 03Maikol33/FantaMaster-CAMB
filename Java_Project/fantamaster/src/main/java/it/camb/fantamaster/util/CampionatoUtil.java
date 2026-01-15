@@ -28,7 +28,7 @@ public class CampionatoUtil {
             }
         } catch (Exception e) {
             System.err.println("❌ Errore caricamento campionato.json: " + e.getMessage());
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento campionato.json", e);
         }
     }
 

@@ -53,11 +53,19 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof User)) return false;
+        if (!(obj instanceof User)) return false;
         User user = (User) obj;
         return (id == user.id) && 
                (username != null ? username.equals(user.username) : user.username == null) &&
-               (email != null ? email.equals(user.email) : user.email == null);
+               (email != null ? email.equals(user.email) : email == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Integer.hashCode(id);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
     }
 }
 // Fix conflitti definitivo

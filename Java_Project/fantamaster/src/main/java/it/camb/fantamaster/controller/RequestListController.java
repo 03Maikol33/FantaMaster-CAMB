@@ -10,6 +10,7 @@ import it.camb.fantamaster.dao.RequestDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Request;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,7 +51,7 @@ public class RequestListController {
                 RequestDAO requestDAO = new RequestDAO(conn);
                 return requestDAO.getRequestsForLeague(currentLeague);
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore caricamento richieste per la lega", e);
                 return Collections.<Request>emptyList();
             }
         }).thenAccept(requests -> {
@@ -75,7 +76,7 @@ public class RequestListController {
                         controller.setParentController(this);
                         requestContainer.getChildren().add(item);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        ErrorUtil.log("Errore caricamento item della lista richieste", e);
                     }
                 }
             });

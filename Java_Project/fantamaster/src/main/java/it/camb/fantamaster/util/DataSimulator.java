@@ -79,7 +79,7 @@ public class DataSimulator {
             System.out.println("✅ Simulazione completata (con regole ufficiali)!");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore durante la simulazione della giornata " + giornata + " per l'utente " + user.getUsername(), e);
         }
     }
 }

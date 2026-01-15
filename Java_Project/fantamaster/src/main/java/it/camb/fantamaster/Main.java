@@ -10,6 +10,7 @@ import it.camb.fantamaster.controller.LeagueScreenController;
 import it.camb.fantamaster.dao.CampionatoDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.CampionatoUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -78,7 +80,9 @@ public class Main extends Application {
                     initBtn.setMaxWidth(Double.MAX_VALUE);
                     initBtn.setOnAction(e -> {
                         try { dao.inizializzaCampionato(); utilityStage.close(); createKillSwitch(); } 
-                        catch (SQLException ex) { ex.printStackTrace(); }
+                        catch (SQLException ex) {
+                            ErrorUtil.log("Errore DB", ex);
+                        }
                     });
                     layout.getChildren().add(initBtn);
                 } else {
@@ -95,7 +99,9 @@ public class Main extends Application {
                             progBtn.setMaxWidth(Double.MAX_VALUE);
                             progBtn.setOnAction(e -> {
                                 try { dao.programmaGiornata(daGiocare); utilityStage.close(); createKillSwitch(); } 
-                                catch (SQLException ex) { ex.printStackTrace(); }
+                                catch (SQLException ex) { 
+                                    ErrorUtil.log("Errore DB", ex);
+                                 }
                             });
                             layout.getChildren().add(progBtn);
                         } else {
@@ -104,7 +110,9 @@ public class Main extends Application {
                             execBtn.setMaxWidth(Double.MAX_VALUE);
                             execBtn.setOnAction(e -> {
                                 try { dao.eseguiGiornataEProgrammaSuccessiva(daGiocare); utilityStage.close(); createKillSwitch(); } 
-                                catch (SQLException ex) { ex.printStackTrace(); }
+                                catch (SQLException ex) { 
+                                    ErrorUtil.log("Errore DB", ex);
+                                 }
                             });
                             layout.getChildren().add(execBtn);
                         }
@@ -119,7 +127,9 @@ public class Main extends Application {
                     resetBtn.setMaxWidth(Double.MAX_VALUE);
                     resetBtn.setOnAction(e -> {
                         try { dao.inizializzaCampionato(); utilityStage.close(); createKillSwitch(); } 
-                        catch (SQLException ex) { ex.printStackTrace(); }
+                        catch (SQLException ex) { 
+                            ErrorUtil.log("Errore DB", ex);
+                         }
                     });
                     layout.getChildren().add(resetBtn);
                 }
@@ -148,7 +158,7 @@ public class Main extends Application {
             }
         } catch (SQLException e) {
             System.err.println("❌ Errore durante la chiusura della connessione:");
-            e.printStackTrace();
+            ErrorUtil.log("Errore chiusura DB", e);
         }
         Platform.exit();
         System.exit(0);
@@ -198,7 +208,9 @@ public class Main extends Application {
             Connection conn = ConnectionFactory.getConnection();
             System.out.println("Test iniziale: Connessione al database riuscita!");
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore connessione DB all'avvio", e);
+            System.err.println("Impossibile connettersi al database. L'applicazione verrà chiusa.");
+            Platform.exit();
         }
         launch(args);
     }

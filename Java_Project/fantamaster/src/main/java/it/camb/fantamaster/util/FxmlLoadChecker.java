@@ -17,7 +17,7 @@ public class FxmlLoadChecker {
                     System.out.println("FXML load checks completed successfully.");
                 } catch (Exception e) {
                     System.err.println("Exception while loading FXML:");
-                    e.printStackTrace();
+                    ErrorUtil.log("Exception while loading FXML", e);
                 } finally {
                     Platform.exit();
                 }
@@ -31,7 +31,7 @@ public class FxmlLoadChecker {
                     System.out.println("FXML load checks completed successfully (runtime).");
                 } catch (Exception e) {
                     System.err.println("Exception while loading FXML (runtime):");
-                    e.printStackTrace();
+                    ErrorUtil.log("Exception while loading FXML (runtime)", e);
                 }
             });
         }

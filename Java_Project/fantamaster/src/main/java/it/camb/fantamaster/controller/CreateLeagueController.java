@@ -11,6 +11,7 @@ import it.camb.fantamaster.dao.LeagueDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.ImageUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
@@ -113,7 +114,7 @@ public class CreateLeagueController {
                     imageBytes = ImageUtil.compressImage(rawBytes, 300, 0.7f); 
                     
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    ErrorUtil.log("Errore lettura immagine lega", e);
                     showError("Errore nella lettura dell'immagine.");
                 }
             }
@@ -123,7 +124,7 @@ public class CreateLeagueController {
                 try (FileInputStream fis = new FileInputStream(selectedImageFile)) {
                     imageBytes = fis.readAllBytes();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                
                 }
             }*/
 
@@ -151,7 +152,7 @@ public class CreateLeagueController {
                     showError("Errore nella creazione della lega.");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore creazione lega", e);
                 showError("Errore di connessione al database.");
             }
             

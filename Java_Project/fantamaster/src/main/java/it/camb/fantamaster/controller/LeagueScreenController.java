@@ -3,6 +3,7 @@ package it.camb.fantamaster.controller;
 import java.io.IOException;
 import it.camb.fantamaster.Main;
 import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -48,7 +49,7 @@ public class LeagueScreenController {
             
             contentArea.getChildren().setAll(dashboard);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento dashboard lega", e);
         }
     }
 
@@ -65,7 +66,7 @@ public class LeagueScreenController {
             
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento squadra", e);
         }
     }
 
@@ -75,7 +76,7 @@ public class LeagueScreenController {
             Parent view = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml"));
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento chat", e);
         }
     }
 
@@ -90,7 +91,7 @@ public class LeagueScreenController {
 
             contentArea.getChildren().setAll(view);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento statistiche", e);
         }
     }
 
@@ -107,7 +108,7 @@ public class LeagueScreenController {
             
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento asta", e);
         }
     }
 
@@ -117,7 +118,7 @@ public class LeagueScreenController {
             Parent view = FXMLLoader.load(getClass().getResource("/fxml/listone.fxml"));
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento listone", e);
         }
     }
 
@@ -136,7 +137,7 @@ public class LeagueScreenController {
             popup.setScene(new Scene(root));
             popup.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento scambi", e);
         }
     }
 
@@ -156,7 +157,7 @@ public class LeagueScreenController {
         try {
             Main.showHome();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore ritorno alla lista leghe", e);
         }
     }
 }

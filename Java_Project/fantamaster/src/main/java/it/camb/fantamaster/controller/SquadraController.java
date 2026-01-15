@@ -5,6 +5,7 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Player;
 import it.camb.fantamaster.model.Rosa;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -41,7 +42,9 @@ public class SquadraController {
         try {
             this.rosaDAO = new RosaDAO(ConnectionFactory.getConnection());
             loadSquadraData();
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento squadra", e);
+         }
     }
 
     private void loadSquadraData() throws SQLException {
@@ -93,7 +96,9 @@ public class SquadraController {
                     nomeSquadraLabel.setText(nuovoNome);
                     if (selectedFile != null) logoImageView.setImage(new Image(selectedFile.toURI().toString()));
                 }
-            } catch (SQLException e) { e.printStackTrace(); }
+            } catch (SQLException e) { 
+                ErrorUtil.log("Errore aggiornamento squadra", e);
+             }
         });
     }
 
@@ -113,7 +118,7 @@ public class SquadraController {
             popup.setScene(new Scene(root));
             popup.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore apertura finestra formazione", e);
         }
     }
 

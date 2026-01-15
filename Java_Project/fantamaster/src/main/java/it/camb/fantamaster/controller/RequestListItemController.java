@@ -10,6 +10,7 @@ import it.camb.fantamaster.dao.RequestDAO;
 import it.camb.fantamaster.model.Request;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -118,7 +119,7 @@ public class RequestListItemController {
                 System.out.println("Approvo richiesta di: " + request.getUser().getUsername());
                 return requestDAO.approveRequest(request.getUser(), request.getLeague());
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore approvazione richiesta", e);
                 return false;
             }
         }).thenAccept(success -> {
@@ -149,7 +150,7 @@ public class RequestListItemController {
                 RequestDAO requestDAO = new RequestDAO(conn);
                 return requestDAO.rejectRequest(request.getUser(), request.getLeague());
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore rifiuto richiesta", e);
                 return false;
             }
         }).thenAccept(success -> {

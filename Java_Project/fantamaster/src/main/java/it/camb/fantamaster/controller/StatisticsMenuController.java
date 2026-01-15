@@ -1,6 +1,7 @@
 package it.camb.fantamaster.controller;
 
 import it.camb.fantamaster.model.League;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,7 +33,7 @@ public class StatisticsMenuController {
             mainContentArea.getChildren().setAll(view);
             
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nel caricamento della classifica generale", e);
             System.err.println("Errore nel caricamento di ranking_general.fxml");
         }
     }
@@ -53,7 +54,7 @@ public class StatisticsMenuController {
             mainContentArea.getChildren().setAll(view);
             
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nel caricamento di score_history.fxml", e);
             System.err.println("Errore nel caricamento di score_history.fxml");
         }
     
@@ -71,6 +72,8 @@ public class StatisticsMenuController {
             controller.initData(currentLeague, mainContentArea);
 
             mainContentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento schermata giornate simulate", e);
+         }
     }
 }

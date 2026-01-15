@@ -2,6 +2,7 @@ package it.camb.fantamaster.dao;
 
 import it.camb.fantamaster.model.Message;
 import it.camb.fantamaster.model.User;
+import it.camb.fantamaster.util.ErrorUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class MessageDAO {
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore inserimento messaggio", e);
         }
         return false;
     }
@@ -86,7 +87,7 @@ public class MessageDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero messaggi per lega", e);
         }
         return messages;
     }
@@ -97,7 +98,7 @@ public class MessageDAO {
             stmt.setInt(1, messageId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore cancellazione messaggio", e);
             return false;
         }
     }

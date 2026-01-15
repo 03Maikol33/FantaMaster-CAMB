@@ -62,12 +62,17 @@ public class ListoneInteractionChecker {
                             System.out.println("Applied filters programmatically.");
 
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            ErrorUtil.log("Errore durante il controllo delle interazioni", e);
                         } finally {
                             Platform.runLater(() -> {
                                 try {
                                     Thread.sleep(1000);
-                                } catch (InterruptedException ignored) {}
+                                } catch (InterruptedException e) {
+                                    // 1. Ripristina lo stato di interruzione (FIX PER SONARQUBE)
+                                    Thread.currentThread().interrupt();
+                                    // 2. Logga l'evento o gestisci la chiusura
+                                    System.err.println("Thread interrotto durante il controllo interazioni.");
+                                }
                                 latch.countDown();
                                 Platform.exit();
                             });
@@ -81,9 +86,14 @@ public class ListoneInteractionChecker {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore durante il controllo delle interazioni", e);
                 latch.countDown();
                 Platform.exit();
+                // 1. Ripristina lo stato di interruzione (FIX PER SONARQUBE)
+                Thread.currentThread().interrupt();
+                
+                // 2. Logga l'evento o gestisci la chiusura
+                System.err.println("Thread interrotto durante il controllo interazioni.");
             }
         });
 

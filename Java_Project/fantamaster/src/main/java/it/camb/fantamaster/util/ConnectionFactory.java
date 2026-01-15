@@ -22,7 +22,7 @@ public class ConnectionFactory {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             System.err.println("❌ Errore: Driver MySQL non trovato!");
-            e.printStackTrace();
+            ErrorUtil.log("Driver MySQL non trovato", e);
         }
     }
 

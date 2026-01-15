@@ -15,6 +15,7 @@ import java.util.List;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.CodeGenerator;
+import it.camb.fantamaster.util.ErrorUtil;
 
 public class LeagueDAO {
     private final Connection conn;
@@ -135,7 +136,7 @@ public class LeagueDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore controllo stato mercato", e);
         }
         return false; // Default se non trovato o errore
     }
@@ -147,7 +148,7 @@ public class LeagueDAO {
             stmt.setInt(2, leagueId);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento stato mercato", e);
             return false;
         }
     }
@@ -160,7 +161,7 @@ public class LeagueDAO {
             stmt.setInt(2, leagueId);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento regole lega", e);
             return false;
         }
     }
@@ -181,7 +182,7 @@ public class LeagueDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero leghe per utente", e);
         }
         return leagues;
     }
@@ -201,7 +202,7 @@ public class LeagueDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero leghe create da utente", e);
         }
         return leagues;
     }
@@ -246,7 +247,7 @@ public class LeagueDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero lega per ID", e);
         }
 
         // STEP 2: Ora che il ResultSet della lega è CHIUSO, usiamo gli altri DAO
@@ -259,7 +260,7 @@ public class LeagueDAO {
                 // Qui chiamiamo UsersLeaguesDAO in tutta sicurezza
                 league.setParticipants(new UsersLeaguesDAO(this.conn).getUsersInLeagueId(id));
             } catch (Exception e) {
-                System.err.println("Errore caricamento dettagli: " + e.getMessage());
+                ErrorUtil.log("Errore caricamento dettagli lega", e);
             }
         }
 
@@ -279,7 +280,7 @@ public class LeagueDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero lega per ID", e);
         }
         return null;
     }*/
@@ -347,11 +348,11 @@ public class LeagueDAO {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            ErrorUtil.log("Errore inserimento nuova lega", e);
+            try { conn.rollback(); } catch (SQLException ex) { ErrorUtil.log("Errore rollback inserimento nuova lega", ex); }
             return false;
         } finally {
-            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+            try { conn.setAutoCommit(true); } catch (SQLException e) { ErrorUtil.log("Errore reset auto-commit inserimento nuova lega", e); }
         }
     }
 
@@ -362,7 +363,7 @@ public class LeagueDAO {
             stmt.setInt(2, leagueId);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore chiusura iscrizioni lega", e);
             return false;
         }
     }
@@ -373,7 +374,7 @@ public class LeagueDAO {
             stmt.setInt(1, leagueId);
             return stmt.executeUpdate() == 1; 
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore cancellazione lega", e);
             return false;
         }
     }  
@@ -395,7 +396,7 @@ public class LeagueDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero lega per codice invito", e);
         }
         return null;
     }
@@ -430,7 +431,7 @@ public class LeagueDAO {
             return stmt.executeUpdate() == 1;
             
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore aggiornamento turno asta", e);
             return false;
         }
     }
@@ -462,11 +463,11 @@ public class LeagueDAO {
             conn.commit(); // Conferma tutto
             return true;
         } catch (SQLException e) {
-            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
-            e.printStackTrace();
+            try { conn.rollback(); } catch (SQLException ex) { ErrorUtil.log("Errore rollback avvio asta busta chiusa", ex); }
+            ErrorUtil.log("Errore avvio asta busta chiusa", e);
             return false;
         } finally {
-            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+            try { conn.setAutoCommit(true); } catch (SQLException e) { ErrorUtil.log("Errore reset auto-commit avvio asta busta chiusa", e); }
         }
     }
 }

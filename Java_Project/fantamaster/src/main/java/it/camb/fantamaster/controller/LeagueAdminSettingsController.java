@@ -13,6 +13,7 @@ import it.camb.fantamaster.dao.RulesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Rules;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -97,7 +98,7 @@ public class LeagueAdminSettingsController {
                 showAlert(AlertType.ERROR, "Errore", "Impossibile trovare i dati della lega.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento dati lega", e);
             showAlert(AlertType.ERROR, "Errore Database", "Impossibile aggiornare i dati.");
         }
     }
@@ -245,7 +246,7 @@ public class LeagueAdminSettingsController {
         } catch (NumberFormatException e) {
             showAlert(AlertType.ERROR, "Errore Input", "Inserisci solo numeri validi. " + e.getMessage());
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore salvataggio regole lega", e);
             showAlert(AlertType.ERROR, "Errore DB", "Problema di connessione al database.");
         }
     }
@@ -268,7 +269,7 @@ public class LeagueAdminSettingsController {
                     updateUI(); 
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore durante la chiusura delle iscrizioni", e);
                 showAlert(AlertType.ERROR, "Errore", "Errore durante la chiusura delle iscrizioni.");
             }
         }
@@ -287,7 +288,7 @@ public class LeagueAdminSettingsController {
                     Main.showHome();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore eliminazione lega", e);
                 showAlert(AlertType.ERROR, "Errore", "Errore eliminazione.");
             }
         }
@@ -310,7 +311,7 @@ public class LeagueAdminSettingsController {
                     }*/
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore durante l'aggiornamento dello stato del mercato", e);
                 showAlert(AlertType.ERROR, "Errore", "Errore durante l'aggiornamento dello stato del mercato.");
             }
         }

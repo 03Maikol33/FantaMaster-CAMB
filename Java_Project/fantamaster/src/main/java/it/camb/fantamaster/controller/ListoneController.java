@@ -9,6 +9,7 @@ import java.util.function.UnaryOperator;
 
 import it.camb.fantamaster.dao.PlayerDAO;
 import it.camb.fantamaster.model.Player;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -142,7 +143,7 @@ public class ListoneController {
         // Inizializza il DAO con la connessione SQL
         this.playerDAO = new PlayerDAO(it.camb.fantamaster.util.ConnectionFactory.getConnection());
     } catch (SQLException e) {
-        e.printStackTrace();
+        ErrorUtil.log("Errore inizializzazione PlayerDAO", e);
     }
         // populate role combo with distinct roles (including empty = All)
         CompletableFuture.runAsync(() -> {
@@ -187,7 +188,7 @@ public class ListoneController {
                     loadNextPage();
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore caricamento ruoli giocatori", e);
                 Platform.runLater(() -> loadNextPage());
             }
         });
@@ -217,7 +218,7 @@ public class ListoneController {
                     return getPlayerDAO().getPlayersPageFiltered(getOffset(), getPageSize(), roleParam, getMinPriceFilter(), getMaxPriceFilter());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore caricamento giocatori con filtri", e);
                 return List.<Player>of();
             }
         }).thenAccept(players -> Platform.runLater(() -> {
@@ -236,7 +237,7 @@ public class ListoneController {
                         controller.setPlayer(player);
                         getPlayerContainer().getChildren().add(item);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        ErrorUtil.log("Errore caricamento item giocatore", e);
                     }
                 }
 

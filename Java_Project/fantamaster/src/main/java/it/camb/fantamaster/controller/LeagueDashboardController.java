@@ -6,6 +6,7 @@ import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Rosa;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -46,7 +47,7 @@ public class LeagueDashboardController {
                 participantsContainer.getChildren().add(createParticipantRow(user, teamName));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento partecipanti lega", e);
         }
     }
 

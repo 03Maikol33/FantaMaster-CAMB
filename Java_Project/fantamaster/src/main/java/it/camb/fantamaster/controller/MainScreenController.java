@@ -1,5 +1,6 @@
 package it.camb.fantamaster.controller;
 
+import it.camb.fantamaster.util.ErrorUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,7 +36,7 @@ public class MainScreenController {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
             contentArea.getChildren().setAll(view);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore nel caricamento della vista: " + fxmlPath, e);
         }
     }
 }

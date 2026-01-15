@@ -11,6 +11,8 @@ import java.util.Random;
 
 public class RealDataGenerator {
 
+
+    private static final Random RANDOM = new Random();
     /**
      * Genera le performance REALI basate sui dati caricati in CampionatoUtil.
      * @param players La lista dei giocatori (es. la rosa o il listone)
@@ -119,6 +121,6 @@ public class RealDataGenerator {
 
     private double generaVotoBaseSimulato() {
         // Genera tra 5.5 e 7.0
-        return 5.5 + (new Random().nextDouble() * 1.5);
+        return 5.5 + (RANDOM.nextDouble() * 1.5);
     }
 }

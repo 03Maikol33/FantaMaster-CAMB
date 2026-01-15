@@ -1,6 +1,8 @@
 package it.camb.fantamaster.dao;
 
 import it.camb.fantamaster.model.BidResult; // Creeremo questa piccola classe di supporto
+import it.camb.fantamaster.util.ErrorUtil;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,7 +131,7 @@ public class AuctionDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore recupero ultimo risultato asta", e);
         }
         return "Nessun dato disponibile";
     }

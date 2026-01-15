@@ -10,6 +10,7 @@ import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -76,7 +77,7 @@ public class LeagueListItemController {
         try {
             leagueIcon.setImage(new Image(getClass().getResourceAsStream("/images/leagueDefaultPic.png")));
         } catch (Exception e) {
-            System.err.println("Impossibile caricare immagine di default.");
+            ErrorUtil.log("Impossibile caricare immagine di default.", e);
         }
     }
 
@@ -128,13 +129,16 @@ public class LeagueListItemController {
                 } else {
                     Main.showLeagueScreen(league);
                 }
-            } catch (Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) { 
+                ErrorUtil.log("Errore apertura schermata lega", ex);
+                new Alert(Alert.AlertType.ERROR, "Errore apertura schermata lega: " + ex.getMessage()).show();
+             }
         });
 
         // 5. Gestione Errori
         syncTask.setOnFailed(e -> {
             loadingStage.close();
-            new Alert(Alert.AlertType.ERROR, "Errore sincronizzazione: " + syncTask.getException().getMessage()).show();
+            ErrorUtil.log("Errore sincronizzazione", syncTask.getException());
         });
 
         // 6. Avvio del thread
@@ -179,7 +183,7 @@ public class LeagueListItemController {
             popupStage.show();
             
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento formazione", e);
         }
     }
 
@@ -199,7 +203,7 @@ public class LeagueListItemController {
             popupStage.show();
             
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento risultati simulate", e);
         }
     }
 }

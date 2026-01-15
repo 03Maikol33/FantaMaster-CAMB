@@ -60,7 +60,9 @@ public class TradesController {
                 proposalForm.setDisable(true);
             }
             loadInitialData(conn);
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento dati scambi", e);
+         }
     }
 
     private void loadInitialData(Connection conn) throws SQLException {
@@ -84,7 +86,9 @@ public class TradesController {
             if (rosaOpp != null) {
                 opponentPlayersCombo.getItems().setAll(playerDAO.getPlayersByRosa(rosaOpp.getId()));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento giocatori avversario", e);
+         }
     }
 
     @FXML
@@ -118,7 +122,9 @@ public class TradesController {
                 myPlayersCombo.getSelectionModel().clearSelection();
                 opponentPlayersCombo.getSelectionModel().clearSelection();
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore invio proposta di scambio", e);
+         }
     }
 
     @FXML
@@ -131,7 +137,9 @@ public class TradesController {
             for (Scambio s : ricevuti) {
                 receivedTradesContainer.getChildren().add(createTradeCard(s));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { 
+            ErrorUtil.log("Errore caricamento scambi ricevuti", e);
+         }
     }
 
     private VBox createTradeCard(Scambio s) {
@@ -146,9 +154,9 @@ public class TradesController {
 
         HBox actions = new HBox(12);
         Button ok = new Button("ACCETTA"); ok.getStyleClass().add("success-button");
-        ok.setOnAction(e -> { try { Connection c = ConnectionFactory.getConnection(); new ScambiDAO(c).accettaScambio(s); loadReceivedTrades(); } catch (SQLException ex) { ex.printStackTrace(); } });
+        ok.setOnAction(e -> { try { Connection c = ConnectionFactory.getConnection(); new ScambiDAO(c).accettaScambio(s); loadReceivedTrades(); } catch (SQLException ex) { ErrorUtil.log("Errore accettazione scambio", ex); } });
         Button no = new Button("RIFIUTA"); no.getStyleClass().add("danger-button");
-        no.setOnAction(e -> { try { Connection c = ConnectionFactory.getConnection(); new ScambiDAO(c).rifiutaScambio(s.getId()); loadReceivedTrades(); } catch (SQLException ex) { ex.printStackTrace(); } });
+        no.setOnAction(e -> { try { Connection c = ConnectionFactory.getConnection(); new ScambiDAO(c).rifiutaScambio(s.getId()); loadReceivedTrades(); } catch (SQLException ex) { ErrorUtil.log("Errore rifiuto scambio", ex); } });
 
         actions.getChildren().addAll(ok, no);
         card.getChildren().addAll(title, desc, actions);

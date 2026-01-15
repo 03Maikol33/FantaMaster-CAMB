@@ -10,6 +10,7 @@ import it.camb.fantamaster.dao.ScambiDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.Rosa;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -72,7 +73,7 @@ public class LeagueAdminScreenController {
                 });
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore controllo notifiche scambi", e);
         }
     }
 
@@ -87,7 +88,7 @@ public class LeagueAdminScreenController {
             
             contentArea.getChildren().setAll(dashboard);
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore caricamento dashboard lega", e);
         }
     }
 
@@ -101,7 +102,9 @@ public class LeagueAdminScreenController {
             SquadraController controller = loader.getController();
             controller.initData(currentLeague); 
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento squadra", e);
+         }
     }
 
     @FXML
@@ -109,7 +112,9 @@ public class LeagueAdminScreenController {
         try {
             Parent view = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml"));
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento chat", e);
+        }
     }
 
     @FXML
@@ -120,7 +125,9 @@ public class LeagueAdminScreenController {
             StatisticsMenuController controller = loader.getController();
             controller.initData(currentLeague, contentArea);
             contentArea.getChildren().setAll(view);
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { 
+            ErrorUtil.log("Errore caricamento statistiche", e);
+        }
     }
 
     // --- METODI GESTIONALI (ORA NEL MENU A TENDINA) ---
@@ -133,7 +140,9 @@ public class LeagueAdminScreenController {
             RequestListController controller = loader.getController();
             controller.setCurrentLeague(currentLeague); 
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento richieste", e);
+         }
     }
 
     @FXML
@@ -141,7 +150,9 @@ public class LeagueAdminScreenController {
         try {
             Parent view = FXMLLoader.load(getClass().getResource("/fxml/listone.fxml"));
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento listone", e);
+         }
     }
 
     @FXML
@@ -152,7 +163,9 @@ public class LeagueAdminScreenController {
             AuctionMainContainerController controller = loader.getController();
             controller.initData(currentLeague.getId());
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento asta", e);
+         }
     }
 
     @FXML
@@ -163,7 +176,9 @@ public class LeagueAdminScreenController {
             LeagueAdminSettingsController controller = loader.getController();
             controller.setCurrentLeague(currentLeague);
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento impostazioni lega", e);
+         }
     }
 
     // --- ALTRI METODI MENU ---
@@ -190,7 +205,9 @@ public class LeagueAdminScreenController {
             popup.setScene(new Scene(root));
             popup.setOnHidden(e -> checkTradeNotifications());
             popup.show();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento scambi", e);
+         }
     }
 
     @FXML
@@ -205,7 +222,9 @@ public class LeagueAdminScreenController {
             popup.setTitle("Schiera Formazione");
             popup.setScene(new Scene(root));
             popup.show();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento formazione", e);
+         }
     }
 
     @FXML
@@ -220,11 +239,15 @@ public class LeagueAdminScreenController {
             popup.setTitle("Risultati Giornate");
             popup.setScene(new Scene(root));
             popup.show();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { 
+            ErrorUtil.log("Errore caricamento risultati giornate simulate", e);
+         }
     }
 
     @FXML
     private void goBackToLeagueList() {
-        try { Main.showHome(); } catch (IOException e) { e.printStackTrace(); }
+        try { Main.showHome(); } catch (IOException e) { 
+            ErrorUtil.log("Errore ritorno alla lista leghe", e);
+         }
     }
 }

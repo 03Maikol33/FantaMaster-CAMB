@@ -13,6 +13,7 @@ import it.camb.fantamaster.dao.UsersLeaguesDAO;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
+import it.camb.fantamaster.util.ErrorUtil;
 import it.camb.fantamaster.util.SessionUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -56,7 +57,7 @@ public class LeagueListController {
                 User currentUser = SessionUtil.getCurrentSession().getUser();
                 return leagueDAO.getLeaguesForUser(currentUser);
             } catch (SQLException e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore caricamento leghe per l'utente", e);
                 return Collections.<League>emptyList();
             }
         }).thenAccept(leagues -> {
@@ -70,7 +71,7 @@ public class LeagueListController {
                         controller.setLeague(league);
                         leagueContainer.getChildren().add(item);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        ErrorUtil.log("Errore caricamento item lista leghe", e);
                     }
                 }
             });
@@ -90,7 +91,7 @@ public class LeagueListController {
             
             loadLeagues();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorUtil.log("Errore apertura finestra creazione lega", e);
         }
     }
   
@@ -139,7 +140,7 @@ public class LeagueListController {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtil.log("Errore durante l'iscrizione alla lega tramite codice", e);
                 showAlert(Alert.AlertType.ERROR, "Errore", "Errore di Connessione", "Impossibile connettersi al database.");
             }
         });
