@@ -1,5 +1,6 @@
 package it.camb.fantamaster.controller;
 
+import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
@@ -53,6 +56,10 @@ public class LeagueAdminSettingsController {
     @FXML private Label closeRegistrationsWarningLabel;
     // Bottone Apri/Chiudi Mercato
     @FXML private Button apriChiudiMercatoButton;
+
+    @FXML private ImageView leagueLogoPreview;
+    @FXML private Label logoFileNameLabel;
+    @FXML private Button changeLogoButton;
 
     // Dati
     private League currentLeague;
@@ -145,6 +152,10 @@ public class LeagueAdminSettingsController {
                 apriChiudiMercatoButton.setText("🟢 APRI MERCATO SCAMBI");
                 apriChiudiMercatoButton.setStyle("-fx-background-color: #2f855a; -fx-text-fill: white; -fx-font-weight: bold;");
             }
+        }
+
+        if (currentLeague.getImage() != null) {
+            leagueLogoPreview.setImage(new Image(new ByteArrayInputStream(currentLeague.getImage())));
         }
     }
 
@@ -357,5 +368,36 @@ public class LeagueAdminSettingsController {
             alert.getDialogPane().getStyleClass().add("dialog-pane");
         } catch (Exception e) { }
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleChangeLogo() {
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("Seleziona nuovo logo");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Immagini", "*.png", "*.jpg", "*.jpeg"));
+
+        java.io.File file = fileChooser.showOpenDialog(changeLogoButton.getScene().getWindow());
+        if (file != null) {
+            try {
+                byte[] rawBytes = java.nio.file.Files.readAllBytes(file.toPath());
+                // Comprimiamo l'immagine a 300px
+                byte[] compressedBytes = it.camb.fantamaster.util.ImageUtil.compressImage(rawBytes, 300, 0.7f);
+                
+                // 1. Aggiorniamo Database
+                Connection conn = ConnectionFactory.getConnection();
+                LeagueDAO leagueDAO = new LeagueDAO(conn);
+                
+                if (leagueDAO.updateLeagueIcon(currentLeague.getId(), compressedBytes)) {
+                    // 2. Aggiorniamo Modello e UI
+                    currentLeague.setImage(compressedBytes);
+                    leagueLogoPreview.setImage(new Image(new java.io.ByteArrayInputStream(compressedBytes)));
+                    logoFileNameLabel.setText(file.getName());
+                    showAlert(AlertType.INFORMATION, "Successo", "Logo aggiornato correttamente!");
+                }
+            } catch (Exception e) {
+                ErrorUtil.log("Errore cambio logo", e);
+                showAlert(AlertType.ERROR, "Errore", "Impossibile aggiornare l'immagine.");
+            }
+        }
     }
 }

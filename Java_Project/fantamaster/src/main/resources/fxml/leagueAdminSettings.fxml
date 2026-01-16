@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <AnchorPane fx:controller="it.camb.fantamaster.controller.LeagueAdminSettingsController"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
@@ -121,6 +123,27 @@
                 <Button text="SALVA MODIFICHE" fx:id="saveRulesButton" maxWidth="Infinity" styleClass="primary-button" 
                         style="-fx-font-size: 16; -fx-padding: 12;" onAction="#handleSaveRules"/>
 
+                <VBox spacing="15" styleClass="modern-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <StackPane>
+                            <Circle radius="15" fill="#4299e1" opacity="0.2"/>
+                            <Label text="🖼️" style="-fx-font-size: 12;"/>
+                        </StackPane>
+                        <Label text="Logo Lega" styleClass="modern-title" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+                    </HBox>
+                    
+                    <HBox spacing="20" alignment="CENTER_LEFT">
+                        <StackPane style="-fx-background-color: #f1f5f9; -fx-background-radius: 10; -fx-padding: 5;">
+                            <ImageView fx:id="leagueLogoPreview" fitHeight="80.0" fitWidth="80.0" preserveRatio="true">
+                                <Image url="@/images/leagueDefaultPic.png" />
+                            </ImageView>
+                        </StackPane>
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <Label fx:id="logoFileNameLabel" text="Nessun file selezionato" styleClass="hint-text" />
+                            <Button text="Seleziona Nuovo Logo" fx:id="changeLogoButton" onAction="#handleChangeLogo" styleClass="secondary-button" maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
                 <VBox spacing="15" styleClass="danger-card">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <StackPane>

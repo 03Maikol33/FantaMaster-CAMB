@@ -329,6 +329,37 @@ public class PlayerDAO {
      * Da chiamare DOPO che TeamScoreCalculator ha fatto il suo lavoro.
      */
     public void updateCalculatedVotes(int userId, int leagueId, int giornata, List<it.camb.fantamaster.model.FormationPlayer> giocatori) throws SQLException {
+        String sqlId = "SELECT f.id FROM formazioni f " +
+                    "JOIN rosa r ON f.rosa_id = r.id " +
+                    "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                    "WHERE ul.utente_id = ? AND ul.lega_id = ? AND f.giornata_id = ?";
+        
+        int formazioneId = -1;
+        try (PreparedStatement stmt = conn.prepareStatement(sqlId)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            stmt.setInt(3, giornata);
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) formazioneId = rs.getInt("id");
+            }
+        }
+
+        if (formazioneId == -1) return; 
+
+        // Nota: Nello schema SQL che mi hai mandato la colonna si chiama 'fantavoto', non 'fantavoto_calcolato'
+        String sqlUpdate = "UPDATE dettaglio_formazione SET fantavoto = ? WHERE formazione_id = ? AND giocatore_id = (SELECT id FROM giocatori WHERE id_esterno = ?)";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sqlUpdate)) {
+            for (it.camb.fantamaster.model.FormationPlayer fp : giocatori) {
+                stmt.setDouble(1, fp.getFantavotoCalcolato());
+                stmt.setInt(2, formazioneId);
+                stmt.setInt(3, fp.getPlayer().getId());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
+    }
+    /*public void updateCalculatedVotes(int userId, int leagueId, int giornata, List<it.camb.fantamaster.model.FormationPlayer> giocatori) throws SQLException {
         // 1. Recuperiamo l'ID della formazione
         String sqlId = "SELECT id FROM formazioni WHERE id_utente = ? AND id_lega = ? AND giornata_id = (SELECT id FROM giornate WHERE id = ?)"; // Assumendo che giornata sia l'ID o il numero
         // NOTA: Se 'giornata' è un numero (es. 1), adatta la query. Se usi l'ID giornata, va bene così.
@@ -359,7 +390,7 @@ public class PlayerDAO {
             }
             stmt.executeBatch();
         }
-    }
+    }*/
     /**
      * METODO AGGIUNTO PER GLI SCAMBI: Recupera i giocatori di una rosa specifica.
      */
@@ -387,6 +418,30 @@ public class PlayerDAO {
      * Restituisce il totale della squadra direttamente dal Database.
      */
     public double getTeamTotalScore(int userId, int leagueId, int giornata) {
+        // FIX: Anche qui usiamo i JOIN per risalire all'utente e alla lega
+        String sql = "SELECT SUM(df.fantavoto) as totale " +
+                    "FROM dettaglio_formazione df " +
+                    "JOIN formazioni f ON df.formazione_id = f.id " +
+                    "JOIN rosa r ON f.rosa_id = r.id " +
+                    "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                    "WHERE ul.utente_id = ? AND ul.lega_id = ? AND f.giornata_id = ?";
+                    
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, leagueId);
+            stmt.setInt(3, giornata);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("totale");
+                }
+            }
+        } catch (SQLException e) {
+            ErrorUtil.log("Errore calcolo punteggio totale squadra", e);
+        }
+        return 0.0;
+    }
+    /*public double getTeamTotalScore(int userId, int leagueId, int giornata) {
         String sql = "SELECT SUM(df.fantavoto_calcolato) as totale " +
                      "FROM dettaglio_formazione df " +
                      "JOIN formazioni f ON df.formazione_id = f.id " +
@@ -406,7 +461,7 @@ public class PlayerDAO {
             ErrorUtil.log("Errore calcolo punteggio totale squadra", e);
         }
         return 0.0;
-    }
+    }*/
 
     // cercare un giocatore nel listone JSON partendo dal suo ID
     public Player getPlayerById(int id) {

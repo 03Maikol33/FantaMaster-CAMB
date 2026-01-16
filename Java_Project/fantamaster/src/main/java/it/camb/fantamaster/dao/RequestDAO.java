@@ -145,7 +145,7 @@ public class RequestDAO {
                 return false;
             }
 
-            // 2. CREAZIONE AUTOMATICA ROSA (Risolve il NullPointer)
+            // 2. CREAZIONE AUTOMATICA ROSA (se non esiste ancora)) {
             RosaDAO rosaDAO = new RosaDAO(conn);
             rosaDAO.createDefaultRosa(utentiLegheId);
 

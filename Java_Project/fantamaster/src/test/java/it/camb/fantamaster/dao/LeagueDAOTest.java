@@ -3,7 +3,6 @@ package it.camb.fantamaster.dao;
 import it.camb.fantamaster.model.League;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -25,93 +25,134 @@ public class LeagueDAOTest {
     @Before
     public void setUp() throws SQLException {
         connection = ConnectionFactory.getConnection();
+        // Pulizia totale ad ogni test per evitare conflitti di ID o dati
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
-            
-            // Tabella leghe allineata alla v5.5
-            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "nome VARCHAR(255), " +
-                "icona BLOB, " +
-                "max_membri INT, " +
-                "id_creatore INT, " +
-                "iscrizioni_chiuse BOOLEAN DEFAULT FALSE, " +
-                "created_at TIMESTAMP, " +
-                "codice_invito VARCHAR(255), " +
-                "modalita VARCHAR(50), " +
-                "moduli_consentiti VARCHAR(255), " +
-                "mercato_aperto BOOLEAN DEFAULT FALSE, " + // FONDAMENTALE
-                "asta_aperta BOOLEAN DEFAULT TRUE, " +     // FONDAMENTALE
-                "turno_asta_utente_id INT DEFAULT NULL, " +
-                "giocatore_chiamato_id INT DEFAULT NULL)");
+            stmt.execute("SET REFERENTIAL_INTEGRITY FALSE");
+            stmt.execute("DROP ALL OBJECTS");
+            stmt.execute("SET REFERENTIAL_INTEGRITY TRUE");
 
-            // FONDAMENTALE: utenti_leghe deve avere la colonna 'id' PK
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
-            
-            stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
-            
-            // Aggiungi la tabella ROSA perché molti DAO ora la usano nei Join
-            stmt.execute("CREATE TABLE IF NOT EXISTS rosa (id INT AUTO_INCREMENT PRIMARY KEY, utenti_leghe_id INT, nome_rosa VARCHAR(255), punteggio_totale DOUBLE DEFAULT 0.0)");
+            // Schema completo necessario per LeagueDAO
+            stmt.execute("CREATE TABLE utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
+            stmt.execute("CREATE TABLE leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN DEFAULT FALSE, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), mercato_aperto BOOLEAN DEFAULT FALSE, asta_aperta BOOLEAN DEFAULT TRUE, turno_asta_utente_id INT, giocatore_chiamato_id INT)");
+            stmt.execute("CREATE TABLE utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
+            stmt.execute("CREATE TABLE regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
+            stmt.execute("CREATE TABLE offerte_asta (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, giocatore_id INT, rosa_id INT, tipo VARCHAR(20), offerta INT)");
         }
-
+        
         userDAO = new UserDAO(connection);
         leagueDAO = new LeagueDAO(connection);
 
-        // Setup utente per i test
         creator = new User();
-        creator.setUsername("Creator");
-        creator.setEmail("c@test.com");
-        creator.setHashPassword("pass");
+        creator.setUsername("Boss");
+        creator.setEmail("boss@test.it");
         userDAO.insert(creator);
     }
 
-    @After
-    public void tearDown() throws SQLException {
-        try (Statement stmt = connection.createStatement()) {
-            // Pulisce tutto il DB in memoria per evitare inquinamento tra i test [cite: 41]
-            stmt.execute("DROP ALL OBJECTS");
-        }
-    }
-
     @Test
-    public void testInsertLeague() {
+    public void testInsertWithImageAndFullMapping() {
         League league = new League();
-        league.setName("Serie A");
-        league.setMaxMembers(8);
+        league.setName("Lega Premium");
         league.setCreator(creator);
         league.setCreatedAt(LocalDateTime.now());
-        league.setRegistrationsClosed(false);
-        league.setParticipants(new ArrayList<>());
-        league.setGameMode("punti_totali");
+        league.setMaxMembers(10);
+        league.setGameMode("Scontri Diretti"); // Copre il ramo case-insensitive
+        league.setImage(new byte[]{0, 1, 2, 3}); // Copre il ramo Blob/Image
 
-        boolean inserted = leagueDAO.insertLeague(league);
-        assertTrue(inserted);
-        assertNotNull(league.getInviteCode()); 
-        assertNotEquals(0, league.getId());
+        assertTrue(leagueDAO.insertLeague(league));
 
+        // Test recupero e mapping completo (inclusi wasNull e budget)
         League retrieved = leagueDAO.getLeagueById(league.getId());
         assertNotNull(retrieved);
-        assertEquals("Serie A", retrieved.getName());
+        assertArrayEquals(new byte[]{0, 1, 2, 3}, retrieved.getImage());
+        assertEquals("scontri_diretti", retrieved.getGameMode());
+        assertNull(retrieved.getTurnoAstaUtenteId()); // Copre rs.wasNull()
+        assertEquals(500, retrieved.getInitialBudget()); // Copre il default budget
     }
 
     @Test
-    public void testGetLeaguesForUser() {
-        // Usa il costruttore completo della classe League 
-        League league = new League(0, "MyLeague", null, 10, creator, LocalDateTime.now(), false, new ArrayList<>(), "scontri_diretti", false);
-        leagueDAO.insertLeague(league);
+    public void testSearchMethods() {
+        League l = new League(0, "SearchLeague", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
+        leagueDAO.insertLeague(l);
 
-        var leagues = leagueDAO.getLeaguesForUser(creator);
-        assertEquals(1, leagues.size());
-        assertEquals("MyLeague", leagues.get(0).getName());
+        // Test findLeagueByInviteCode
+        League byCode = leagueDAO.findLeagueByInviteCode(l.getInviteCode());
+        assertNotNull(byCode);
+        assertEquals(l.getId(), byCode.getId());
+
+        // Test getLeaguesCreatedByUser
+        List<League> created = leagueDAO.getLeaguesCreatedByUser(creator);
+        assertEquals(1, created.size());
+        
+        // Test getLeaguesForUser (richiede relazione in utenti_leghe)
+        List<League> memberOf = leagueDAO.getLeaguesForUser(creator);
+        assertEquals(1, memberOf.size());
     }
 
     @Test
-    public void testDeleteLeague() {
-        League league = new League(0, "ToDelete", null, 10, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", false);
-        leagueDAO.insertLeague(league);
+    public void testUpdateStatusesAndRules() {
+        League l = new League(0, "StatusLeague", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
+        leagueDAO.insertLeague(l);
 
-        boolean deleted = leagueDAO.deleteLeague(league.getId());
-        assertTrue(deleted);
-        assertNull(leagueDAO.getLeagueById(league.getId()));
+        // Test Mercato
+        assertFalse(leagueDAO.isMercatoAperto(l.getId()));
+        assertTrue(leagueDAO.updateMercato(true, l.getId()));
+        assertTrue(leagueDAO.isMercatoAperto(l.getId()));
+
+        // Test Regole/Moduli
+        assertTrue(leagueDAO.updateLeagueRules(l.getId(), "3-4-3,4-3-3"));
+        assertEquals("3-4-3,4-3-3", leagueDAO.getLeagueById(l.getId()).getAllowedFormations());
+
+        // Test Chiusura Iscrizioni
+        assertTrue(leagueDAO.closeRegistrations(l.getId()));
+        assertTrue(leagueDAO.getLeagueById(l.getId()).isRegistrationsClosed());
+    }
+
+    @Test
+    public void testAuctionLogicAndNulls() {
+        League l = new League(0, "AuctionLeague", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
+        leagueDAO.insertLeague(l);
+
+        // Test updateTurnoAsta con Valori
+        assertTrue(leagueDAO.updateTurnoAsta(l.getId(), creator.getId(), 101));
+        League check = leagueDAO.getLeagueById(l.getId());
+        assertEquals((Integer)creator.getId(), check.getTurnoAstaUtenteId());
+        assertEquals((Integer)101, check.getGiocatoreChiamatoId());
+
+        // Test updateTurnoAsta con NULL (Copre stmt.setNull)
+        assertTrue(leagueDAO.updateTurnoAsta(l.getId(), null, null));
+        League checkNull = leagueDAO.getLeagueById(l.getId());
+        assertNull(checkNull.getTurnoAstaUtenteId());
+
+        // Test Asta Busta Chiusa (Transazionale)
+        assertTrue(leagueDAO.avviaAstaBustaChiusa(l.getId(), 202, 1, 50));
+    }
+
+    @Test
+    public void testDeleteOverload() {
+        League l = new League(0, "ToDelete", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
+        leagueDAO.insertLeague(l);
+        
+        // Test l'overload che accetta l'oggetto League
+        assertTrue(leagueDAO.deleteLeague(l));
+        assertNull(leagueDAO.getLeagueById(l.getId()));
+    }
+
+    @Test
+    public void testSqlExceptions() throws SQLException {
+        // Forza l'entrata nei blocchi catch chiudendo la connessione
+        connection.close();
+
+        assertFalse(leagueDAO.isMercatoAperto(1));
+        assertFalse(leagueDAO.updateMercato(true, 1));
+        assertFalse(leagueDAO.updateLeagueRules(1, ""));
+        assertTrue(leagueDAO.getLeaguesForUser(creator).isEmpty());
+        assertTrue(leagueDAO.getLeaguesCreatedByUser(creator).isEmpty());
+        assertNull(leagueDAO.getLeagueById(1));
+        assertFalse(leagueDAO.insertLeague(new League()));
+        assertFalse(leagueDAO.closeRegistrations(1));
+        assertFalse(leagueDAO.deleteLeague(1));
+        assertNull(leagueDAO.findLeagueByInviteCode("X"));
+        assertFalse(leagueDAO.updateTurnoAsta(1, null, null));
+        assertFalse(leagueDAO.avviaAstaBustaChiusa(1, 1, 1, 1));
     }
 }

@@ -73,11 +73,14 @@ public class LeagueScreenController {
     @FXML
     private void openChat() {
         try {
-            Parent view = FXMLLoader.load(getClass().getResource("/fxml/ChatView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chatView.fxml"));
+            Parent view = loader.load();
+            ChatViewController controller = loader.getController();
+            controller.initData(currentLeague); 
             contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
+        } catch (IOException e) { 
             ErrorUtil.log("Errore caricamento chat", e);
-        }
+         }
     }
 
     @FXML

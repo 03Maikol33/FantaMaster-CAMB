@@ -225,6 +225,10 @@ public class LeagueDAO {
                     league = new League();
                     league.setId(rs.getInt("id"));
                     league.setName(rs.getString("nome"));
+                    Blob blob = rs.getBlob("icona");
+                    if (blob != null) {
+                        league.setImage(blob.getBytes(1, (int) blob.length()));
+                    }
                     league.setMaxMembers(rs.getInt("max_membri"));
                     league.setRegistrationsClosed(rs.getBoolean("iscrizioni_chiuse"));
                     league.setAstaAperta(rs.getBoolean("asta_aperta"));
@@ -468,6 +472,22 @@ public class LeagueDAO {
             return false;
         } finally {
             try { conn.setAutoCommit(true); } catch (SQLException e) { ErrorUtil.log("Errore reset auto-commit avvio asta busta chiusa", e); }
+        }
+    }
+
+    public boolean updateLeagueIcon(int leagueId, byte[] imageBytes) {
+        String sql = "UPDATE leghe SET icona = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            if (imageBytes != null) {
+                stmt.setBlob(1, new java.io.ByteArrayInputStream(imageBytes));
+            } else {
+                stmt.setNull(1, java.sql.Types.BLOB);
+            }
+            stmt.setInt(2, leagueId);
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            ErrorUtil.log("Errore aggiornamento icona lega", e);
+            return false;
         }
     }
 }

@@ -28,6 +28,17 @@ public class LeagueDashboardController {
 
     public void initData(League league) {
         leagueNameLabel.setText(league.getName());
+
+        if (league.getImage() != null && league.getImage().length > 0) {
+            leagueLogoImageView.setImage(new Image(new ByteArrayInputStream(league.getImage())));
+        } else {
+            // Fallback immagine di default
+            leagueLogoImageView.setImage(new Image(getClass().getResourceAsStream("/images/leagueDefaultPic.png")));
+        }
+        
+        // Rendi l'immagine circolare (opzionale, se vuoi mantenere lo stile)
+        Circle clip = new Circle(30, 30, 30);
+        leagueLogoImageView.setClip(clip);
         
         try {
             Connection conn = ConnectionFactory.getConnection();

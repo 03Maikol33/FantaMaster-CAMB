@@ -95,6 +95,12 @@ public class UsersLeaguesDAO {
 
 
     public int subscribeUserToLeague(User user, League league) throws SQLException {
+        // Controlla se l'utente è già iscritto
+        int existingId = getExistingSubscriptionId(user.getId(), league.getId());
+        if (existingId != -1) {
+            return existingId; // Già iscritto, restituisco l'ID e non faccio nulla
+        }
+        
         String sql = "INSERT INTO utenti_leghe (utente_id, lega_id) VALUES (?, ?)";
 
         // Chiediamo al driver di restituire le chiavi generate

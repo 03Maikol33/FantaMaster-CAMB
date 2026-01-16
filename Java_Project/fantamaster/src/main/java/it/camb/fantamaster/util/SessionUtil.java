@@ -149,4 +149,35 @@ public class SessionUtil {
         return currentSession;
     }
 
+    /**
+     * Pulisce tutte le sessioni salvate su disco.
+     * Utile per test o logout globale.
+     */
+    public static void clearAllSessions() {
+        Path path = Path.of(SESSION_FOLDER);
+        if (Files.exists(path)) {
+            // Usiamo try-with-resources per assicurarci che lo Stream venga chiuso
+            try (java.util.stream.Stream<Path> stream = Files.list(path)) {
+                stream.forEach(file -> {
+                    try {
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        ErrorUtil.log("Errore eliminazione file sessione: " + file.getFileName(), e);
+                    }
+                });
+            } catch (IOException e) {
+                ErrorUtil.log("Errore lettura cartella sessioni", e);
+            }
+        }
+        currentSession = null;
+    }
+
+    /**
+     * Pulisce la sessione corrente in memoria senza eliminare i file su disco.
+     * Utile per logout o reset temporaneo.
+     */
+    public static void clearSession() {
+        currentSession = null;
+    }
+
 }

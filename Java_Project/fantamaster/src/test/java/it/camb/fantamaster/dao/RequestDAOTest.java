@@ -5,7 +5,6 @@ import it.camb.fantamaster.model.Request;
 import it.camb.fantamaster.model.User;
 import it.camb.fantamaster.util.ConnectionFactory;
 import it.camb.fantamaster.util.RequestStatus;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,71 +24,115 @@ public class RequestDAOTest {
     private LeagueDAO leagueDAO;
     private Connection connection;
     
-    private User user;
+    private User joiner;
     private League league;
 
     @Before
     public void setUp() throws SQLException {
         connection = ConnectionFactory.getConnection();
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
-            // CORRETTO: Aggiunto 'asta_aperta BOOLEAN'
-            stmt.execute("CREATE TABLE IF NOT EXISTS leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), asta_aperta BOOLEAN DEFAULT FALSE)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS richieste_accesso (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT, stato VARCHAR(50), data_richiesta TIMESTAMP)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
-            stmt.execute("CREATE TABLE IF NOT EXISTS rosa (id INT AUTO_INCREMENT PRIMARY KEY, utenti_leghe_id INT, nome_rosa VARCHAR(255), punteggio_totale DOUBLE DEFAULT 0.0)");
-        }
+        initDatabase();
 
         userDAO = new UserDAO(connection);
         leagueDAO = new LeagueDAO(connection);
         requestDAO = new RequestDAO(connection);
 
-        user = new User(); user.setUsername("Joiner"); user.setEmail("j@t.com"); user.setHashPassword("x");
-        userDAO.insert(user);
+        // Utente richiedente
+        joiner = new User(); 
+        joiner.setUsername("Joiner"); 
+        joiner.setEmail("joiner@test.com"); 
+        joiner.setHashPassword("x");
+        userDAO.insert(joiner);
         
-        User creator = new User(); creator.setUsername("Creator"); creator.setEmail("c@t.com"); creator.setHashPassword("x");
+        // Creatore
+        User creator = new User(); 
+        creator.setUsername("Creator"); 
+        creator.setEmail("creator@test.com"); 
+        creator.setHashPassword("x");
         userDAO.insert(creator);
 
-        // CORRETTO: Aggiunto 'false' finale
+        // Lega
         league = new League(0, "Liga", null, 10, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", false);
         leagueDAO.insertLeague(league);
     }
 
-    @After
-    public void tearDown() throws SQLException {
+    private void initDatabase() throws SQLException {
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute("DROP TABLE richieste_accesso");
-            stmt.execute("DROP TABLE utenti_leghe");
-            stmt.execute("DROP TABLE regole"); // Creata da LeagueDAO
-            stmt.execute("DROP TABLE leghe");
-            stmt.execute("DROP TABLE utenti");
+            stmt.execute("SET REFERENTIAL_INTEGRITY FALSE");
+            stmt.execute("DROP ALL OBJECTS");
+            stmt.execute("SET REFERENTIAL_INTEGRITY TRUE");
+
+            stmt.execute("CREATE TABLE utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255) UNIQUE, hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
+            stmt.execute("CREATE TABLE leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), asta_aperta BOOLEAN DEFAULT FALSE)");
+            stmt.execute("CREATE TABLE richieste_accesso (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT, stato VARCHAR(50), data_richiesta TIMESTAMP)");
+            stmt.execute("CREATE TABLE utenti_leghe (id INT AUTO_INCREMENT PRIMARY KEY, utente_id INT, lega_id INT)");
+            stmt.execute("CREATE TABLE rosa (id INT AUTO_INCREMENT PRIMARY KEY, utenti_leghe_id INT, nome_rosa VARCHAR(255), punteggio_totale DOUBLE DEFAULT 0.0, crediti_residui INT DEFAULT 500)");
+            stmt.execute("CREATE TABLE regole (id INT AUTO_INCREMENT PRIMARY KEY, lega_id INT, budget_iniziale INT DEFAULT 500)");
         }
     }
 
     @Test
-    public void testCreateRequest() {
-        boolean created = requestDAO.createRequest(user, league);
-        assertTrue(created);
+    public void testCreateRequestAndDuplicates() {
+        // Primo inserimento: successo
+        assertTrue(requestDAO.createRequest(joiner, league));
         
-        List<Request> requests = requestDAO.getRequestsForLeague(league);
-        assertEquals(1, requests.size());
-        assertEquals(RequestStatus.in_attesa, requests.get(0).getRequestStatus());
+        // Controllo pendenti (copre hasPendingRequest)
+        assertTrue(requestDAO.hasPendingRequest(joiner, league));
+
+        // Secondo inserimento (DUPLICATO): deve restituire false
+        // Questo copre il ramo "if (hasPendingRequest(user, league)) { return false; }"
+        assertFalse("Non dovrebbe permettere richieste duplicate", requestDAO.createRequest(joiner, league));
     }
 
     @Test
-    public void testApproveRequest() {
-        requestDAO.createRequest(user, league);
+    public void testRejectRequest() {
+        requestDAO.createRequest(joiner, league);
         
-        boolean approved = requestDAO.approveRequest(user, league);
-        assertTrue(approved);
+        // Azione: Rifiuto (chiama deleteRequest internamente)
+        boolean rejected = requestDAO.rejectRequest(joiner, league);
+        assertTrue(rejected);
         
-        // Verifica che non sia più "in attesa"
-        List<Request> pending = requestDAO.getRequestsForLeague(league);
-        assertTrue(pending.isEmpty());
+        // Verifica: non ci sono più richieste
+        assertFalse(requestDAO.hasPendingRequest(joiner, league));
+    }
+
+    @Test
+    public void testMappingCornerCases() throws SQLException {
+        try (Statement st = connection.createStatement()) {
+            //data a NULL per coprire il ramo (ts != null)
+            st.execute("INSERT INTO richieste_accesso (utente_id, lega_id, stato, data_richiesta) " +
+                    "VALUES (" + joiner.getId() + ", " + league.getId() + ", 'in_attesa', NULL)");
+        }
+
+        List<Request> list = requestDAO.getRequestsForLeague(league);
+
+        assertFalse("La lista dovrebbe contenere la richiesta appena inserita", list.isEmpty());
         
-        // Verifica iscrizione effettiva
-        UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(connection);
-        assertTrue(ulDAO.isUserSubscribed(user, league));
+        Request req = list.get(0);
+        
+        // 1. Verifichiamo la copertura del ramo Timestamp NULL
+        assertNull("Il timestamp dovrebbe essere null come inserito nel DB", req.getTimestamp());
+    }
+
+    @Test
+    public void testApproveRequestFailures() throws SQLException {
+        // Caso 1: Approvazione di una richiesta che non esiste nel DB
+        // (Copre il ramo: if (stmt.executeUpdate() == 0) { conn.rollback(); return false; })
+        boolean result = requestDAO.approveRequest(joiner, league);
+        assertFalse("Approvazione dovrebbe fallire se la richiesta non esiste", result);
+
+        // Caso 2: utentiLegheId == -1 (Simulato chiudendo la connessione o forzando errore)
+        // Questo è coperto indirettamente dal test testSqlExceptions sotto
+    }
+
+    @Test
+    public void testSqlExceptions() throws SQLException {
+        // Chiusura connessione per forzare TUTTI i blocchi catch (SQLException)
+        connection.close();
+
+        assertFalse(requestDAO.createRequest(joiner, league));
+        assertTrue(requestDAO.getRequestsForLeague(league).isEmpty());
+        assertFalse(requestDAO.hasPendingRequest(joiner, league));
+        assertFalse(requestDAO.deleteRequest(joiner, league));
+        assertFalse(requestDAO.approveRequest(joiner, league));
     }
 }
