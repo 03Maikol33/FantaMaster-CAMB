@@ -3,14 +3,12 @@ name: Java Test Automatico (con Mock DB)
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
-    permissions:
-      checks: write
-      contents: read
 
     services:
       mysql:
@@ -27,7 +25,7 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Scarica il codice dalla repository
+      - name: Scarica il codice
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -37,20 +35,26 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # --- STEP DI DEBUG AGGIUNTO ---
-      # Questo ci mostrerà esattamente dove si trovano i file e come si chiamano
-      - name: Debug - Mostra struttura file
-        run: ls -R
-      # ------------------------------
-
-      - name: Inizializza Database (Builder & Populator)
+      # Fondamentale per i test JavaFX su Linux (TestFX)
+      - name: Installa Xvfb (Virtual Framebuffer)
         run: |
-          # Tentativo con path relativo alla root. 
-          # Se fallisce, controlla il log dello step "Debug" precedente per il percorso corretto.
-          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_builder.sql
-          mysql -h 127.0.0.1 -P 3306 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_populator.sql
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgtk-3-0 libgluegen2-rt-java libjogl2-java
 
-      - name: Configura connessione per i Test
+      - name: Attendi che MySQL sia pronto
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -P 3306 -u root -proot --silent; do
+            echo "In attesa di MySQL..."
+            sleep 2
+          done
+
+      - name: Inizializza Database
+        run: |
+          # Verifichiamo il path dei file .sql (assumendo siano nella root del repo)
+          mysql -h 127.0.0.1 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_builder.sql
+          mysql -h 127.0.0.1 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_populator.sql
+
+      - name: Configura database.properties per i Test
         run: |
           mkdir -p src/test/resources
           echo "db.url=jdbc:mysql://127.0.0.1:3306/fantamaster_toolduckmy?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" > src/test/resources/database.properties
@@ -58,11 +62,15 @@ jobs:
           echo "db.password=root" >> src/test/resources/database.properties
         working-directory: ./Java_Project/fantamaster 
 
-      - name: Compilazione ed esecuzione dei test
-        run: mvn clean verify
+      - name: Esecuzione test con Xvfb
+        run: |
+          # xvfb-run simula la presenza di uno schermo per permettere a JavaFX di renderizzare le finestre
+          xvfb-run --auto-servernum mvn clean verify
         working-directory: ./Java_Project/fantamaster
+        env:
+          JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
 
-      - name: Pubblica i report su GitHub
+      - name: Pubblica i report
         uses: dorny/test-reporter@v1
         if: always()
         with:
