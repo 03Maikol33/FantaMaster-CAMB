@@ -133,15 +133,6 @@ public class AuctionProposePlayerController {
             ErrorUtil.log("Errore caricamento giocatori filtrati", e);
         }
     }
-    /*
-    @FXML
-    private void handleChiamata() {
-        Player selected = playerTable.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
-        
-        // Qui implementerai la logica per salvare 'giocatore_chiamato_id' nel DB
-        System.out.println("Hai chiamato: " + selected.getNome());
-    }*/
 
     @FXML
     private void handleChiamata() {
@@ -190,47 +181,6 @@ public class AuctionProposePlayerController {
             ErrorUtil.log("Errore avvio asta busta chiusa", e);
         }
     }
-    /* 
-    @FXML
-    private void handleChiamata() {
-        Player scelto = playerTable.getSelectionModel().getSelectedItem();
-        if (scelto == null) return;
-
-        try (Connection conn = ConnectionFactory.getConnection()) {
-            LeagueDAO leagueDAO = new LeagueDAO(conn);
-            
-            // 1. IMPORTANTE: Poiché usiamo Lazy Loading, dobbiamo assicurarci che 
-            // il giocatore esista nella tabella 'giocatori' del DB prima di chiamarlo nell'asta.
-            // Se non esiste, va inserito ora prendendo i dati dal modello Player (JSON).
-            checkAndInsertPlayer(conn, scelto);
-
-            // 2. Aggiorniamo la lega con l'ID del giocatore chiamato
-            leagueDAO.updateTurnoAsta(currentLeague.getId(), SessionUtil.getCurrentSession().getUser().getId(), scelto.getId());
-            
-            System.out.println("Asta avviata per: " + scelto.getNome());
-            // Il polling del container farà il resto!
-
-            //forza il refresh della view nel parent container
-            if (parentContainer != null) parentContainer.forceRefresh();
-
-
-        } catch (SQLException e) {
-            
-        }
-    }*/
-/*
-    private void checkAndInsertPlayer(Connection conn, Player p) throws SQLException {
-        String sql = "INSERT IGNORE INTO giocatori (id, id_esterno, nome, squadra_reale, ruolo, quotazione_iniziale) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, p.getId());
-            stmt.setInt(2, p.getId()); // Usiamo l'ID JSON come ID esterno
-            stmt.setString(3, p.getNome() + " " + p.getCognome());
-            stmt.setString(4, p.getSquadra());
-            stmt.setString(5, p.getRuolo());
-            stmt.setInt(6, p.getPrezzo());
-            stmt.executeUpdate();
-        }
-    }*/
 
     private void checkAndInsertPlayer(Connection conn, Player p) throws SQLException {
         // Usiamo ON DUPLICATE KEY UPDATE per sovrascrivere i dati finti con quelli reali del JSON

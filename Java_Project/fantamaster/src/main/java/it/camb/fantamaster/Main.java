@@ -53,8 +53,6 @@ public class Main extends Application {
     /**
      * Crea una piccola finestra accessoria per chiudere tutto e gestire il campionato.
      */
-    // Sostituisci il metodo createKillSwitch nel tuo Main.java
-
     private void createKillSwitch() {
         Stage utilityStage = new Stage();
         utilityStage.setTitle("Dev Tools");

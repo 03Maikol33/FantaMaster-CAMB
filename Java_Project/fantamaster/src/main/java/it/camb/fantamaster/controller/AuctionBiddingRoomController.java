@@ -40,7 +40,6 @@ public class AuctionBiddingRoomController {
         this.currentLeague = league;
         int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
 
-        // 1. Identifichiamo il chiamante
         boolean sonoIoIlChiamante = (league.getTurnoAstaUtenteId() != null && league.getTurnoAstaUtenteId() == currentUserId);
 
         // Gestione UI iniziale
@@ -110,46 +109,6 @@ public class AuctionBiddingRoomController {
         }
     }
     
-/* 
-    public void initData(League league) {
-        this.currentLeague = league;
-        int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
-
-        // 1. Identifichiamo se l'utente è colui che ha proposto il giocatore
-        // Il chiamante è memorizzato in turno_asta_utente_id
-        boolean sonoIoIlChiamante = (league.getTurnoAstaUtenteId() != null && league.getTurnoAstaUtenteId() == currentUserId);
-
-        // UI: Se sono il chiamante, non vedo i tasti per offrire (ho già offerto nella schermata precedente)
-        biddingControls.setVisible(!sonoIoIlChiamante);
-        biddingControls.setManaged(!sonoIoIlChiamante);
-        statusLabel.setVisible(sonoIoIlChiamante);
-
-        // 2. Caricamento dati giocatore dal JSON
-        if (league.getGiocatoreChiamatoId() != null) {
-            PlayerDAO playerDAO = new PlayerDAO();
-            this.currentPlayer = playerDAO.getPlayerById(league.getGiocatoreChiamatoId());
-            if (currentPlayer != null) {
-                nomeGiocatoreLabel.setText(currentPlayer.getNome() + " " + currentPlayer.getCognome());
-                ruoloLabel.setText("Ruolo: " + currentPlayer.getRuolo());
-                squadraLabel.setText(currentPlayer.getSquadra());
-                prezzoLabel.setText(String.valueOf(currentPlayer.getPrezzo()));
-            }
-        }
-
-        // 3. Recupero info Rosa per budget e ID rosa (necessario per offerte_asta)
-        try{
-            Connection conn = ConnectionFactory.getConnection();
-            this.miaRosa = new RosaDAO(conn).getRosaByUserAndLeague(currentUserId, league.getId());
-
-            if(miaRosa != null) {
-                budgetLabel.setText(miaRosa.getCreditiDisponibili() + " FM");
-                
-
-            }
-        } catch (SQLException e) {
-            ErrorUtil.log("Errore caricamento dati asta", e);
-        }
-    }*/
 
     @FXML
     private void handleInviaOfferta() {
@@ -186,7 +145,6 @@ public class AuctionBiddingRoomController {
     private void inviaOffertaAlDatabase(int valore, String tipo) {
         try {
             Connection conn = ConnectionFactory.getConnection();
-            // 1. Inserimento del record nella tabella offerte_asta
             String sql = "INSERT INTO offerte_asta (lega_id, giocatore_id, rosa_id, tipo, offerta) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, currentLeague.getId());
@@ -237,7 +195,6 @@ public class AuctionBiddingRoomController {
             Connection conn = ConnectionFactory.getConnection();
             AuctionDAO auctionDAO = new AuctionDAO(conn);
             
-            // 1. Eseguiamo la chiusura
             String esito = auctionDAO.chiudiAstaEAssegna(currentLeague.getId(), currentPlayer.getId());
 
             // 2. Notifica immediata

@@ -73,10 +73,6 @@ public class ChatViewController {
         }, 3, 3, TimeUnit.SECONDS);
     }
 
-    /**
-     * IMPORTANTE: Questo metodo deve essere chiamato quando si esce dalla chat!
-     * Altrimenti il timer continua a girare all'infinito e consuma risorse/connessioni.
-     */
     public void stopPolling() {
         if (poller != null && !poller.isShutdown()) {
             poller.shutdownNow();
