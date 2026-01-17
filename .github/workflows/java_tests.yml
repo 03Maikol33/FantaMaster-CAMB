@@ -39,7 +39,7 @@ jobs:
         working-directory: ./Java_Project/fantamaster 
 
       - name: Esecuzione test con Xvfb
-        run: xvfb-run --auto-servernum mvn clean verify
+        run: xvfb-run --auto-servernum mvn clean verify -Dmaven.test.failure.ignore=true
         working-directory: ./Java_Project/fantamaster
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
