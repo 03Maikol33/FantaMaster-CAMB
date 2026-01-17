@@ -10,7 +10,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # permessi necessari per pubblicare i report
     permissions:
       checks: write
       contents: read
@@ -44,10 +43,19 @@ jobs:
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
 
-      - name: Pubblica i report
+      - name: Pubblica i report JUnit
         uses: dorny/test-reporter@v1
         if: always()
         with:
           name: Risultati JUnit
           path: Java_Project/fantamaster/target/surefire-reports/*.xml
           reporter: java-junit
+          # --- AGGIUNTA FONDAMENTALE ---
+          fail-on-error: false 
+
+      - name: Carica Report Coverage (HTML)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report-copertura-jacoco
+          path: Java_Project/fantamaster/target/site/jacoco/
