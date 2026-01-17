@@ -8,7 +8,6 @@ on:
 
 jobs:
   build-and-test:
-    # Passiamo da ubuntu-latest a windows-latest
     runs-on: windows-latest
 
     permissions:
@@ -28,20 +27,18 @@ jobs:
           cache: maven
 
       - name: Configura database.properties (H2 In-Memory)
-        # Usiamo PowerShell (default su Windows) per creare il file
+        shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path src/test/resources
-          "db.url=jdbc:h2:mem:fantamaster_test_db;DB_CLOSE_DELAY=-1;MODE=MySQL" | Out-File -FilePath src/test/resources/database.properties -Encoding utf8
-          "db.username=sa" | Add-Content -Path src/test/resources/database.properties
-          "db.password=" | Add-Content -Path src/test/resources/database.properties
+          $content = "db.url=jdbc:h2:mem:fantamaster_test_db;DB_CLOSE_DELAY=-1;MODE=MySQL`ndb.username=sa`ndb.password="
+          $content | Out-File -FilePath src/test/resources/database.properties -Encoding utf8
         working-directory: ./Java_Project/fantamaster 
 
       - name: Esecuzione test
-        # Su Windows non serve xvfb-run! Giriamo direttamente Maven
-        run: mvn clean verify -Dmaven.test.failure.ignore=true
+        # Abbiamo racchiuso il parametro tra virgolette per PowerShell
+        run: mvn clean verify "-Dmaven.test.failure.ignore=true"
         working-directory: ./Java_Project/fantamaster
         env:
-          # Forza Java a NON andare in modalità headless per permettere i test UI
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
 
       - name: Pubblica i report JUnit
