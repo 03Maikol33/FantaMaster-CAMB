@@ -1,4 +1,4 @@
-name: Java Test Automatico (con Mock DB)
+name: Java Test Automatico
 
 on:
   push:
@@ -10,19 +10,11 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: fantamaster_toolduckmy
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    # permessi necessari per pubblicare i report
+    permissions:
+      checks: write
+      contents: read
+      actions: read
 
     steps:
       - name: Scarica il codice
@@ -35,37 +27,19 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Fondamentale per i test JavaFX su Linux (TestFX)
-      - name: Installa Xvfb (Virtual Framebuffer)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb libgtk-3-0 libgluegen2-rt-java libjogl2-java
+      - name: Installa Xvfb (per test grafici)
+        run: sudo apt-get update && sudo apt-get install -y xvfb
 
-      - name: Attendi che MySQL sia pronto
-        run: |
-          until mysqladmin ping -h 127.0.0.1 -P 3306 -u root -proot --silent; do
-            echo "In attesa di MySQL..."
-            sleep 2
-          done
-
-      - name: Inizializza Database
-        run: |
-          # Verifichiamo il path dei file .sql (assumendo siano nella root del repo)
-          mysql -h 127.0.0.1 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_builder.sql
-          mysql -h 127.0.0.1 -u root -proot fantamaster_toolduckmy < Database/Sql/DB_populator.sql
-
-      - name: Configura database.properties per i Test
+      - name: Configura database.properties (Usa H2 In-Memory)
         run: |
           mkdir -p src/test/resources
-          echo "db.url=jdbc:mysql://127.0.0.1:3306/fantamaster_toolduckmy?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" > src/test/resources/database.properties
-          echo "db.username=root" >> src/test/resources/database.properties
-          echo "db.password=root" >> src/test/resources/database.properties
+          echo "db.url=jdbc:h2:mem:fantamaster_test_db;DB_CLOSE_DELAY=-1;MODE=MySQL" > src/test/resources/database.properties
+          echo "db.username=sa" >> src/test/resources/database.properties
+          echo "db.password=" >> src/test/resources/database.properties
         working-directory: ./Java_Project/fantamaster 
 
       - name: Esecuzione test con Xvfb
-        run: |
-          # xvfb-run simula la presenza di uno schermo per permettere a JavaFX di renderizzare le finestre
-          xvfb-run --auto-servernum mvn clean verify
+        run: xvfb-run --auto-servernum mvn clean verify
         working-directory: ./Java_Project/fantamaster
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
