@@ -38,6 +38,7 @@ public class FantallenatoreListItemControllerTest extends ApplicationTest {
         stage.show();
     }
 
+    // Verifica la visualizzazione corretta di un utente normale con rosa non piena.
     @Test
     public void testSetDataNormalUser() {
         // Stato: 10 giocatori su 25, rosa NON piena, utente NON admin
@@ -60,6 +61,7 @@ public class FantallenatoreListItemControllerTest extends ApplicationTest {
         assertFalse("Il bottone non deve essere visibile se non admin", btn.isVisible());
     }
 
+    // Verifica che una rosa piena sia indicata visivamente con opacità e indicatore rosso.
     @Test
     public void testSetDataRosterFull() {
         // Stato: Rosa piena
@@ -78,6 +80,7 @@ public class FantallenatoreListItemControllerTest extends ApplicationTest {
         assertFalse(btn.isVisible());
     }
 
+    // Verifica che l'admin veda il bottone di assegnazione turno e che la callback sia eseguita al click.
     @Test
     public void testAdminActionCallback() {
         // Usiamo un AtomicReference per catturare l'utente passato alla callback

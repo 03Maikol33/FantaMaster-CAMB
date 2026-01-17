@@ -83,6 +83,7 @@ public class CreateLeagueControllerTest extends ApplicationTest {
     }
 
     // --- TEST 1: Validazione campi vuoti ---
+    // Verifica che campi vuoti mostrino un errore di validazione.
     @Test
     public void testEmptyFieldsError() {
         clickOn("#createLeagueButton");
@@ -92,6 +93,7 @@ public class CreateLeagueControllerTest extends ApplicationTest {
     }
 
     // --- TEST 2: Validazione Numero Pari (Regola di Business) ---
+    // Verifica che un numero dispari di partecipanti sia rifiutato con errore.
     @Test
     public void testOddParticipantsError() {
         clickOn("#leagueNameField").write("Lega Dispari");
@@ -110,6 +112,7 @@ public class CreateLeagueControllerTest extends ApplicationTest {
     }
 
     // --- TEST 3: Blocco Modalità Premium (Scontri Diretti) ---
+    // Verifica che la modalità "Scontri Diretti" (premium) sia bloccata e resettata a "Punti Totali".
     @Test
     public void testPremiumModeRejection() {
         // Apro la combo
@@ -128,6 +131,7 @@ public class CreateLeagueControllerTest extends ApplicationTest {
     }
 
     // --- TEST 4: Creazione con Successo ---
+    // Verifica la creazione con successo di una lega con parametri validi e salvataggio nel DB.
     @Test
     public void testSuccessfulCreation() {
         clickOn("#leagueNameField").write("Serie A Test");

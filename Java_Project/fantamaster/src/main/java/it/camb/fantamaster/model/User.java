@@ -11,9 +11,20 @@ public class User implements Serializable {
     private LocalDateTime createdAt;
     private byte[] avatar;
 
-    // Costruttori
+    /**
+     * Costruttore vuoto per User.
+     */
     public User() {}
 
+    /**
+     * Costruttore per User con informazioni di base.
+     *
+     * @param id l'identificativo univoco dell'utente
+     * @param username il nome utente
+     * @param email l'email dell'utente
+     * @param hashPassword l'hash della password
+     * @param createdAt la data e ora di creazione dell'account
+     */
     public User(int id, String username, String email, String hashPassword, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
@@ -68,4 +79,3 @@ public class User implements Serializable {
         return result;
     }
 }
-// Fix conflitti definitivo

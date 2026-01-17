@@ -12,9 +12,24 @@ public class Player implements Serializable {
     private int prezzo;
     private String nazionalita;
 
+    /**
+     * Costruttore vuoto per Player.
+     */
     public Player() {
     }
 
+    /**
+     * Costruttore completo per Player.
+     *
+     * @param id l'identificativo univoco del giocatore
+     * @param nome il nome del giocatore
+     * @param cognome il cognome del giocatore
+     * @param squadra la squadra di appartenenza
+     * @param numero il numero di maglia
+     * @param ruolo il ruolo in campo (P, D, C, A)
+     * @param prezzo il prezzo iniziale del giocatore
+     * @param nazionalita la nazionalità del giocatore
+     */
     public Player(int id, String nome, String cognome, String squadra, int numero, String ruolo, int prezzo, String nazionalita) {
         this.id = id;
         this.nome = nome;

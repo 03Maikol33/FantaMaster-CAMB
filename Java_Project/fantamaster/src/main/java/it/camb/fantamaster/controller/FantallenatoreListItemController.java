@@ -27,6 +27,16 @@ public class FantallenatoreListItemController {
     // Consumer è l'interfaccia per la callback (riceve un User e non ritorna nulla)
     private Consumer<User> onAssignTurnCallback; 
 
+    /**
+     * Imposta i dati dell'elemento lista per un fantallenatore e aggiorna la UI.
+     *
+     * @param user l'utente rappresentato dalla riga
+     * @param playersCount numero di giocatori già acquistati
+     * @param maxPlayers numero massimo di giocatori consentiti
+     * @param isRosterFull true se la rosa è completa, altrimenti false
+     * @param isAdmin true se l'utente corrente è admin della lega
+     * @param onAssignAction callback da eseguire quando si assegna il turno all'utente
+     */
     public void setData(User user, int playersCount, int maxPlayers, boolean isRosterFull, boolean isAdmin, Consumer<User> onAssignAction) {
         this.user = user;
         this.onAssignTurnCallback = onAssignAction;
@@ -75,6 +85,9 @@ public class FantallenatoreListItemController {
 
     // Metodo collegato al bottone nell'FXML (o inizializzato qui)
     @FXML
+    /**
+     * Inizializza i listener della riga e collega l'azione del bottone di assegnazione turno.
+     */
     public void initialize() {
         assignTurnButton.setOnAction(e -> {
             // Quando clicco, se la callback esiste, la eseguo passando l'utente di questa riga

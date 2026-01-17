@@ -39,6 +39,10 @@ public class CreateLeagueController {
 
     private File selectedImageFile;
 
+    /**
+     * Inizializza il controllore della creazione della lega.
+     * Popola la ComboBox con le modalità di gioco disponibili.
+     */
     @FXML
     public void initialize() {
         gameModeComboBox.getItems().addAll("Punti Totali", "Scontri Diretti");
@@ -50,6 +54,9 @@ public class CreateLeagueController {
         messageLabel.setText("");
     }
 
+    /**
+     * Apre un file chooser per selezionare l'immagine del logo della lega e la visualizza nell'anteprima.
+     */
     @FXML
     private void handlePickImage() {
         FileChooser fileChooser = new FileChooser();
@@ -82,6 +89,9 @@ public class CreateLeagueController {
         hideMessageLabel();
     }
 
+    /**
+     * Valida i dati della lega e ne crea una nuova nel database.
+     */
     @FXML
     private void handleCreateLeague() {
         String name = leagueNameField.getText().trim();

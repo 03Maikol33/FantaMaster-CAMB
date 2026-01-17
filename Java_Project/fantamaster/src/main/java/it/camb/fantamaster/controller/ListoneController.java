@@ -137,6 +137,9 @@ public class ListoneController {
     private Integer minPriceFilter = null;
     private Integer maxPriceFilter = null;
 
+    /**
+     * Inizializza il controller caricando i dati dei giocatori e configurando i filtri per ruolo e prezzo.
+     */
     @FXML
     public void initialize() {
         try {
@@ -273,6 +276,9 @@ public class ListoneController {
         getLoadMoreButton().setStyle("-fx-background-color: transparent; -fx-padding: 10 20;");
     }
 
+    /**
+     * Applica i filtri per ruolo e prezzo, azzerando la paginazione e ricaricando i dati.
+     */
     public void applyFilters() {
         String selectedRole = getRoleCombo().getSelectionModel().getSelectedItem();
         setRoleFilter((selectedRole != null && !selectedRole.equals("Tutti")) ? selectedRole : "Tutti");

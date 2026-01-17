@@ -73,6 +73,7 @@ public class LeagueRulesControllerTest extends ApplicationTest {
         FxToolkit.hideStage();
     }
 
+    // Verifica che all'avvio siano creati i moduli standard e che quelli salvati risultino pre-selezionati.
     @Test
     public void testInitialLoadAndPreSelection() {
         // Verifica che siano stati creati i 7 moduli standard
@@ -87,6 +88,7 @@ public class LeagueRulesControllerTest extends ApplicationTest {
         assertFalse("Il modulo 3-4-3 non dovrebbe essere selezionato all'avvio", btn343.isSelected());
     }
 
+    // Verifica la validazione: mostra un errore quando nessun modulo è selezionato.
     @Test
     public void testValidationFailureWhenNoModulesSelected() {
         // Deselezioniamo tutti i moduli
@@ -102,6 +104,7 @@ public class LeagueRulesControllerTest extends ApplicationTest {
         assertTrue("L'errore dovrebbe essere visibile se non ci sono moduli selezionati", errorLabel.isVisible());
     }
 
+    // Verifica il salvataggio delle regole e l'aggiornamento sia del DB che del modello locale.
     @Test
     public void testSaveRulesSuccess() throws Exception {
         // Selezioniamo il modulo 3-4-3 (aggiungendolo a quelli esistenti o resettando)
@@ -126,6 +129,7 @@ public class LeagueRulesControllerTest extends ApplicationTest {
         assertTrue("Il modello locale deve contenere 3-4-3", testLeague.getAllowedFormations().contains("3-4-3"));
     }
 
+    // Verifica la gestione degli errori di salvataggio quando la tabella del DB è assente.
     @Test
     public void testDatabaseErrorHandling() throws Exception {
         // Forza un errore eliminando la tabella prima del salvataggio

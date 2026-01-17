@@ -84,6 +84,7 @@ public class PlayerDAOTest {
     // TEST LOGICA JSON (Listone)
     // ==========================================================
 
+    // Verifica il caricamento di tutti i giocatori dal listone JSON.
     @Test
     public void testGetAllPlayers() {
         List<Player> players = playerDAO.getAllPlayers();
@@ -91,6 +92,7 @@ public class PlayerDAOTest {
         assertFalse(players.isEmpty());
     }
 
+    // Verifica la paginazione: offset e limite restituiscono il numero corretto di giocatori.
     @Test
     public void testPagination() {
         // Offset 0, limite 5
@@ -102,6 +104,7 @@ public class PlayerDAOTest {
         assertTrue(empty.isEmpty());
     }
 
+    // Verifica i filtri: per ruolo, prezzo minimo/massimo, e il filtro 'Tutti'.
     @Test
     public void testFilteringCompleto() {
         // Filtro Ruolo "A" e prezzo tra 20 e 50
@@ -118,6 +121,7 @@ public class PlayerDAOTest {
         }
     }
 
+    // Verifica il conteggio corretto dei giocatori filtrati.
     @Test
     public void testGetFilteredTotalCount() {
         int countP = playerDAO.getFilteredTotalCount("P", null, null);
@@ -125,6 +129,7 @@ public class PlayerDAOTest {
         assertTrue(countP > 0 && countP < countAll);
     }
 
+    // Verifica la ricerca di un giocatore per ID e la gestione di ID inesistenti.
     @Test
     public void testGetPlayerById() {
         // Il giocatore con ID 1 esiste nel listone.json (solitamente è un portiere o il primo in ordine)
@@ -139,6 +144,7 @@ public class PlayerDAOTest {
     // TEST LOGICA DATABASE (JDBC)
     // ==========================================================
 
+    // Verifica il recupero della rosa di una squadra in una lega specifica.
     @Test
     public void testGetTeamRosterByLeague() {
         // Abbiamo inserito Lautaro (ID_ESTERN 1) nella 'Lega Test' nel setup
@@ -149,6 +155,7 @@ public class PlayerDAOTest {
         assertEquals(1, roster.get(0).getId());
     }
 
+    // Verifica il salvataggio di una formazione completa (titolari + panchina) e il recupero dei dettagli.
     @Test
     public void testSaveFormationAndGetDetails() throws Exception {
         Player cap = playerDAO.getPlayerById(1); // Lautaro
@@ -166,6 +173,7 @@ public class PlayerDAOTest {
         assertEquals(2, schierati.size()); // 1 titolare + 1 panchinaro
     }
 
+    // Verifica l'aggiornamento dei voti calcolati e il calcolo del punteggio totale della squadra.
     @Test
     public void testUpdateCalculatedVotes() throws Exception {
         // Prepariamo una formazione esistente nel DB
@@ -186,6 +194,7 @@ public class PlayerDAOTest {
         assertEquals(8.5, totale, 0.01);
     }
 
+    // Verifica il recupero dei giocatori appartenenti a una rosa specifica.
     @Test
     public void testGetPlayersByRosa() {
         // Rosa con ID 1 nel setup

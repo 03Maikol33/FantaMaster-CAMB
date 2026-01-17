@@ -25,19 +25,27 @@ public class League {
     private Integer turnoAstaUtenteId;   // ID dell'utente a cui tocca (può essere null)
     private Integer giocatoreChiamatoId;
 
-    // Costruttore vuoto
+    /**
+     * Costruttore vuoto per League.
+     */
     public League() {}
 
-    
-    // Nota: include 'String gameMode'
-    // Costruttore per la CREAZIONE
+    /**
+     * Costruttore per la creazione di una nuova lega.
+     *
+     * @param name il nome della lega
+     * @param image l'immagine icona della lega
+     * @param maxMembers il numero massimo di partecipanti
+     * @param creator l'utente che crea la lega
+     * @param gameMode la modalità di gioco (es. punti_totali)
+     * @param createdAt la data e ora di creazione
+     */
     public League(String name, byte[] image, int maxMembers, User creator, String gameMode, LocalDateTime createdAt) {
         this.name = name;
         this.image = image;
         this.maxMembers = maxMembers;
         this.creator = creator;
         
-        // CORREZIONE: Controllo di sicurezza. Se gameMode è null o vuoto, metti il default.
         if (gameMode == null || gameMode.trim().isEmpty()) {
             this.gameMode = "punti_totali";
         } else {
@@ -47,12 +55,24 @@ public class League {
         this.createdAt = createdAt;
         this.registrationsClosed = false;
         this.participants = new ArrayList<>();
-        this.participants.add(creator); // Aggiungi il creatore come primo partecipante
+        this.participants.add(creator);
         this.initialBudget = 500;
     }
 
-    // Costruttore COMPLETO (usato da LeagueDAO per leggere dal DB)
-    // Nota: include 'String gameMode' alla fine
+    /**
+     * Costruttore completo per League (utilizzato dal DAO per leggere dal database).
+     *
+     * @param id l'identificativo univoco della lega
+     * @param name il nome della lega
+     * @param image l'immagine icona della lega
+     * @param maxMembers il numero massimo di partecipanti
+     * @param creator l'utente che ha creato la lega
+     * @param createdAt la data e ora di creazione
+     * @param closed true se le iscrizioni sono chiuse
+     * @param participants la lista dei partecipanti
+     * @param gameMode la modalità di gioco
+     * @param astaAperta true se l'asta è aperta
+     */
     public League(int id, String name, byte[] image, int maxMembers, User creator, LocalDateTime createdAt, boolean closed, List<User> participants, String gameMode, boolean astaAperta) {
         this.id = id;
         this.name = name;

@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 public class RequestTest {
 
+    // Verifica che impostare accepted=true cambii lo stato a ACCETTATA.
     @Test
     public void shouldSetStatusToAccepted_WhenFlagIsTrue() {
         // Arrange
@@ -19,6 +20,7 @@ public class RequestTest {
                      RequestStatus.accettata, request.getRequestStatus());
     }
 
+    // Verifica che impostare accepted=false cambii lo stato a RIFIUTATA.
     @Test
     public void shouldSetStatusToRejected_WhenFlagIsFalse() {
         // Arrange
@@ -32,6 +34,7 @@ public class RequestTest {
                      RequestStatus.rifiutata, request.getRequestStatus());
     }
     
+    // Verifica che isAccepted() ritorni true quando lo stato è ACCETTATA.
     @Test
     public void shouldReturnTrue_WhenCheckingIsAcceptedOnAcceptedRequest() {
         // Arrange

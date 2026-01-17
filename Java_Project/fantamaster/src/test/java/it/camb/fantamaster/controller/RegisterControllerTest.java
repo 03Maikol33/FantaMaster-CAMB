@@ -64,6 +64,7 @@ public class RegisterControllerTest extends ApplicationTest {
 
     // --- TEST VALIDAZIONE ---
 
+    // Verifica che campi vuoti mostrino un errore di validazione.
     @Test
     public void testRegistrationFailsWithEmptyFields() {
         // Clicco Registrati senza scrivere nulla (Il bottone non ha fx:id, cerchiamo il testo)
@@ -74,6 +75,7 @@ public class RegisterControllerTest extends ApplicationTest {
         verifyThat("#messageLabel", hasText("Compila tutti i campi!"));
     }
 
+    // Verifica che email non valida (senza @) sia rifiutata.
     @Test
     public void testRegistrationFailsWithInvalidEmail() {
         clickOn("#usernameField").write("TestUser");
@@ -86,6 +88,7 @@ public class RegisterControllerTest extends ApplicationTest {
         verifyThat("#messageLabel", hasText("Email non valida!"));
     }
 
+    // Verifica che una password debole (manca maiuscola, numero o carattere speciale) sia rifiutata.
     @Test
     public void testRegistrationFailsWithWeakPassword() {
         clickOn("#usernameField").write("TestUser");
@@ -102,6 +105,7 @@ public class RegisterControllerTest extends ApplicationTest {
 
     // --- TEST DUPLICATI ---
 
+    // Verifica che una registrazione con email già esistente nel DB sia rifiutata.
     @Test
     public void testDuplicateEmailFails() throws Exception {
         // 1. Inseriamo manualmente un utente nel DB
@@ -123,6 +127,7 @@ public class RegisterControllerTest extends ApplicationTest {
 
     // --- TEST SUCCESSO ---
 
+    // Verifica la registrazione con successo e il salvataggio nel DB.
     @Test
     public void testSuccessfulRegistration() {
         // Scriviamo dati validi

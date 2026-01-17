@@ -27,6 +27,11 @@ public class RequestListController {
 
     private League currentLeague; 
 
+    /**
+     * Imposta la lega corrente e carica le richieste di iscrizione pendenti.
+     *
+     * @param league la lega per cui caricare le richieste
+     */
     public void setCurrentLeague(League league) {
         this.currentLeague = league;
         loadListData();
@@ -88,4 +93,3 @@ public class RequestListController {
         loadListData();
     }
 }
-// Fix conflitti definitivo

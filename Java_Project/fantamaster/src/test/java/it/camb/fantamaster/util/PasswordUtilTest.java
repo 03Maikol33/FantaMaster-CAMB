@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class PasswordUtilTest {
     
-    //Verifica che l'hash venga generato correttamente
+    // Verifica che l'hash della password venga generato correttamente.
     @Test
     public void testHashIsGenerated() {
         String password = "Password1234!";
@@ -17,7 +17,7 @@ public class PasswordUtilTest {
         assertNotNull(hash, "L'hash della password non deve essere null");
     }
 
-    //verifica che l'hash non sia uguale alla password in chiaro
+    // Verifica che l'hash non sia uguale alla password in chiaro.
     @Test
     public void testHashIsNotEqualToPassword() {
         String password = "Password1234!";
@@ -27,7 +27,7 @@ public class PasswordUtilTest {
         assertNotEquals(password, hash, "L'hash non deve essere uguale alla password in chiaro");
     }
 
-//verifica che due hash generati dalla stessa password siano diversi
+    // Verifica che due hash della stessa password siano diversi grazie al salt.
     @Test
     public void testHashesAreDifferentForSamePassword() {
         String password = "Password1234!";
@@ -38,7 +38,7 @@ public class PasswordUtilTest {
         assertNotEquals(hash1, hash2, "Gli hash dovrebbero essere diversi per la stessa password a causa del sale (salt)");
     }
 
-    //verifica che la password venga verificata correttamente
+    // Verifica che la password venga verificata correttamente contro un hash.
     @Test
     public void testPasswordVerification() {
         String password = "Password1234!";

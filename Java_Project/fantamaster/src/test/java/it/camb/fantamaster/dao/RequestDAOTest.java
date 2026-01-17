@@ -70,6 +70,7 @@ public class RequestDAOTest {
         }
     }
 
+    // Verifica la creazione di richieste e che i duplicati vengano rifiutati.
     @Test
     public void testCreateRequestAndDuplicates() {
         // Primo inserimento: successo
@@ -83,6 +84,7 @@ public class RequestDAOTest {
         assertFalse("Non dovrebbe permettere richieste duplicate", requestDAO.createRequest(joiner, league));
     }
 
+    // Verifica il rifiuto di una richiesta e la sua rimozione dal DB.
     @Test
     public void testRejectRequest() {
         requestDAO.createRequest(joiner, league);
@@ -95,6 +97,7 @@ public class RequestDAOTest {
         assertFalse(requestDAO.hasPendingRequest(joiner, league));
     }
 
+    // Verifica i corner case di mapping, incluso il timestamp NULL dal DB.
     @Test
     public void testMappingCornerCases() throws SQLException {
         try (Statement st = connection.createStatement()) {
@@ -113,6 +116,7 @@ public class RequestDAOTest {
         assertNull("Il timestamp dovrebbe essere null come inserito nel DB", req.getTimestamp());
     }
 
+    // Verifica che l'approvazione di una richiesta inesistente fallisca correttamente.
     @Test
     public void testApproveRequestFailures() throws SQLException {
         // Caso 1: Approvazione di una richiesta che non esiste nel DB
@@ -124,6 +128,7 @@ public class RequestDAOTest {
         // Questo è coperto indirettamente dal test testSqlExceptions sotto
     }
 
+    // Verifica la gestione degli errori SQL quando la connessione è chiusa.
     @Test
     public void testSqlExceptions() throws SQLException {
         // Chiusura connessione per forzare TUTTI i blocchi catch (SQLException)

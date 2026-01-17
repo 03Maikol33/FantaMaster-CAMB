@@ -77,6 +77,7 @@ public class ProfiloControllerTest extends ApplicationTest {
         SessionUtil.clearSession();
     }
 
+    // Verifica il caricamento iniziale dei dati dell'utente dal DB nel profilo.
     @Test
     public void testInitialLoad() {
         // Attendiamo che l'inizializzazione del controller sia terminata
@@ -90,6 +91,7 @@ public class ProfiloControllerTest extends ApplicationTest {
         assertEquals("L'email non è stata caricata correttamente", "profile@test.it", emailLabel.getText());
     }
 
+    // Verifica l'aggiornamento dello username e il salvataggio nel DB.
     @Test
     public void testUpdateUsernameSuccess() {
         TextField userField = lookup("#usernameField").queryAs(TextField.class);
@@ -114,6 +116,7 @@ public class ProfiloControllerTest extends ApplicationTest {
         }
     }
 
+    // Verifica la validazione: username vuoto non viene salvato nel DB.
     @Test
     public void testEmptyUsernameValidation() {
         TextField userField = lookup("#usernameField").queryAs(TextField.class);
@@ -137,6 +140,7 @@ public class ProfiloControllerTest extends ApplicationTest {
         }
     }
 
+    // Verifica la gestione degli errori di database durante il salvataggio.
     @Test
     public void testDatabaseErrorDuringSave() throws Exception {
         // Simula un errore di database cancellando la tabella invece di chiudere la connessione

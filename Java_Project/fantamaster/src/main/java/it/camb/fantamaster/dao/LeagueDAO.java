@@ -24,11 +24,16 @@ public class LeagueDAO {
         this.conn = conn;
     }
 
-    // Modifica mapResultSetToLeague in it.camb.fantamaster.dao.LeagueDAO
-
+    /**
+     * Mappa un ResultSet a un oggetto League.
+     * Estrae i dati semplici dal ResultSet, recupera l'utente creatore dal database,
+     * e carica la lista dei partecipanti.
+     *
+     * @param rs il ResultSet contenente i dati della lega
+     * @return l'oggetto League costruito dai dati
+     * @throws SQLException in caso di errore SQL
+     */
     private League mapResultSetToLeague(ResultSet rs) throws SQLException {
-        // 1. LEGGI TUTTI I DATI "SEMPLICI" IMMEDIATAMENTE
-        // Estraiamo tutto dal ResultSet prima di chiamare altri DAO
         int id = rs.getInt("id");
         String name = rs.getString("nome");
         int maxMembers = rs.getInt("max_membri");
@@ -41,7 +46,6 @@ public class LeagueDAO {
         String modalita = rs.getString("modalita");
         int budgetIniziale = rs.getInt("budget_iniziale");
         
-        // Gestione null per i turni asta
         Integer turnoId = rs.getInt("turno_asta_utente_id");
         if (rs.wasNull()) turnoId = null;
         
@@ -54,15 +58,12 @@ public class LeagueDAO {
         Blob blob = rs.getBlob("icona");
         byte[] image = (blob != null) ? blob.getBytes(1, (int) blob.length()) : null;
 
-        // 2. ORA CHE ABBIAMO SALVATO I DATI IN VARIABILI LOCALI, POSSIAMO USARE GLI ALTRI DAO
-        // Questo evita il conflitto con il ResultSet principale (rs)
         UserDAO userDAO = new UserDAO(this.conn);
         User creator = userDAO.findById(idCreatore);
 
         UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(this.conn);
         List<User> participants = ulDAO.getUsersInLeagueId(id); 
 
-        // 3. COSTRUIAMO L'OGGETTO LEAGUE
         League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita, astaAperta);
         
         league.setInviteCode(inviteCode);
@@ -74,57 +75,6 @@ public class LeagueDAO {
 
         return league;
     }
-/* 
-    // Metodo helper per mappare il ResultSet in un oggetto League
-    private League mapResultSetToLeague(ResultSet rs) throws SQLException {
-        int id = rs.getInt("id");
-        String name = rs.getString("nome");
-        int maxMembers = rs.getInt("max_membri");
-        boolean closed = rs.getBoolean("iscrizioni_chiuse");
-        boolean astaAperta = rs.getBoolean("asta_aperta");
-        boolean mercatoAperto = rs.getBoolean("mercato_aperto");
-
-        Timestamp ts = rs.getTimestamp("created_at");
-        java.time.LocalDateTime createdAt = (ts != null) ? ts.toLocalDateTime() : null;
-
-        Blob blob = rs.getBlob("icona");
-        byte[] image = (blob != null) ? blob.getBytes(1, (int) blob.length()) : null;
-        
-        String modalita = rs.getString("modalita"); 
-
-        UserDAO userDAO = new UserDAO(this.conn);
-        User creator = userDAO.findById(rs.getInt("id_creatore"));
-
-        UsersLeaguesDAO ulDAO = new UsersLeaguesDAO(this.conn);
-        List<User> participants = ulDAO.getUsersInLeagueId(id); 
-
-        // Creiamo l'oggetto usando il costruttore completo
-        League league = new League(id, name, image, maxMembers, creator, createdAt, closed, participants, modalita, astaAperta);
-        
-        // Settiamo il codice invito letto dal DB
-        league.setInviteCode(rs.getString("codice_invito"));
-        // Mappiamo i moduli consentiti
-        league.setAllowedFormations(rs.getString("moduli_consentiti"));
-        
-        // Mappiamo il budget dalla tabella collegata 'regole'
-        int budget = rs.getInt("budget_iniziale");
-        league.setInitialBudget(budget > 0 ? budget : 500); // Fallback a 500 se 0 o null
-        
-        league.setMercatoAperto(mercatoAperto);
-        
-        int turnoId = rs.getInt("turno_asta_utente_id");
-        if (!rs.wasNull()) {
-            league.setTurnoAstaUtenteId(turnoId);
-        }
-
-        int giocatoreId = rs.getInt("giocatore_chiamato_id");
-        if (!rs.wasNull()) {
-            league.setGiocatoreChiamatoId(giocatoreId);
-        }
-
-
-        return league;
-    }*/
 
     public boolean isMercatoAperto(int leagueId) {
         String sql = "SELECT mercato_aperto FROM leghe WHERE id = ?";
@@ -150,6 +100,7 @@ public class LeagueDAO {
         } catch (SQLException e) {
             ErrorUtil.log("Errore aggiornamento stato mercato", e);
             return false;
+
         }
     }
 
@@ -166,6 +117,12 @@ public class LeagueDAO {
         }
     }
 
+    /**
+     * Recupera tutte le leghe a cui l'utente partecipa.
+     *
+     * @param user l'utente di cui recuperare le leghe
+     * @return la lista delle leghe dell'utente
+     */
     public List<League> getLeaguesForUser(User user) {
         List<League> leagues = new ArrayList<>();
         String sql = "SELECT l.*, r.budget_iniziale " +
@@ -187,6 +144,12 @@ public class LeagueDAO {
         return leagues;
     }
 
+    /**
+     * Recupera tutte le leghe create da un utente.
+     *
+     * @param user l'utente creatore
+     * @return la lista delle leghe create dall'utente
+     */
     public List<League> getLeaguesCreatedByUser(User user) {
         List<League> leagues = new ArrayList<>();
         String sql = "SELECT l.*, r.budget_iniziale " +
@@ -207,6 +170,13 @@ public class LeagueDAO {
         return leagues;
     }
 
+    /**
+     * Recupera una lega specifica dal suo ID.
+     * Carica tutti i dati della lega inclusi il creatore e i partecipanti.
+     *
+     * @param id l'ID della lega
+     * @return l'oggetto League, o null se non trovata
+     */
     public League getLeagueById(int id) {
         String sql = "SELECT l.*, r.budget_iniziale FROM leghe l " +
                     "LEFT JOIN regole r ON l.id = r.lega_id WHERE l.id = ?";

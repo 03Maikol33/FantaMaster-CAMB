@@ -14,6 +14,7 @@ public class RulesTest {
         this.rules = new Rules();
     }
 
+    // Verifica che il budget iniziale di default sia 500.
     @Test
     public void testDefaultBudgetIsCorrect() {
         // Non serve istanziare 'new Rules()', lo ha fatto il @Before
@@ -21,6 +22,7 @@ public class RulesTest {
                      500, rules.getInitialBudget());
     }
 
+    // Verifica che i bonus siano configurati positivamente.
     @Test
     public void testBonusConfiguration() {
         // Verifica che i bonus siano positivi (logica di business)
@@ -28,6 +30,7 @@ public class RulesTest {
         assertTrue("Il bonus assist deve essere positivo", rules.getBonusAssist() > 0);
     }
 
+    // Verifica che i malus siano configurati positivamente.
     @Test
     public void testMalusConfiguration() {
         // Verifica che i malus siano positivi (di solito si sottraggono valori positivi)

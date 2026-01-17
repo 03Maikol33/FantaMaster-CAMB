@@ -114,6 +114,7 @@ public class LeagueListControllerTest extends ApplicationTest {
         FxToolkit.hideStage();
     }
 
+    // Verifica l'interazione con una lega in cui l'utente è admin e la presenza delle opzioni amministrative.
     @Test
     public void testAdminLeagueInteraction() {
         sleep(1000);
@@ -131,6 +132,7 @@ public class LeagueListControllerTest extends ApplicationTest {
         verifyThat("#richiesteMenuItem", isVisible());
     }
 
+    // Verifica che un partecipante non veda le opzioni amministrative nella lega selezionata.
     @Test
     public void testParticipantLeagueInteraction() {
         sleep(1000);

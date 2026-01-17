@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 public class CodeGeneratorTest {
 
+    // Verifica che il codice generato abbia lunghezza corretta e contenga solo caratteri alfanumerici maiuscoli.
     @Test
     public void testCodeStructure() {
         String code = CodeGenerator.generateCode();
@@ -21,6 +22,7 @@ public class CodeGeneratorTest {
                    code.matches("[A-Z0-9]+"));
     }
 
+    // Verifica che codici generati consecutivamente siano diversi (randomness).
     @Test
     public void testCodeUniqueness() {
         // Generiamo un piccolo campione per verificare che non siano tutti uguali statici

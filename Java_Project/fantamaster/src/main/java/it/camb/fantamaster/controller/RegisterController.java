@@ -146,4 +146,3 @@ public class RegisterController {
         return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 }
-// Fix conflitti definitivo

@@ -36,6 +36,7 @@ public class ListoneControllerTest extends ApplicationTest {
     }
 
     // --- TEST 1: Caricamento Dati ---
+    // Verifica il caricamento iniziale dei giocatori dal listone e la popolazione della combo ruoli.
     @Test
     public void testInitialLoadPopulatesList() {
         sleep(2000); 
@@ -48,6 +49,7 @@ public class ListoneControllerTest extends ApplicationTest {
     }
 
     // --- TEST 2: Filtri Prezzo e Reset ---
+    // Verifica l'applicazione dei filtri di prezzo e il reset dei campi.
     @Test
     public void testPriceFilterAndReset() {
         sleep(1500);
@@ -77,6 +79,7 @@ public class ListoneControllerTest extends ApplicationTest {
     }
 
     // --- TEST 3: Filtro Ruolo ---
+    // Verifica il filtro per ruolo giocatore.
     @Test
     public void testRoleFilter() {
         sleep(1500);

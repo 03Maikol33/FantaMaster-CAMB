@@ -33,7 +33,6 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
     private League testLeague;
     private LeagueAdminSettingsController controller;
     
-    // FIX 1: Dichiarati come campi della classe per essere usati in tutti i metodi
     private RulesDAO rulesDAO;
     private LeagueDAO leagueDAO;
 
@@ -64,7 +63,6 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
             stmt.execute("DROP ALL OBJECTS");
             stmt.execute("CREATE TABLE utenti (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), hash_password VARCHAR(255), created_at TIMESTAMP, avatar BLOB)");
             
-            // FIX 2: Schema allineato alla v5.5 per evitare "Column mercato_aperto not found"
             stmt.execute("CREATE TABLE leghe (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255), icona BLOB, max_membri INT, id_creatore INT, iscrizioni_chiuse BOOLEAN, created_at TIMESTAMP, codice_invito VARCHAR(255), modalita VARCHAR(50), moduli_consentiti VARCHAR(255), " +
                          "mercato_aperto BOOLEAN DEFAULT FALSE, asta_aperta BOOLEAN DEFAULT TRUE, turno_asta_utente_id INT, giocatore_chiamato_id INT)");
             
@@ -95,6 +93,7 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
         }
     }
 
+    // Verifica che il salvataggio delle regole aggiorni correttamente il budget della lega.
     @Test
     public void testUpdateRules() {
         // Selezioniamo il campo budget
@@ -113,7 +112,6 @@ public class LeagueAdminSettingsControllerTest extends ApplicationTest {
         sleep(1000); 
         clickOn("OK");
 
-        // FIX 3: Usiamo testLeague invece di league (nome corretto della variabile)
         Rules updated = rulesDAO.getRulesByLeagueId(testLeague.getId());
         
         assertNotNull("Le regole dovrebbero esistere nel DB", updated);

@@ -43,36 +43,38 @@ public class ChatViewController {
 
     private League currentLeague;
     private User currentUser;
-    private ScheduledExecutorService poller; // Il timer per l'aggiornamento
+    private ScheduledExecutorService poller;
 
-    // Metodo chiamato da chi apre la chat per passare i dati
+    /**
+     * Inizializza il controllore della chat con la lega e l'utente corrente.
+     * Carica i messaggi e avvia il polling automatico ogni 3 secondi.
+     *
+     * @param league la lega per cui visualizzare la chat
+     */
     public void initData(League league) {
         this.currentLeague = league;
         this.currentUser = SessionUtil.getCurrentSession().getUser();
         
-        System.out.println("--- INIT CHAT ---");
-        // ... (tuoi log esistenti) ...
-
-        // 1. Carico subito i messaggi
+        System.out.println("--- Inizializzazione della chat ---");
         loadMessages();
 
-        // 2. AVVIO IL POLLING AUTOMATICO (Ogni 3 secondi)
         startPolling();
     }
 
+    /**
+     * Avvia il polling automatico per aggiornare i messaggi della chat.
+     * Ricarica i messaggi ogni 3 secondi utilizzando uno ScheduledExecutorService.
+     */
     private void startPolling() {
-        // Crea un timer con un solo thread
         poller = Executors.newSingleThreadScheduledExecutor();
-        
-        // Esegui loadMessages() ogni 3 secondi
-        // param 1: azione, param 2: ritardo iniziale, param 3: ogni quanto tempo, param 4: unità
         poller.scheduleAtFixedRate(() -> {
-            // Nota: loadMessages gestisce già il Platform.runLater internamente, 
-            // quindi possiamo chiamarlo direttamente dal thread del timer.
             loadMessages();
         }, 3, 3, TimeUnit.SECONDS);
     }
 
+    /**
+     * Interrompe il polling automatico.
+     */
     public void stopPolling() {
         if (poller != null && !poller.isShutdown()) {
             poller.shutdownNow();
@@ -96,10 +98,10 @@ public class ChatViewController {
         // Disabilita tasto per evitare doppio invio
         sendButton.setDisable(true);
 
-        // 1. Creiamo l'oggetto messaggio
+        //Creiamo l'oggetto messaggio
         Message newMessage = new Message(text, currentUser, currentLeague.getId());
 
-        // 2. Salviamo nel DB (in Background)
+        //Salviamo nel DB (in Background)
         CompletableFuture.supplyAsync(() -> {
             try {
                 Connection conn = ConnectionFactory.getConnection();
@@ -122,10 +124,12 @@ public class ChatViewController {
         });
     }
 
+    /**
+     * Carica i messaggi della lega dal database e aggiorna l'interfaccia utente.
+     * Se la scena non è più visualizzata, interrompe il polling.
+     */
     public void loadMessages() {
-        // SAFEGUARD: Se la scena non esiste più o il poller deve fermarsi
         if (messageContainer.getScene() == null && poller != null) {
-            // Significa che questa schermata non è più visualizzata a video
             stopPolling();
             return;
         }
@@ -150,25 +154,20 @@ public class ChatViewController {
     }
 
     private void updateChatUI(List<Message> messages) {
-        // OTTIMIZZAZIONE 1: Se il numero di messaggi è uguale, non ridisegnare tutto!
-        // Questo evita sfarfallii inutili ogni 3 secondi se nessuno ha scritto.
+        // Se il numero di messaggi è uguale non ridisegna tutto
         if (messageContainer.getChildren().size() == messages.size()) {
             return; 
         }
 
-        // SMART SCROLL 1: Capire se l'utente è in fondo PRIMA di cancellare tutto.
-        // Se vValue è > 0.9, significa che l'utente è nell'ultimo 10% della chat (quindi in basso).
-        // Se children è vuoto, è il primo caricamento, quindi dobbiamo scorrere giù.
+        
         boolean wasAtBottom = scrollPane.getVvalue() > 0.9 || messageContainer.getChildren().isEmpty();
 
         messageContainer.getChildren().clear();
 
-        // --- DEBUG LOGS (Rimossi per pulizia, ma utili se serve) ---
         if (currentUser == null || currentLeague == null) return;
         int myId = currentUser.getId();
         int creatorId = currentLeague.getCreator().getId();
         boolean iamAdmin = (creatorId == myId);
-        // ------------------
 
         for (Message msg : messages) {
             boolean isMe = msg.getSender().getId() == currentUser.getId();
@@ -199,14 +198,10 @@ public class ChatViewController {
             timeLabel.setAlignment(Pos.BOTTOM_RIGHT);
             bubble.getChildren().add(timeLabel);
 
-            // --- Logica Tasto Delete (Copiata dalla tua versione precedente) ---
+            //Logica Tasto Delete 
             Node deleteNode = null;
             if (iamAdmin) {
-                // ... (tutto il codice del bottone delete rimane identico a prima) ...
-                // Per brevità non lo riscrivo tutto qui, ma tu MANTIENILO UGUALE!
-                // Usa il codice "Button Wrapper" che ti ho dato nell'ultimo messaggio.
                 
-                // --- INIZIO BLOCCO DELETE (Ri-incolla qui il codice del bottone wrapper) ---
                 javafx.event.EventHandler<javafx.scene.input.MouseEvent> deleteAction = e -> {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Vuoi eliminare?", ButtonType.YES, ButtonType.NO);
                     alert.showAndWait().ifPresent(res -> { if (res == ButtonType.YES) deleteMessage(msg.getId()); });
@@ -229,7 +224,6 @@ public class ChatViewController {
                 if (deleteNode == null) {
                     Label x = new Label("❌"); x.setOnMouseClicked(deleteAction); deleteNode = x;
                 }
-                // --- FINE BLOCCO DELETE ---
             }
 
             if (isMe) {
@@ -243,9 +237,8 @@ public class ChatViewController {
             messageContainer.getChildren().add(row);
         }
         
-        // SMART SCROLL 2: Applicare lo scroll solo se necessario
+        // Applica lo scroll in fondo se l'utente era già in fondo
         if (wasAtBottom) {
-            // Un piccolo trucco: layout() forza il calcolo delle altezze PRIMA di scrollare
             messageContainer.applyCss();
             messageContainer.layout();
             scrollPane.layout();

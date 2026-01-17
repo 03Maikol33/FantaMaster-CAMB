@@ -184,7 +184,7 @@ public class LeagueAdminSettingsController {
     }
 
     /**
-     * UNICO METODO DI SALVATAGGIO: Salva Moduli + Regole
+     * Valida e salva i moduli di formazione e le regole della lega nel database.
      */
     @FXML
     private void handleSaveRules() {

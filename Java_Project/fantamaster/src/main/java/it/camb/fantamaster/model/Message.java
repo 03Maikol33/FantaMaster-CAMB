@@ -7,13 +7,21 @@ public class Message {
     private int id;
     private String text;
     private LocalDateTime timestamp;
-    private User sender; // Chi l'ha mandato
-    private int leagueId; // In quale lega
+    private User sender;
+    private int leagueId;
 
-    // Costruttore vuoto
+    /**
+     * Costruttore vuoto per Message.
+     */
     public Message() {}
 
-    // Costruttore per NUOVO messaggio (da inviare)
+    /**
+     * Costruttore per un nuovo messaggio da inviare.
+     *
+     * @param text il testo del messaggio
+     * @param sender l'utente che invia il messaggio
+     * @param leagueId l'ID della lega in cui è inviato il messaggio
+     */
     public Message(String text, User sender, int leagueId) {
         this.text = text;
         this.sender = sender;
@@ -21,7 +29,15 @@ public class Message {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Costruttore COMPLETO (da DB)
+    /**
+     * Costruttore completo per Message (utilizzato quando si legge dal database).
+     *
+     * @param id l'identificativo univoco del messaggio
+     * @param text il testo del messaggio
+     * @param timestamp il timestamp del messaggio
+     * @param sender l'utente che ha inviato il messaggio
+     * @param leagueId l'ID della lega
+     */
     public Message(int id, String text, LocalDateTime timestamp, User sender, int leagueId) {
         this.id = id;
         this.text = text;

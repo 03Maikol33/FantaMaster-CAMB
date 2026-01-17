@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 public class MessageTest {
 
+    // Verifica il formato dell'orario nei messaggi: HH:mm.
     @Test
     public void shouldFormatTimeAsHourMinute() {
         // Arrange
@@ -21,6 +22,7 @@ public class MessageTest {
         assertEquals("Il formato deve essere HH:mm", "14:07", result);
     }
 
+    // Verifica che timestamp null non provochi errori, restituendo stringa vuota.
     @Test
     public void shouldReturnEmptyString_WhenTimestampIsNull() {
         // Arrange

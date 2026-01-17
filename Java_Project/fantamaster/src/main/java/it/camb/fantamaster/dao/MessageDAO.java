@@ -92,6 +92,12 @@ public class MessageDAO {
         return messages;
     }
 
+    /**
+     * Elimina un messaggio dal database.
+     *
+     * @param messageId l'ID del messaggio da eliminare
+     * @return true se il messaggio è stato eliminato, false altrimenti
+     */
     public boolean deleteMessage(int messageId) {
         String sql = "DELETE FROM messaggi WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {

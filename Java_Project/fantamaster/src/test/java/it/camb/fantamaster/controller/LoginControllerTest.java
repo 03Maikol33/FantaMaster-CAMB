@@ -95,6 +95,7 @@ public class LoginControllerTest extends ApplicationTest {
 
     // --- 3. I TEST ---
 
+    // Verifica che con campi email e password vuoti venga mostrato un errore di validazione.
     @Test
     public void testLoginWithEmptyInputShowsError() {
         // Clicca Login vuoto
@@ -105,6 +106,7 @@ public class LoginControllerTest extends ApplicationTest {
         verifyThat("#errorLabel", hasText("Email o Password non valide.")); 
     }
 
+    // Verifica che con password errata venga mostrato l'errore appropriato.
     @Test
     public void testLoginWithWrongPassword() {
         // Login con password sbagliata
@@ -116,6 +118,7 @@ public class LoginControllerTest extends ApplicationTest {
         verifyThat("#errorLabel", hasText("Password errata."));
     }
 
+    // Verifica che il login con un utente inesistente mostri l'errore "Utente non trovato".
     @Test
     public void testLoginWithNonExistentUser() {
         // Login utente inesistente

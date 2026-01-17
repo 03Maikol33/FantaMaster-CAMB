@@ -48,6 +48,8 @@ public class LeagueDAOTest {
         userDAO.insert(creator);
     }
 
+    // Verifica l'inserimento di una lega con icona e il mapping completo dei campi recuperati.
+    // Verifica l'inserimento di una lega con immagine e il mapping completo dalla response SQL.
     @Test
     public void testInsertWithImageAndFullMapping() {
         League league = new League();
@@ -69,6 +71,8 @@ public class LeagueDAOTest {
         assertEquals(500, retrieved.getInitialBudget()); // Copre il default budget
     }
 
+    // Verifica i metodi di ricerca: codice invito, leghe create e leghe di cui l'utente fa parte.
+    // Verifica i metodi di ricerca: per codice invito, per creatore, per partecipante.
     @Test
     public void testSearchMethods() {
         League l = new League(0, "SearchLeague", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
@@ -88,6 +92,8 @@ public class LeagueDAOTest {
         assertEquals(1, memberOf.size());
     }
 
+    // Verifica l'aggiornamento dello stato del mercato, delle regole/moduli e la chiusura delle iscrizioni.
+    // Verifica gli aggiornamenti dei vari stati: mercato, moduli consentiti, chiusura iscrizioni.
     @Test
     public void testUpdateStatusesAndRules() {
         League l = new League(0, "StatusLeague", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
@@ -107,6 +113,8 @@ public class LeagueDAOTest {
         assertTrue(leagueDAO.getLeagueById(l.getId()).isRegistrationsClosed());
     }
 
+    // Verifica la logica d'asta e la corretta gestione di valori nulli nei campi turno e giocatore.
+    // Verifica la logica dell'asta: aggiornamento turno, gestione di NULL, e avvio asta a busta chiusa.
     @Test
     public void testAuctionLogicAndNulls() {
         League l = new League(0, "AuctionLeague", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
@@ -127,6 +135,8 @@ public class LeagueDAOTest {
         assertTrue(leagueDAO.avviaAstaBustaChiusa(l.getId(), 202, 1, 50));
     }
 
+    // Verifica l'eliminazione di una lega tramite l'overload che accetta l'oggetto `League`.
+    // Verifica l'overload della cancellazione che accetta direttamente l'oggetto League.
     @Test
     public void testDeleteOverload() {
         League l = new League(0, "ToDelete", null, 8, creator, LocalDateTime.now(), false, new ArrayList<>(), "punti_totali", true);
@@ -137,6 +147,8 @@ public class LeagueDAOTest {
         assertNull(leagueDAO.getLeagueById(l.getId()));
     }
 
+    // Verifica la gestione delle eccezioni SQL forzando lo stato di connessione chiusa.
+    // Verifica la gestione degli errori SQL quando la connessione è chiusa.
     @Test
     public void testSqlExceptions() throws SQLException {
         // Forza l'entrata nei blocchi catch chiudendo la connessione

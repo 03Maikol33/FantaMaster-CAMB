@@ -9,7 +9,6 @@ public class PasswordUtil {
      * @param plainPassword La password in chiaro da hashare.
      * @return L'hash della password.
      */
-    // Genera l'hash della password
     public static String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
     }
@@ -20,7 +19,6 @@ public class PasswordUtil {
      * @param hashedPassword L'hash della password memorizzato.
      * @return true se la password corrisponde all'hash, false altrimenti.
      */
-    // Verifica la password in fase di login
     public static boolean checkPassword(String plainPassword, String hashedPassword) {
         return BCrypt.checkpw(plainPassword, hashedPassword);
     }

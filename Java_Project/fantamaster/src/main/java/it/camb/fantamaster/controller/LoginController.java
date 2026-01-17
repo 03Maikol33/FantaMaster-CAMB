@@ -97,6 +97,9 @@ public class LoginController {
     }
 
     @FXML
+    /**
+     * Apre la finestra di registrazione.
+     */
     private void handleRegister() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/register.fxml"));
@@ -144,4 +147,3 @@ public class LoginController {
         return validEmail && validPass;
     }
 }
-// Fix conflitti definitivo

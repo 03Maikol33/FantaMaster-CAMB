@@ -73,6 +73,11 @@ public class FormationController {
 
     @FXML private void handleBack() { ((Stage) pitchPane.getScene().getWindow()).close(); }
 
+    /**
+     * Carica la lega e inizializza l'interfaccia della formazione con i moduli consentiti.
+     *
+     * @param league la lega per cui configurare la formazione
+     */
     public void setLeague(League league) {
         this.currentLeague = league;
         leagueNameLabel.setText(league.getName());
@@ -211,7 +216,10 @@ public class FormationController {
         new Timer().schedule(new TimerTask() { @Override public void run() { javafx.application.Platform.runLater(() -> errorLabel.setVisible(false)); } }, 3000);
     }
 
-    @FXML 
+    @FXML
+    /**
+     * Valida la formazione (11 titolari e capitano) e la salva nel database.
+     */
     private void handleSaveFormation() {
         // 1. Validazione preliminare: check 11 giocatori e capitano
         if (startersList.size() != 11 || selectedCaptain == null) {

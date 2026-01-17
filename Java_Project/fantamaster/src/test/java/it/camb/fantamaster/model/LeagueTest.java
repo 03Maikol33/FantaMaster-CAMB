@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 public class LeagueTest {
 
+    // Verifica l'aggiunta di partecipanti e che il creatore sia il primo della lista.
     @Test
     public void testAddParticipant() {
         User creator = new User(1, "creatorUser", "creator@example.com", "hashedPassword", LocalDateTime.now());
@@ -27,6 +28,7 @@ public class LeagueTest {
         assertEquals(creator, league.getParticipants().get(0));
     }
 
+    // Verifica che lanciare un'eccezione quando si tenta di aggiungere partecipanti a una lega piena.
     @Test(expected = IllegalStateException.class)
     public void testAddParticipant_LeagueFull() {
         User creator = new User(1, "creatorUser", "creator@example.com", "hashedPassword", LocalDateTime.now());

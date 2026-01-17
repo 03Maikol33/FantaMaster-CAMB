@@ -11,21 +11,45 @@ public class Request {
     private LocalDateTime timestamp;
     private RequestStatus status;
 
+    /**
+     * Costruttore per una nuova richiesta di accesso alla lega.
+     * Lo stato viene impostato automaticamente a "in_attesa".
+     *
+     * @param league la lega per cui viene richiesto l'accesso
+     * @param user l'utente che richiede l'accesso
+     */
     public Request( League league, User user) {
         this.league = league;
         this.user = user;
         this.status = RequestStatus.in_attesa;
     }
 
+    /**
+     * Costruttore vuoto per Request.
+     */
     public Request() {
     }
 
+    /**
+     * Costruttore per una richiesta con stato specificato.
+     *
+     * @param league la lega
+     * @param user l'utente
+     * @param status lo stato della richiesta
+     */
     public Request(League league, User user, RequestStatus status) {
         this.league = league;
         this.user = user;
         this.status = status;
     }
 
+    /**
+     * Costruttore per una richiesta con stato booleano (accettata/rifiutata).
+     *
+     * @param league la lega
+     * @param user l'utente
+     * @param accepted true se accettata, false se rifiutata
+     */
     public Request(League league, User user, Boolean accepted) {
         this.league = league;
         this.user = user;
@@ -72,7 +96,9 @@ public class Request {
         this.timestamp = timestamp;
     }
 
-    //to string
+    /**
+     * Rappresentazione in stringa della richiesta.
+     */
     @Override
     public String toString(){
         return "Request{" +
@@ -83,4 +109,3 @@ public class Request {
                 '}';
     }
 }
-// Fix conflitti definitivo

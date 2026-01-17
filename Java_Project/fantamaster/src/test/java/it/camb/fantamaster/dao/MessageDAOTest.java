@@ -60,6 +60,7 @@ public class MessageDAOTest {
         }
     }
 
+    // Verifica l'inserimento di un messaggio e il suo recupero dalla lista di una lega.
     @Test
     public void testInsertAndRetrieveMessages() {
         Message msg = new Message("Hello World", user, league.getId());

@@ -19,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AuctionProposePlayerController {
@@ -33,15 +32,18 @@ public class AuctionProposePlayerController {
     @FXML private TextField offertaInizialeField;
 
     private League currentLeague;
-
     private AuctionMainContainerController parentContainer;
-    
-    // Limiti hardcoded come richiesto
+
     private static final int MAX_P = 3;
     private static final int MAX_D = 8;
     private static final int MAX_C = 8;
     private static final int MAX_A = 6;
 
+    /**
+     * Inizializza la schermata per proporre un giocatore all'asta.
+     *
+     * @param league lega corrente
+     */
     public void initData(League league) {
         this.currentLeague = league;
         setupTable();
@@ -49,10 +51,18 @@ public class AuctionProposePlayerController {
         loadFilteredPlayers();
     }
 
+    /**
+     * Imposta il container principale per permettere refresh e comunicazione.
+     *
+     * @param parentContainer controller del container principale
+     */
     public void setParentContainer(AuctionMainContainerController parentContainer) {
         this.parentContainer = parentContainer;
     }
 
+    /**
+     * Configura le colonne della tabella dei giocatori.
+     */
     private void setupTable() {
         colPrezzo.setCellValueFactory(new PropertyValueFactory<>("prezzo"));
         colRuolo.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
@@ -60,19 +70,22 @@ public class AuctionProposePlayerController {
         colSquadra.setCellValueFactory(new PropertyValueFactory<>("squadra"));
     }
 
+    /**
+     * Carica il budget residuo dell'utente nella lega corrente.
+     */
     private void loadBudgetResiduo() {
         try {
             Connection conn = ConnectionFactory.getConnection();
             int myUserId = SessionUtil.getCurrentSession().getUser().getId();
-            
-            // Query per prendere i crediti direttamente
+
             String sql = "SELECT r.crediti_residui FROM rosa r " +
-                        "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
-                        "WHERE ul.utente_id = ? AND ul.lega_id = ?";
-                        
+                    "JOIN utenti_leghe ul ON r.utenti_leghe_id = ul.id " +
+                    "WHERE ul.utente_id = ? AND ul.lega_id = ?";
+
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, myUserId);
                 stmt.setInt(2, currentLeague.getId());
+
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
                         int residuo = rs.getInt("crediti_residui");
@@ -85,77 +98,83 @@ public class AuctionProposePlayerController {
         }
     }
 
+    /**
+     * Carica i giocatori disponibili filtrandoli in base agli slot liberi
+     * e ai giocatori già acquistati nella lega.
+     */
     private void loadFilteredPlayers() {
         try {
             Connection conn = ConnectionFactory.getConnection();
-            // DAO JSON (Senza connessione)
-            PlayerDAO playerDAO = new PlayerDAO(conn); 
-            // DAO Database
+            PlayerDAO playerDAO = new PlayerDAO(conn);
             RosaDAO rosaDAO = new RosaDAO(conn);
-            
-            // 1. Dati dell'utente e della sua rosa
+
             int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
             Rosa miaRosa = rosaDAO.getRosaByUserAndLeague(currentUserId, currentLeague.getId());
-            
-            if(miaRosa == null) {
+
+            if (miaRosa == null) {
                 System.out.println("Rosa non trovata per il caricamento dei filtri.");
                 return;
             }
-            // 2. Conteggio ruoli (User Story: slot liberi)
-            // Usiamo il conteggio dei giocatori attualmente in rosa nel DB
+
             int pCount = rosaDAO.countGiocatoriPerRuolo(miaRosa.getId(), "P");
             int dCount = rosaDAO.countGiocatoriPerRuolo(miaRosa.getId(), "D");
             int cCount = rosaDAO.countGiocatoriPerRuolo(miaRosa.getId(), "C");
             int aCount = rosaDAO.countGiocatoriPerRuolo(miaRosa.getId(), "A");
 
-            // 3. Lista ID "Blacklist" (Giocatori già comprati nella lega)
             List<Integer> takenIds = rosaDAO.getIdsGiocatoriCompratiInLega(currentLeague.getId());
+            List<Player> allPlayers = playerDAO.getAllPlayers();
 
-            // 4. Carichiamo tutto dal JSON
-            List<Player> allPlayersFromJson = playerDAO.getAllPlayers();
+            List<Player> available = allPlayers.stream()
+                    .filter(p -> !takenIds.contains(p.getId()))
+                    .filter(p -> {
+                        String r = p.getRuolo().toUpperCase();
+                        return switch (r) {
+                            case "P" -> pCount < MAX_P;
+                            case "D" -> dCount < MAX_D;
+                            case "C" -> cCount < MAX_C;
+                            case "A" -> aCount < MAX_A;
+                            default -> false;
+                        };
+                    })
+                    .collect(Collectors.toList());
 
-            // 5. APPLICAZIONE FILTRI (Streaming)
-            List<Player> availableAndValid = allPlayersFromJson.stream()
-                .filter(p -> !takenIds.contains(p.getId())) // Filtro 1: Non deve essere già preso
-                .filter(p -> { // Filtro 2: Deve avere slot liberi (User Story)
-                    String r = p.getRuolo().toUpperCase();
-                    if (r.equals("P")) return pCount < MAX_P;
-                    if (r.equals("D")) return dCount < MAX_D;
-                    if (r.equals("C")) return cCount < MAX_C;
-                    if (r.equals("A")) return aCount < MAX_A;
-                    return false;
-                })
-                .collect(Collectors.toList());
-
-            playerTable.setItems(FXCollections.observableArrayList(availableAndValid));
+            playerTable.setItems(FXCollections.observableArrayList(available));
 
         } catch (Exception e) {
             ErrorUtil.log("Errore caricamento giocatori filtrati", e);
         }
     }
 
+    /**
+     * Gestisce la chiamata del giocatore selezionato e l'avvio dell'asta.
+     */
     @FXML
     private void handleChiamata() {
         Player scelto = playerTable.getSelectionModel().getSelectedItem();
         String offertaTesto = offertaInizialeField.getText();
 
-        if (scelto == null) { showAlert("Attenzione", "Seleziona un giocatore."); return; }
-        if (offertaTesto == null || offertaTesto.isEmpty()) { showAlert("Attenzione", "Inserisci l'offerta."); return; }
+        if (scelto == null) {
+            showAlert("Attenzione", "Seleziona un giocatore.");
+            return;
+        }
+        if (offertaTesto == null || offertaTesto.isEmpty()) {
+            showAlert("Attenzione", "Inserisci l'offerta.");
+            return;
+        }
 
-        try{
+        try {
             Connection conn = ConnectionFactory.getConnection();
             int offerta = Integer.parseInt(offertaTesto.trim());
-            
+
             RosaDAO rosaDAO = new RosaDAO(conn);
             int currentUserId = SessionUtil.getCurrentSession().getUser().getId();
-            // Recuperiamo l'oggetto Rosa completo (che contiene l'ID della rosa)
             Rosa miaRosa = rosaDAO.getRosaByUserAndLeague(currentUserId, currentLeague.getId());
 
-            if(miaRosa == null) {
+            if (miaRosa == null) {
                 showAlert("Errore", "Non hai una rosa in questa lega.");
                 return;
             }
-            // --- VALIDAZIONI ---
+
             if (offerta < scelto.getPrezzo()) {
                 showAlert("Errore", "L'offerta deve essere >= " + scelto.getPrezzo());
                 return;
@@ -165,16 +184,18 @@ public class AuctionProposePlayerController {
                 return;
             }
 
-            // --- ESECUZIONE ---
-            checkAndInsertPlayer(conn, scelto); // Lazy loading anagrafica
+            checkAndInsertPlayer(conn, scelto);
 
             LeagueDAO leagueDAO = new LeagueDAO(conn);
-            // Passiamo l'ID della ROSA (miaRosa.getId()) come richiesto dal DB
-            boolean ok = leagueDAO.avviaAstaBustaChiusa(currentLeague.getId(), scelto.getId(), miaRosa.getId(), offerta);
+            boolean ok = leagueDAO.avviaAstaBustaChiusa(
+                    currentLeague.getId(),
+                    scelto.getId(),
+                    miaRosa.getId(),
+                    offerta
+            );
 
-            if (ok) {
-                System.out.println("Asta avviata correttamente.");
-                if (parentContainer != null) parentContainer.forceRefresh();
+            if (ok && parentContainer != null) {
+                parentContainer.forceRefresh();
             }
 
         } catch (Exception e) {
@@ -182,19 +203,26 @@ public class AuctionProposePlayerController {
         }
     }
 
+    /**
+     * Inserisce il giocatore nel database se non esiste già.
+     * Aggiorna i dati in caso di duplicato.
+     *
+     * @param conn connessione attiva
+     * @param p    giocatore da inserire
+     * @throws SQLException in caso di errore SQL
+     */
     private void checkAndInsertPlayer(Connection conn, Player p) throws SQLException {
-        // Usiamo ON DUPLICATE KEY UPDATE per sovrascrivere i dati finti con quelli reali del JSON
         String sql = "INSERT INTO giocatori (id, id_esterno, nome, squadra_reale, ruolo, quotazione_iniziale) " +
-                    "VALUES (?, ?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE " +
-                    "nome = VALUES(nome), " +
-                    "squadra_reale = VALUES(squadra_reale), " +
-                    "ruolo = VALUES(ruolo), " +
-                    "quotazione_iniziale = VALUES(quotazione_iniziale)";
-                    
+                "VALUES (?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "nome = VALUES(nome), " +
+                "squadra_reale = VALUES(squadra_reale), " +
+                "ruolo = VALUES(ruolo), " +
+                "quotazione_iniziale = VALUES(quotazione_iniziale)";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, p.getId());
-            stmt.setInt(2, p.getId()); // id_esterno
+            stmt.setInt(2, p.getId());
             stmt.setString(3, p.getNome() + " " + p.getCognome());
             stmt.setString(4, p.getSquadra());
             stmt.setString(5, p.getRuolo());
@@ -203,6 +231,12 @@ public class AuctionProposePlayerController {
         }
     }
 
+    /**
+     * Mostra un popup informativo.
+     *
+     * @param title   titolo dell'alert
+     * @param content contenuto del messaggio
+     */
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

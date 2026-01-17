@@ -33,6 +33,9 @@ public class LeagueListController {
 
     @FXML private VBox leagueContainer;
 
+    /**
+     * Inizializza il controller e carica le leghe dell'utente.
+     */
     @FXML
     public void initialize() {
         loadLeagues();

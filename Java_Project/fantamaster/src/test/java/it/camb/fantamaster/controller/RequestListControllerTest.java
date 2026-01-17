@@ -116,6 +116,7 @@ public class RequestListControllerTest extends ApplicationTest {
 
     // --- I TEST ---
 
+    // Verifica che una richiesta di accesso sia caricata e visibile nell'UI.
     @Test
     public void testRequestIsVisible() {
         // Attesa caricamento asincrono
@@ -130,6 +131,7 @@ public class RequestListControllerTest extends ApplicationTest {
         verifyThat("#rejectLabel", isVisible());
     }
 
+    // Verifica l'approvazione di una richiesta: iscrizione nel DB e aggiornamento UI.
     @Test
     public void testApproveRequest() {
         sleep(1500);

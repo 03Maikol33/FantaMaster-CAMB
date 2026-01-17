@@ -121,6 +121,7 @@ public class ChatViewControllerTest extends ApplicationTest {
 
     // --- I TEST ---
 
+    // Verifica che i messaggi preesistenti vengano caricati e visualizzati all'avvio della chat.
     @Test
     public void testInitialMessagesAreLoaded() {
         // La chat è asincrona, diamo tempo al loadMessages() iniziale di finire
@@ -130,6 +131,7 @@ public class ChatViewControllerTest extends ApplicationTest {
         verifyThat("Benvenuto nella chat!", isVisible());
     }
 
+    // Verifica l'invio di un messaggio: salvataggio nel DB e visualizzazione in UI.
     @Test
     public void testSendMessage() {
         sleep(1000); // Wait init
@@ -150,6 +152,7 @@ public class ChatViewControllerTest extends ApplicationTest {
         verifyThat("#inputField", (TextField t) -> t.getText().isEmpty());
     }
 
+    // Verifica l'eliminazione di un messaggio: conferma, rimozione dal DB e aggiornamento UI.
     @Test
     public void testDeleteMessage() {
         // 1. Aspettiamo che il messaggio iniziale appaia

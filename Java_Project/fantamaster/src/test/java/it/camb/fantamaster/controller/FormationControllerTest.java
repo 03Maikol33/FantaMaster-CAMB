@@ -94,6 +94,7 @@ public class FormationControllerTest extends ApplicationTest {
         field.set(controller, value);
     }
 
+    // Verifica che il salvataggio fallisca se non è impostato il capitano.
     @Test
     public void testSaveWithoutCaptain() throws Exception {
         // Schieriamo 11 giocatori ma NON impostiamo il capitano
@@ -111,6 +112,7 @@ public class FormationControllerTest extends ApplicationTest {
         assertTrue("Dovrebbe segnalare la mancanza del capitano", feedback.getText().contains("capitano"));
     }
 
+    // Verifica che sia consentito salvare con panchina vuota quando titolari e capitano sono corretti.
     @Test
     public void testEmptyBenchIsAllowed() throws Exception {
         // Schieriamo 11 giocatori + capitano, ma panca vuota
@@ -128,6 +130,7 @@ public class FormationControllerTest extends ApplicationTest {
         assertFalse(feedback.getText().contains("Mancano 11 titolari"));
     }
 
+    // Verifica che la rimozione del capitano dai titolari porti a una formazione invalida.
     @Test
     public void testCaptainRemovalEffect() throws Exception {
         Player cap = testPlayers.get(0);
@@ -149,6 +152,7 @@ public class FormationControllerTest extends ApplicationTest {
         assertTrue(feedback.getText().contains("Mancano 11 titolari"));
     }
 
+    // Verifica la segnalazione di errore in caso di incongruenza di ruolo simulata.
     @Test
     public void testRoleMismatchSimulated() {
         // Simuliamo un tentativo di inserimento ruolo sbagliato tramite il metodo del controller

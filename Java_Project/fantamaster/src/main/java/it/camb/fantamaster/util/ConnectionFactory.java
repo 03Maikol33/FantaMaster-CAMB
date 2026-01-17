@@ -26,6 +26,14 @@ public class ConnectionFactory {
         }
     }
 
+    /**
+     * Ottiene una connessione al database.
+     * La connessione viene creata una sola volta e riutilizzata;
+     * se chiusa, viene ricreata.
+     *
+     * @return una connessione al database
+     * @throws SQLException se si verifica un errore durante la connessione
+     */
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             // Se URL, USER o PASSWORD contengono spazi o sono errati, qui darà errore
