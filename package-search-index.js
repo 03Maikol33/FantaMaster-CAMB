@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.camb.fantamaster"},{"l":"it.camb.fantamaster.controller"},{"l":"it.camb.fantamaster.dao"},{"l":"it.camb.fantamaster.model"},{"l":"it.camb.fantamaster.util"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.camb.fantamaster"},{"l":"it.camb.fantamaster.controller"},{"l":"it.camb.fantamaster.dao"},{"l":"it.camb.fantamaster.model"},{"l":"it.camb.fantamaster.model.campionato"},{"l":"it.camb.fantamaster.util"}];updateSearchResults();
