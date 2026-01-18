@@ -36,12 +36,22 @@ jobs:
           $content | Out-File -FilePath src/test/resources/database.properties -Encoding utf8
         working-directory: ./Java_Project/fantamaster 
 
-      - name: Esecuzione test & analisi di SonarCloud
-        run: mvn clean verify "-Dmaven.test.failure.ignore=true" "-Dsonar.projectKey=03Maikol33_FantaMaster-CAMB" "-Dsonar.organization=fantamaster-camb" "-Dsonar.host.url=https://sonarcloud.io" "-Dsonar.token=${{ secrets.SONAR_TOKEN }}"
+      - name: Esecuzione Test e Analisi SonarCloud
+        shell: pwsh
+        run: |
+          # Eseguiamo tutto in un unico comando Maven
+          mvn clean verify sonar:sonar `
+          "-Dmaven.test.failure.ignore=true" `
+          "-Dsonar.projectKey=03Maikol33_FantaMaster-CAMB" `
+          "-Dsonar.organization=fantamaster-camb" `
+          "-Dsonar.host.url=https://sonarcloud.io" `
+          "-Dsonar.token=${{ secrets.SONAR_TOKEN }}" `
+          "-Dsonar.java.binaries=target/classes" `
+          "-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
         working-directory: ./Java_Project/fantamaster
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pubblica i report JUnit
         uses: dorny/test-reporter@v1
