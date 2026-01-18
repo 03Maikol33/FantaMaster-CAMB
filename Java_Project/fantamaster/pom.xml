@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
@@ -27,34 +28,39 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
                     </execution>
                     <execution>
-                    <id>report</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                    <configuration>
-                        <formats>
-                            <format>XML</format> <format>HTML</format>
-                        </formats>
-                    </configuration>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <formats>
+                                <format>XML</format>
+                                <format>HTML</format>
+                            </formats>
+                        </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>4.0.0.4121</version>
             </plugin>
 
         </plugins>
     </build>
 
     <dependencies>
-
-    <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -66,8 +72,6 @@
             <version>21</version>
         </dependency>
 
-    <!-- Gluon Mobile , estensione di JavaFX per applicazioni mobili -->
-    <!-- https://mvnrepository.com/artifact/com.gluonhq/charm-glisten -->
         <dependency>
             <groupId>com.gluonhq</groupId>
             <artifactId>charm-glisten</artifactId>
@@ -76,7 +80,7 @@
         <dependency>
             <groupId>com.gluonhq.attach</groupId>
             <artifactId>display</artifactId>
-            <version>4.0.13</version> <!-- o l’ultima disponibile -->
+            <version>4.0.13</version>
         </dependency>
         <dependency>
             <groupId>com.gluonhq.attach</groupId>
@@ -84,22 +88,18 @@
             <version>4.0.13</version>
         </dependency>
 
-
-
-    <!--Hibernate-->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>7.1.9.Final</version>
         </dependency>
-    <!--Jakarta Persistence API-->
+
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
         </dependency>
 
-    <!-- MySQL Driver -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -107,14 +107,12 @@
             <scope>runtime</scope>
         </dependency>
 
-    <!-- BCrypt per hashing password -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- JUnit per testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -122,20 +120,12 @@
             <scope>test</scope>
         </dependency>
 
-    <!-- GSON per parsing JSON -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
-    <!-- H2 Database per test unitari -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version> <scope>test</scope>
-        </dependency>
 
-    <!-- H2 Database per testing -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -143,7 +133,6 @@
             <scope>test</scope>
         </dependency>
 
-    <!-- TestFX per testing interfaccia grafica -->
         <dependency>
             <groupId>org.testfx</groupId>
             <artifactId>testfx-core</artifactId>
