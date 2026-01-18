@@ -43,7 +43,7 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <MenuButton mnemonicParsing="false" styleClass="menu-button-pro" text="⋮">
+                <MenuButton mnemonicParsing="false" fx:id="menuButton" styleClass="menu-button-pro" text="⋮">
                     <items>
                      <MenuItem fx:id="scambiMenuItem" mnemonicParsing="false" onAction="#showScambi" text="🔄  Scambi Mercato" />
                      <MenuItem mnemonicParsing="false" onAction="#showListone" text="📜  Listone" />

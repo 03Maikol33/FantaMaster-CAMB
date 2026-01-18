@@ -125,7 +125,7 @@ public class LeagueListControllerTest extends ApplicationTest {
         sleep(1000); 
 
         // 2. Clicchiamo sul MenuButton "⋮" per mostrare le voci
-        clickOn("⋮");
+        clickOn("#menuButton");
 
         // 3. Verifichiamo che la voce "Richieste" sia presente nel menu a tendina
         // Usiamo il testo esatto definito nell'FXML
@@ -148,7 +148,7 @@ public class LeagueListControllerTest extends ApplicationTest {
         clickOn("Lega Partecipante"); // Questo apre LeagueScreen (User)
         
         sleep(1000);
-        clickOn("⋮");
+        clickOn("#menuButton");
 
         // Verifichiamo che un utente normale NON veda le opzioni admin
         // Il robot non dovrebbe trovare il testo "Impostazioni Lega"
