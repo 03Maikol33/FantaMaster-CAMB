@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    runs-on: windows-latest # i test verranno eseguiti su windows
 
     permissions:
       checks: write
@@ -18,14 +18,16 @@ jobs:
     steps:
       - name: Scarica il codice
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0 #Permette a SonarCloud di leggere la cronologia git
+      #imposta java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
+      #configurazione database h2 per testing
       - name: Configura database.properties (H2 In-Memory)
         shell: pwsh
         run: |
@@ -34,12 +36,12 @@ jobs:
           $content | Out-File -FilePath src/test/resources/database.properties -Encoding utf8
         working-directory: ./Java_Project/fantamaster 
 
-      - name: Esecuzione test
-        # Abbiamo racchiuso il parametro tra virgolette per PowerShell
-        run: mvn clean verify "-Dmaven.test.failure.ignore=true"
+      - name: Esecuzione test & analisi di SonarCloud
+        run: mvn clean verify "-Dmaven.test.failure.ignore=true" "-Dsonar.projectKey=03Maikol33_FantaMaster-CAMB" "-Dsonar.organization=fantamaster-camb" "-Dsonar.host.url=https://sonarcloud.io" "-Dsonar.token=${{ secrets.SONAR_TOKEN }}"
         working-directory: ./Java_Project/fantamaster
         env:
           JAVA_TOOL_OPTIONS: "-Djava.awt.headless=false"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Pubblica i report JUnit
         uses: dorny/test-reporter@v1
