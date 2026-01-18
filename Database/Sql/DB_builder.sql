@@ -1,12 +1,12 @@
 -- ==========================================================
--- SCRIPT DATABASE FANTAMASTER v5.5
+-- SCRIPT DATABASE FANTAMASTER
 -- ==========================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- 1. PULIZIA
 DROP TABLE IF EXISTS eventi;
-DROP TABLE IF EXISTS voti; -- ELIMINATA PER SEMPRE
+DROP TABLE IF EXISTS voti;
 DROP TABLE IF EXISTS partite;
 DROP TABLE IF EXISTS dettaglio_formazione;
 DROP TABLE IF EXISTS formazioni;
@@ -80,14 +80,11 @@ CREATE TABLE regole (
     id INT AUTO_INCREMENT PRIMARY KEY,
     lega_id INT NOT NULL,
     budget_iniziale INT NOT NULL DEFAULT 500,
-    
-    -- === NUOVI CAMPI: LIMITI ROSA (STEP 0) ===
     max_portieri INT DEFAULT 3,
     max_difensori INT DEFAULT 8,
     max_centrocampisti INT DEFAULT 8,
     max_attaccanti INT DEFAULT 6,
     
-    -- CONFIGURAZIONE PUNTEGGI
     voto_base DECIMAL(4,1) DEFAULT 6.0, 
     
     bonus_gol DECIMAL(4,1) DEFAULT 3.0,
@@ -183,8 +180,6 @@ CREATE TABLE dettaglio_formazione (
     giocatore_id INT NOT NULL,
     stato ENUM('titolare', 'panchina') NOT NULL,
     ordine_panchina INT DEFAULT 0,
-    
-    -- Semplificato: Solo il risultato finale
     fantavoto DECIMAL(4,1) DEFAULT 0.0, 
     
     entrato_al_posto_di INT DEFAULT NULL,
@@ -194,7 +189,7 @@ CREATE TABLE dettaglio_formazione (
 );
 
 -- ==========================================================
--- SEZIONE E: EVENTI (Sostituiscono i Voti)
+-- SEZIONE E: EVENTI
 -- ==========================================================
 
 -- EVENTI DELLA PARTITA
@@ -213,8 +208,6 @@ CREATE TABLE eventi (
         'ESPULSIONE', 
         'AUTOGOL', 
         'PORTIERE_IMBATTUTO'
-        -- Nota: La semplice "Presenza" è implicita se non ci sono eventi,
-        -- il giocatore prende comunque il voto base se ha giocato.
     ) NOT NULL,
     
     valore_bonus DECIMAL(4,1) NOT NULL, 

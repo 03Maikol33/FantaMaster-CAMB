@@ -77,7 +77,7 @@ INSERT INTO rosa (id, utenti_leghe_id, nome_rosa, crediti_residui) VALUES
 (1, 1, 'Maikol Team', 500), 
 (2, 2, 'Maikol Chiuso', 500), 
 (3, 3, 'Chiara City', 500), 
-(4, 4, 'Alessio Full', 100), -- Budget ridotto perché ha già 25 giocatori
+(4, 4, 'Alessio Full', 100),
 (5, 5, 'Bassma Squad', 500);
 
 -- 7. RIEMPIMENTO ROSA ALESSIO (ID Rosa 4)
